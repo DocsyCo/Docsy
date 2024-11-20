@@ -61,6 +61,7 @@ public final class SearchIndex: Sendable {
     }
 }
 
+// MARK: Writer
 
 extension SearchIndex {
     public final class Writer: Sendable {

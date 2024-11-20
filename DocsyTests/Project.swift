@@ -30,7 +30,7 @@ class MockProject: Project {
     }
 }
 
-extension DocumentationWorkspace.Configuration {
+extension Workspace.Configuration {
     static let test = Self(inMemory: true)
 }
 
@@ -40,7 +40,7 @@ struct ProjectTest {
     @Test
     func initWorkspace() async throws {
         let project = MockProject(isPersistent: true)
-        let workspace = try DocumentationWorkspace(project: project, config: .test)
+        let workspace = try Workspace(project: project, config: .test)
 
         // initial project was set
         #expect(workspace.projectIdentifier == project.identifier)
@@ -56,7 +56,7 @@ struct ProjectTest {
     @Test
     func loadProject() async throws {
         let startProject = MockProject(isPersistent: true)
-        let workspace = try DocumentationWorkspace(project: startProject, config: .test)
+        let workspace = try Workspace(project: startProject, config: .test)
         
         let newProject = MockProject(isPersistent: true)
         

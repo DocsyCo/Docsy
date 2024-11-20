@@ -1,20 +1,22 @@
 //
-//  DocumentationWorkspace.swift
+//  Workspace.swift
 //  Docsy
 //
 //  Created by Noah Kamara on 20.11.24.
 //
 
 import Foundation
-import SwiftDocC
+
 
 @Observable
-public class DocumentationWorkspace {
+public class Workspace {
     let config: Configuration
     
     private let fileManager: FileManager
     private(set) var search: SearchIndex
-    private(set) var project: Project
+    private let navigator: Navigator
+    
+    private var project: Project
     
     var canPersist: Bool {
         access(keyPath: \.project)
@@ -22,7 +24,13 @@ public class DocumentationWorkspace {
     }
     
     var projectIdentifier: String { project.identifier }
-    var projectDisplayName: String { project.displayName }
+    var displayName: String { project.displayName }
+    
+    func setDisplayName(_ newValue: String) {
+        withMutation(keyPath: \.displayName) {
+            project.displayName = newValue
+        }
+    }
     
     init(
         project: Project,
@@ -32,6 +40,7 @@ public class DocumentationWorkspace {
         self.fileManager = fileManager
         self.config = config
         self.project = project
+        self.navigator = Navigator()
         
         let search = try loadSearchIndex(
             config: config,
@@ -42,13 +51,15 @@ public class DocumentationWorkspace {
     }
     
     func save() async throws {
+        try await navigator.willSave(project)
+        
         guard canPersist else { return }
+        
         try await project.persist()
     }
     
     func load(_ newProject: Project) async throws {
         try await save()
-        
         
         let search = try loadSearchIndex(
             config: config,
@@ -60,11 +71,13 @@ public class DocumentationWorkspace {
         withMutation(keyPath: \.project) {
             self.project = newProject
         }
+        
+        try await self.navigator.load(project: project)
     }
 }
 
 fileprivate func loadSearchIndex(
-    config: DocumentationWorkspace.Configuration,
+    config: Workspace.Configuration,
     projectId: String,
     fileManager: FileManager
 ) throws -> SearchIndex {
@@ -83,7 +96,7 @@ fileprivate func loadSearchIndex(
     return try SearchIndex.openSearchIndex(at: searchIndexUrl, createIfNeeded: true)
 }
 
-extension DocumentationWorkspace {
+extension Workspace {
     struct Configuration {
         var inMemory: Bool = false
     }

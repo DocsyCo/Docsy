@@ -42,36 +42,11 @@ class Project {
 
     // MARK: Node
 
-    /// A node in a DocumentationWorkspace's navigator
-    struct Node: Codable {
-        enum Kind: Codable {
-            case bundle
-            case groupMarker
-        }
-        
-        let kind: Kind
-        let displayName: String
-        let reference: String?
-        
-        private init(kind: Kind, displayName: String, reference: String?) {
-            self.kind = kind
-            self.displayName = displayName
-            self.reference = reference
-        }
-        
-        static func groupMarker(title: String) -> Node {
-            Node(kind: .groupMarker, displayName: title, reference: nil)
-        }
-        
-        static func bundle(displayName: String, identifier: BundleIdentifier) -> Node {
-            Node(
-                kind: .bundle,
-                displayName: displayName,
-                reference: identifier
-            )
-        }
+    /// A node in a Workspace's navigator
+    public enum Node: Codable {
+        case bundle(_ displayName: String, _ identifier: BundleIdentifier)
+        case groupMarker(_ displayName: String)
     }
-    
 }
 
 
