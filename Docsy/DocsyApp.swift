@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+extension Project {
+    static func scratchpad() -> Project {
+        Project(displayName: "Scratchpad", items: [], references: [:])
+    }
+}
+
 @main
 struct DocsyApp: App {
     var body: some Scene {

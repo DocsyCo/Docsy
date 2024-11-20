@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FDED1DC32CEDA509002F878D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = FDED1DC22CEDA509002F878D /* GRDB */; };
-		FDED1DC62CEDA57B002F878D /* SwiftDocC in Frameworks */ = {isa = PBXBuildFile; productRef = FDED1DC52CEDA57B002F878D /* SwiftDocC */; };
+		FDED1DFD2CEE5997002F878D /* DocumentationKit in Frameworks */ = {isa = PBXBuildFile; productRef = FDED1DFC2CEE5997002F878D /* DocumentationKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,8 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FDED1DC32CEDA509002F878D /* GRDB in Frameworks */,
-				FDED1DC62CEDA57B002F878D /* SwiftDocC in Frameworks */,
+				FDED1DFD2CEE5997002F878D /* DocumentationKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,8 +119,7 @@
 			);
 			name = Docsy;
 			packageProductDependencies = (
-				FDED1DC22CEDA509002F878D /* GRDB */,
-				FDED1DC52CEDA57B002F878D /* SwiftDocC */,
+				FDED1DFC2CEE5997002F878D /* DocumentationKit */,
 			);
 			productName = Docsy;
 			productReference = FDED1D152CED3D83002F878D /* Docsy.app */;
@@ -207,8 +204,7 @@
 			mainGroup = FDED1D0C2CED3D83002F878D;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				FDED1DC12CEDA509002F878D /* XCRemoteSwiftPackageReference "GRDB.swift" */,
-				FDED1DC42CEDA57B002F878D /* XCRemoteSwiftPackageReference "swift-docc" */,
+				FDED1DFB2CEE5997002F878D /* XCLocalSwiftPackageReference "Modules/DocumentationKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FDED1D162CED3D83002F878D /* Products */;
@@ -607,35 +603,17 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		FDED1DC12CEDA509002F878D /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/groue/GRDB.swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = "7.0.0-beta.6";
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		FDED1DFB2CEE5997002F878D /* XCLocalSwiftPackageReference "Modules/DocumentationKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Modules/DocumentationKit;
 		};
-		FDED1DC42CEDA57B002F878D /* XCRemoteSwiftPackageReference "swift-docc" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/swiftlang/swift-docc.git";
-			requirement = {
-				kind = revision;
-				revision = 30bc32eecf7196eb39ac2854f1e1dfcd6b6e5513;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FDED1DC22CEDA509002F878D /* GRDB */ = {
+		FDED1DFC2CEE5997002F878D /* DocumentationKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FDED1DC12CEDA509002F878D /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
-		};
-		FDED1DC52CEDA57B002F878D /* SwiftDocC */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FDED1DC42CEDA57B002F878D /* XCRemoteSwiftPackageReference "swift-docc" */;
-			productName = SwiftDocC;
+			productName = DocumentationKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
