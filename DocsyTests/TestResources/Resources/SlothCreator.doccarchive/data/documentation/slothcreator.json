@@ -1,0 +1,854 @@
+{
+    "variants": [
+        {
+            "traits": [
+                {
+                    "interfaceLanguage": "swift"
+                }
+            ],
+            "paths": [
+                "\/documentation\/slothcreator"
+            ]
+        }
+    ],
+    "schemaVersion": {
+        "major": 0,
+        "patch": 0,
+        "minor": 3
+    },
+    "abstract": [
+        {
+            "type": "text",
+            "text": "Catalog sloths you find in nature and create new adorable virtual sloths."
+        }
+    ],
+    "sections": [],
+    "primaryContentSections": [
+        {
+            "content": [
+                {
+                    "type": "heading",
+                    "level": 2,
+                    "anchor": "Overview",
+                    "text": "Overview"
+                },
+                {
+                    "type": "paragraph",
+                    "inlineContent": [
+                        {
+                            "text": "SlothCreator provides models and utilities for creating, tracking, and caring for sloths. The framework provides structures to model an individual ",
+                            "type": "text"
+                        },
+                        {
+                            "type": "reference",
+                            "isActive": true,
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth"
+                        },
+                        {
+                            "text": ", and identify them by key characteristics, including their ",
+                            "type": "text"
+                        },
+                        {
+                            "isActive": true,
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/name",
+                            "type": "reference"
+                        },
+                        {
+                            "text": " and special supernatural ",
+                            "type": "text"
+                        },
+                        {
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/power-swift.property",
+                            "isActive": true,
+                            "type": "reference"
+                        },
+                        {
+                            "text": ". You can create your own custom sloths using a ",
+                            "type": "text"
+                        },
+                        {
+                            "isActive": true,
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothGenerator",
+                            "type": "reference"
+                        },
+                        {
+                            "text": ", and name them using a ",
+                            "type": "text"
+                        },
+                        {
+                            "isActive": true,
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/NameGenerator",
+                            "type": "reference"
+                        },
+                        {
+                            "type": "text",
+                            "text": "."
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "inlineContent": [
+                        {
+                            "type": "text",
+                            "text": "Sloths need careful feeding and maintenance to ensure their health and happiness. You maintain their "
+                        },
+                        {
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/energyLevel",
+                            "isActive": true,
+                            "type": "reference"
+                        },
+                        {
+                            "type": "text",
+                            "text": " by providing the correct "
+                        },
+                        {
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/Food",
+                            "type": "reference",
+                            "isActive": true
+                        },
+                        {
+                            "type": "text",
+                            "text": " and a suitable "
+                        },
+                        {
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Habitat",
+                            "isActive": true,
+                            "type": "reference"
+                        },
+                        {
+                            "type": "text",
+                            "text": ". You can exercise your sloth by providing a fun or restful "
+                        },
+                        {
+                            "type": "reference",
+                            "isActive": true,
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Activity"
+                        },
+                        {
+                            "text": ".",
+                            "type": "text"
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "inlineContent": [
+                        {
+                            "type": "text",
+                            "text": "You can visualize and observe your sloths by adding a "
+                        },
+                        {
+                            "isActive": true,
+                            "type": "reference",
+                            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothView"
+                        },
+                        {
+                            "type": "text",
+                            "text": " to a SwiftUI view structure."
+                        }
+                    ]
+                },
+                {
+                    "anchor": "Featured",
+                    "level": 3,
+                    "text": "Featured",
+                    "type": "heading"
+                },
+                {
+                    "type": "links",
+                    "style": "detailedGrid",
+                    "items": [
+                        "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/GettingStarted",
+                        "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothySample"
+                    ]
+                }
+            ],
+            "kind": "content"
+        }
+    ],
+    "hierarchy": {
+        "paths": [
+            []
+        ]
+    },
+    "identifier": {
+        "url": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator",
+        "interfaceLanguage": "swift"
+    },
+    "metadata": {
+        "symbolKind": "module",
+        "roleHeading": "Framework",
+        "color": {
+            "standardColorIdentifier": "green"
+        },
+        "images": [
+            {
+                "identifier": "slothCreator-icon.png",
+                "type": "icon"
+            }
+        ],
+        "externalID": "SlothCreator",
+        "role": "collection",
+        "title": "SlothCreator",
+        "modules": [
+            {
+                "name": "SlothCreator"
+            }
+        ]
+    },
+    "kind": "symbol",
+    "topicSections": [
+        {
+            "identifiers": [
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/GettingStarted",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothySample",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth"
+            ],
+            "anchor": "Essentials",
+            "title": "Essentials"
+        },
+        {
+            "identifiers": [
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothGenerator",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/NameGenerator",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Habitat"
+            ],
+            "title": "Sloth Creation",
+            "anchor": "Sloth-Creation"
+        },
+        {
+            "identifiers": [
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Activity",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/CareSchedule",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/FoodGenerator",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/Food"
+            ],
+            "anchor": "Care-and-Feeding",
+            "title": "Care and Feeding"
+        },
+        {
+            "identifiers": [
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothView",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/HabitatView",
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/PowerPicker"
+            ],
+            "title": "Sloth Views",
+            "anchor": "Sloth-Views"
+        },
+        {
+            "title": "Extended Modules",
+            "generated": true,
+            "anchor": "Extended-Modules",
+            "identifiers": [
+                "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SwiftUICore"
+            ]
+        }
+    ],
+    "references": {
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/CareSchedule": {
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A schedule to maintain the health and happiness of a sloth."
+                }
+            ],
+            "type": "topic",
+            "title": "CareSchedule",
+            "kind": "symbol",
+            "url": "\/documentation\/slothcreator\/careschedule",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/CareSchedule",
+            "fragments": [
+                {
+                    "text": "struct",
+                    "kind": "keyword"
+                },
+                {
+                    "text": " ",
+                    "kind": "text"
+                },
+                {
+                    "text": "CareSchedule",
+                    "kind": "identifier"
+                }
+            ],
+            "navigatorTitle": [
+                {
+                    "text": "CareSchedule",
+                    "kind": "identifier"
+                }
+            ],
+            "role": "symbol"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/Sloth/Food": {
+            "abstract": [
+                {
+                    "text": "Food that a sloth can consume.",
+                    "type": "text"
+                }
+            ],
+            "type": "topic",
+            "title": "Sloth.Food",
+            "kind": "symbol",
+            "url": "\/documentation\/slothcreator\/sloth\/food",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/Food",
+            "fragments": [
+                {
+                    "text": "struct",
+                    "kind": "keyword"
+                },
+                {
+                    "kind": "text",
+                    "text": " "
+                },
+                {
+                    "kind": "identifier",
+                    "text": "Food"
+                }
+            ],
+            "navigatorTitle": [
+                {
+                    "kind": "identifier",
+                    "text": "Food"
+                }
+            ],
+            "role": "symbol"
+        },
+        "slothy-card.png": {
+            "identifier": "slothy-card.png",
+            "type": "image",
+            "alt": "Two screenshots showing the Slothy app. The first screenshot shows a sloth map and the second screenshot shows a sloth power picker.",
+            "variants": [
+                {
+                    "url": "\/images\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/slothy-card@2x.png",
+                    "traits": [
+                        "2x",
+                        "light"
+                    ]
+                }
+            ]
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/PowerPicker": {
+            "title": "PowerPicker",
+            "role": "symbol",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A view to configure a sloth’s power."
+                }
+            ],
+            "kind": "symbol",
+            "navigatorTitle": [
+                {
+                    "text": "PowerPicker",
+                    "kind": "identifier"
+                }
+            ],
+            "url": "\/documentation\/slothcreator\/powerpicker",
+            "fragments": [
+                {
+                    "text": "struct",
+                    "kind": "keyword"
+                },
+                {
+                    "text": " ",
+                    "kind": "text"
+                },
+                {
+                    "text": "PowerPicker",
+                    "kind": "identifier"
+                }
+            ],
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/PowerPicker",
+            "type": "topic"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/FoodGenerator": {
+            "kind": "symbol",
+            "fragments": [
+                {
+                    "kind": "keyword",
+                    "text": "protocol"
+                },
+                {
+                    "kind": "text",
+                    "text": " "
+                },
+                {
+                    "text": "FoodGenerator",
+                    "kind": "identifier"
+                }
+            ],
+            "type": "topic",
+            "url": "\/documentation\/slothcreator\/foodgenerator",
+            "role": "symbol",
+            "navigatorTitle": [
+                {
+                    "kind": "identifier",
+                    "text": "FoodGenerator"
+                }
+            ],
+            "title": "FoodGenerator",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/FoodGenerator",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A type that generates food."
+                }
+            ]
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/SlothGenerator": {
+            "type": "topic",
+            "kind": "symbol",
+            "fragments": [
+                {
+                    "text": "protocol",
+                    "kind": "keyword"
+                },
+                {
+                    "text": " ",
+                    "kind": "text"
+                },
+                {
+                    "kind": "identifier",
+                    "text": "SlothGenerator"
+                }
+            ],
+            "title": "SlothGenerator",
+            "navigatorTitle": [
+                {
+                    "kind": "identifier",
+                    "text": "SlothGenerator"
+                }
+            ],
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A type that generates sloths."
+                }
+            ],
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothGenerator",
+            "url": "\/documentation\/slothcreator\/slothgenerator",
+            "role": "symbol"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/Sloth/name": {
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "The name of the sloth."
+                }
+            ],
+            "type": "topic",
+            "title": "name",
+            "kind": "symbol",
+            "url": "\/documentation\/slothcreator\/sloth\/name",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/name",
+            "fragments": [
+                {
+                    "kind": "keyword",
+                    "text": "var"
+                },
+                {
+                    "kind": "text",
+                    "text": " "
+                },
+                {
+                    "kind": "identifier",
+                    "text": "name"
+                },
+                {
+                    "text": ": ",
+                    "kind": "text"
+                },
+                {
+                    "text": "String",
+                    "preciseIdentifier": "s:SS",
+                    "kind": "typeIdentifier"
+                }
+            ],
+            "role": "symbol"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/Sloth": {
+            "url": "\/documentation\/slothcreator\/sloth",
+            "kind": "symbol",
+            "type": "topic",
+            "title": "Sloth",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A model representing a sloth."
+                }
+            ],
+            "role": "symbol",
+            "fragments": [
+                {
+                    "text": "struct",
+                    "kind": "keyword"
+                },
+                {
+                    "kind": "text",
+                    "text": " "
+                },
+                {
+                    "text": "Sloth",
+                    "kind": "identifier"
+                }
+            ],
+            "navigatorTitle": [
+                {
+                    "text": "Sloth",
+                    "kind": "identifier"
+                }
+            ]
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/Sloth/energyLevel": {
+            "url": "\/documentation\/slothcreator\/sloth\/energylevel",
+            "title": "energyLevel",
+            "role": "symbol",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/energyLevel",
+            "abstract": [
+                {
+                    "text": "The energy level of the sloth.",
+                    "type": "text"
+                }
+            ],
+            "kind": "symbol",
+            "fragments": [
+                {
+                    "text": "var",
+                    "kind": "keyword"
+                },
+                {
+                    "text": " ",
+                    "kind": "text"
+                },
+                {
+                    "kind": "identifier",
+                    "text": "energyLevel"
+                },
+                {
+                    "text": ": ",
+                    "kind": "text"
+                },
+                {
+                    "kind": "typeIdentifier",
+                    "preciseIdentifier": "s:Si",
+                    "text": "Int"
+                }
+            ],
+            "type": "topic"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator": {
+            "url": "\/documentation\/slothcreator",
+            "title": "SlothCreator",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator",
+            "images": [
+                {
+                    "identifier": "slothCreator-icon.png",
+                    "type": "icon"
+                }
+            ],
+            "type": "topic",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "Catalog sloths you find in nature and create new adorable virtual sloths."
+                }
+            ],
+            "kind": "symbol",
+            "role": "collection"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/Activity": {
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A type that declares an activity a Sloth can perform."
+                }
+            ],
+            "type": "topic",
+            "title": "Activity",
+            "kind": "symbol",
+            "url": "\/documentation\/slothcreator\/activity",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Activity",
+            "fragments": [
+                {
+                    "text": "protocol",
+                    "kind": "keyword"
+                },
+                {
+                    "text": " ",
+                    "kind": "text"
+                },
+                {
+                    "text": "Activity",
+                    "kind": "identifier"
+                }
+            ],
+            "navigatorTitle": [
+                {
+                    "kind": "identifier",
+                    "text": "Activity"
+                }
+            ],
+            "role": "symbol"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/SwiftUICore": {
+            "role": "collection",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SwiftUICore",
+            "title": "SwiftUICore",
+            "type": "topic",
+            "abstract": [],
+            "kind": "symbol",
+            "url": "\/documentation\/slothcreator\/swiftuicore"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/Sloth/power-swift.property": {
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "The power of the sloth."
+                }
+            ],
+            "type": "topic",
+            "title": "power",
+            "kind": "symbol",
+            "url": "\/documentation\/slothcreator\/sloth\/power-swift.property",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Sloth\/power-swift.property",
+            "fragments": [
+                {
+                    "text": "var",
+                    "kind": "keyword"
+                },
+                {
+                    "text": " ",
+                    "kind": "text"
+                },
+                {
+                    "kind": "identifier",
+                    "text": "power"
+                },
+                {
+                    "kind": "text",
+                    "text": ": "
+                },
+                {
+                    "kind": "typeIdentifier",
+                    "text": "Power",
+                    "preciseIdentifier": "s:12SlothCreator0A0V5PowerO"
+                }
+            ],
+            "role": "symbol"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/GettingStarted": {
+            "type": "topic",
+            "images": [
+                {
+                    "type": "card",
+                    "identifier": "gettingStarted-card.png"
+                }
+            ],
+            "role": "article",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/GettingStarted",
+            "kind": "article",
+            "title": "Getting Started with Sloths",
+            "abstract": [
+                {
+                    "text": "Create a sloth and assign personality traits and abilities.",
+                    "type": "text"
+                }
+            ],
+            "url": "\/documentation\/slothcreator\/gettingstarted"
+        },
+        "slothCreator-icon.png": {
+            "identifier": "slothCreator-icon.png",
+            "type": "image",
+            "alt": "A technology icon representing the SlothCreator framework.",
+            "variants": [
+                {
+                    "url": "\/images\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/slothCreator-icon@2x.png",
+                    "traits": [
+                        "2x",
+                        "light"
+                    ]
+                }
+            ]
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/NameGenerator": {
+            "url": "\/documentation\/slothcreator\/namegenerator",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A type that generates names for sloths."
+                }
+            ],
+            "role": "symbol",
+            "fragments": [
+                {
+                    "kind": "keyword",
+                    "text": "protocol"
+                },
+                {
+                    "kind": "text",
+                    "text": " "
+                },
+                {
+                    "text": "NameGenerator",
+                    "kind": "identifier"
+                }
+            ],
+            "navigatorTitle": [
+                {
+                    "text": "NameGenerator",
+                    "kind": "identifier"
+                }
+            ],
+            "type": "topic",
+            "title": "NameGenerator",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/NameGenerator",
+            "kind": "symbol"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/SlothView": {
+            "type": "topic",
+            "fragments": [
+                {
+                    "text": "struct",
+                    "kind": "keyword"
+                },
+                {
+                    "kind": "text",
+                    "text": " "
+                },
+                {
+                    "kind": "identifier",
+                    "text": "SlothView"
+                }
+            ],
+            "role": "symbol",
+            "navigatorTitle": [
+                {
+                    "text": "SlothView",
+                    "kind": "identifier"
+                }
+            ],
+            "title": "SlothView",
+            "kind": "symbol",
+            "url": "\/documentation\/slothcreator\/slothview",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A view that displays a sloth."
+                }
+            ],
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothView"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/SlothySample": {
+            "kind": "article",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "Integrate SlothCreator into an iOS app for creating and caring"
+                },
+                {
+                    "type": "text",
+                    "text": " "
+                },
+                {
+                    "type": "text",
+                    "text": "for custom sloths."
+                }
+            ],
+            "url": "\/documentation\/slothcreator\/slothysample",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/SlothySample",
+            "title": "Slothy: Integrating SlothCreator into an App",
+            "images": [
+                {
+                    "type": "card",
+                    "identifier": "slothy-card.png"
+                }
+            ],
+            "type": "topic",
+            "role": "sampleCode"
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/Habitat": {
+            "url": "\/documentation\/slothcreator\/habitat",
+            "kind": "symbol",
+            "type": "topic",
+            "title": "Habitat",
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/Habitat",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "The habitat where sloths live."
+                }
+            ],
+            "role": "symbol",
+            "fragments": [
+                {
+                    "kind": "keyword",
+                    "text": "struct"
+                },
+                {
+                    "text": " ",
+                    "kind": "text"
+                },
+                {
+                    "text": "Habitat",
+                    "kind": "identifier"
+                }
+            ],
+            "navigatorTitle": [
+                {
+                    "text": "Habitat",
+                    "kind": "identifier"
+                }
+            ]
+        },
+        "doc://slothcreatorbuildingdoccdocumentationinxcode.SlothCreator/documentation/SlothCreator/HabitatView": {
+            "fragments": [
+                {
+                    "text": "struct",
+                    "kind": "keyword"
+                },
+                {
+                    "text": " ",
+                    "kind": "text"
+                },
+                {
+                    "kind": "identifier",
+                    "text": "HabitatView"
+                }
+            ],
+            "type": "topic",
+            "title": "HabitatView",
+            "role": "symbol",
+            "navigatorTitle": [
+                {
+                    "kind": "identifier",
+                    "text": "HabitatView"
+                }
+            ],
+            "identifier": "doc:\/\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/documentation\/SlothCreator\/HabitatView",
+            "kind": "symbol",
+            "url": "\/documentation\/slothcreator\/habitatview",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "A view that displays a sloth’s habitat."
+                }
+            ]
+        },
+        "gettingStarted-card.png": {
+            "identifier": "gettingStarted-card.png",
+            "type": "image",
+            "alt": "The profile images for a regular sloth and an ice sloth.",
+            "variants": [
+                {
+                    "traits": [
+                        "2x",
+                        "light"
+                    ],
+                    "url": "\/images\/slothcreatorbuildingdoccdocumentationinxcode.SlothCreator\/gettingStarted-card@2x.png"
+                }
+            ]
+        }
+    }
+}

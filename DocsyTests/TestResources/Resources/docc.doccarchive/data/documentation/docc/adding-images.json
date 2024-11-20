@@ -1,0 +1,691 @@
+{
+    "variants": [
+        {
+            "traits": [
+                {
+                    "interfaceLanguage": "swift"
+                }
+            ],
+            "paths": [
+                "\/documentation\/docc\/adding-images"
+            ]
+        }
+    ],
+    "kind": "article",
+    "identifier": {
+        "url": "doc:\/\/org.swift.docc\/documentation\/docc\/adding-images",
+        "interfaceLanguage": "swift"
+    },
+    "abstract": [
+        {
+            "type": "text",
+            "text": "Elevate your content’s visual appeal by adding images."
+        }
+    ],
+    "metadata": {
+        "modules": [
+            {
+                "name": "DocC"
+            }
+        ],
+        "role": "article",
+        "roleHeading": "Article",
+        "title": "Adding Images to Your Content"
+    },
+    "sections": [],
+    "hierarchy": {
+        "paths": [
+            [
+                "doc:\/\/org.swift.docc\/documentation\/docc"
+            ]
+        ]
+    },
+    "schemaVersion": {
+        "patch": 0,
+        "major": 0,
+        "minor": 3
+    },
+    "seeAlsoSections": [
+        {
+            "anchor": "Structure-and-Formatting",
+            "generated": true,
+            "identifiers": [
+                "doc:\/\/org.swift.docc\/documentation\/docc\/formatting-your-documentation-content",
+                "doc:\/\/org.swift.docc\/documentation\/docc\/adding-tables-of-data",
+                "doc:\/\/org.swift.docc\/documentation\/docc\/other-formatting-options",
+                "doc:\/\/org.swift.docc\/documentation\/docc\/adding-structure-to-your-documentation-pages",
+                "doc:\/\/org.swift.docc\/documentation\/docc\/customizing-the-appearance-of-your-documentation-pages"
+            ],
+            "title": "Structure and Formatting"
+        }
+    ],
+    "primaryContentSections": [
+        {
+            "content": [
+                {
+                    "anchor": "Overview",
+                    "level": 2,
+                    "type": "heading",
+                    "text": "Overview"
+                },
+                {
+                    "inlineContent": [
+                        {
+                            "type": "text",
+                            "text": "DocC extends Markdown’s image support so you can provide appearance and"
+                        },
+                        {
+                            "type": "text",
+                            "text": " "
+                        },
+                        {
+                            "type": "text",
+                            "text": "display scale-aware versions of an image. You use specific components to create image filenames, and DocC uses the most appropriate version of the image when displaying your documentation."
+                        }
+                    ],
+                    "type": "paragraph"
+                },
+                {
+                    "inlineContent": [
+                        {
+                            "type": "image",
+                            "identifier": "docc-image-filename"
+                        }
+                    ],
+                    "type": "paragraph"
+                },
+                {
+                    "rows": [
+                        [
+                            [
+                                {
+                                    "type": "paragraph",
+                                    "inlineContent": [
+                                        {
+                                            "text": "Component",
+                                            "type": "text"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                {
+                                    "type": "paragraph",
+                                    "inlineContent": [
+                                        {
+                                            "type": "text",
+                                            "text": "Description"
+                                        }
+                                    ]
+                                }
+                            ]
+                        ],
+                        [
+                            [
+                                {
+                                    "type": "paragraph",
+                                    "inlineContent": [
+                                        {
+                                            "type": "text",
+                                            "text": "Image name"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                {
+                                    "type": "paragraph",
+                                    "inlineContent": [
+                                        {
+                                            "type": "strong",
+                                            "inlineContent": [
+                                                {
+                                                    "text": "Required",
+                                                    "type": "text"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": ". Identifies the image within the documentation catalog. The name must be unique across all images in the catalog, even if you store them in separate folders."
+                                        }
+                                    ]
+                                }
+                            ]
+                        ],
+                        [
+                            [
+                                {
+                                    "type": "paragraph",
+                                    "inlineContent": [
+                                        {
+                                            "text": "Appearance",
+                                            "type": "text"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                {
+                                    "type": "paragraph",
+                                    "inlineContent": [
+                                        {
+                                            "inlineContent": [
+                                                {
+                                                    "text": "Optional",
+                                                    "type": "text"
+                                                }
+                                            ],
+                                            "type": "strong"
+                                        },
+                                        {
+                                            "text": ". Identifies the appearance mode in which DocC uses the image. Add ",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "type": "codeVoice",
+                                            "code": "~dark"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": " directly after the image name to identify the image as a dark mode variant."
+                                        }
+                                    ]
+                                }
+                            ]
+                        ],
+                        [
+                            [
+                                {
+                                    "inlineContent": [
+                                        {
+                                            "text": "Display scale",
+                                            "type": "text"
+                                        }
+                                    ],
+                                    "type": "paragraph"
+                                }
+                            ],
+                            [
+                                {
+                                    "type": "paragraph",
+                                    "inlineContent": [
+                                        {
+                                            "inlineContent": [
+                                                {
+                                                    "text": "Optional",
+                                                    "type": "text"
+                                                }
+                                            ],
+                                            "type": "strong"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": ". Identifies the display scale at which DocC uses the image. Possible values are "
+                                        },
+                                        {
+                                            "type": "codeVoice",
+                                            "code": "@1x"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": ", "
+                                        },
+                                        {
+                                            "code": "@2x",
+                                            "type": "codeVoice"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": ", and "
+                                        },
+                                        {
+                                            "type": "codeVoice",
+                                            "code": "@3x"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": ". When specifying a display scale, add it directly before the file extension."
+                                        }
+                                    ]
+                                }
+                            ]
+                        ],
+                        [
+                            [
+                                {
+                                    "inlineContent": [
+                                        {
+                                            "text": "File extension",
+                                            "type": "text"
+                                        }
+                                    ],
+                                    "type": "paragraph"
+                                }
+                            ],
+                            [
+                                {
+                                    "type": "paragraph",
+                                    "inlineContent": [
+                                        {
+                                            "inlineContent": [
+                                                {
+                                                    "text": "Required",
+                                                    "type": "text"
+                                                }
+                                            ],
+                                            "type": "strong"
+                                        },
+                                        {
+                                            "text": ". Identifies the type of image. The supported file extensions are ",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "type": "codeVoice",
+                                            "code": "png"
+                                        },
+                                        {
+                                            "text": ", ",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "type": "codeVoice",
+                                            "code": "jpg"
+                                        },
+                                        {
+                                            "text": ", ",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "code": "jpeg",
+                                            "type": "codeVoice"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": ", "
+                                        },
+                                        {
+                                            "type": "codeVoice",
+                                            "code": "svg"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": " and "
+                                        },
+                                        {
+                                            "code": "gif",
+                                            "type": "codeVoice"
+                                        },
+                                        {
+                                            "text": ".",
+                                            "type": "text"
+                                        }
+                                    ]
+                                }
+                            ]
+                        ]
+                    ],
+                    "header": "row",
+                    "type": "table"
+                },
+                {
+                    "content": [
+                        {
+                            "inlineContent": [
+                                {
+                                    "text": "To best support your readers, provide images in standard resolution and ",
+                                    "type": "text"
+                                },
+                                {
+                                    "code": "@2x",
+                                    "type": "codeVoice"
+                                },
+                                {
+                                    "text": " scale.",
+                                    "type": "text"
+                                }
+                            ],
+                            "type": "paragraph"
+                        }
+                    ],
+                    "name": "Tip",
+                    "type": "aside",
+                    "style": "tip"
+                },
+                {
+                    "type": "paragraph",
+                    "inlineContent": [
+                        {
+                            "text": "For example, the following are all valid DocC image filenames:",
+                            "type": "text"
+                        }
+                    ]
+                },
+                {
+                    "type": "termList",
+                    "items": [
+                        {
+                            "term": {
+                                "inlineContent": [
+                                    {
+                                        "code": "sloth.png",
+                                        "type": "codeVoice"
+                                    }
+                                ]
+                            },
+                            "definition": {
+                                "content": [
+                                    {
+                                        "type": "paragraph",
+                                        "inlineContent": [
+                                            {
+                                                "type": "text",
+                                                "text": "An image that’s independent of all appearance modes and display scales."
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "term": {
+                                "inlineContent": [
+                                    {
+                                        "type": "codeVoice",
+                                        "code": "sloth~dark.png"
+                                    }
+                                ]
+                            },
+                            "definition": {
+                                "content": [
+                                    {
+                                        "inlineContent": [
+                                            {
+                                                "text": "An image that’s specific to dark mode, but is display-scale independent.",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "type": "paragraph"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "term": {
+                                "inlineContent": [
+                                    {
+                                        "code": "sloth~dark@2x.png",
+                                        "type": "codeVoice"
+                                    }
+                                ]
+                            },
+                            "definition": {
+                                "content": [
+                                    {
+                                        "type": "paragraph",
+                                        "inlineContent": [
+                                            {
+                                                "text": "An image that’s specific to dark mode and the 2x display scale.",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "aside",
+                    "style": "important",
+                    "name": "Important",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "inlineContent": [
+                                {
+                                    "text": "Include the image files in your documentation catalog. For more information, see ",
+                                    "type": "text"
+                                },
+                                {
+                                    "identifier": "doc:\/\/org.swift.docc\/documentation\/docc\/documenting-a-swift-framework-or-package",
+                                    "isActive": true,
+                                    "type": "reference"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "inlineContent": [
+                        {
+                            "type": "text",
+                            "text": "To add an image, use an exclamation mark ("
+                        },
+                        {
+                            "type": "codeVoice",
+                            "code": "!"
+                        },
+                        {
+                            "text": "), a set of brackets",
+                            "type": "text"
+                        },
+                        {
+                            "type": "text",
+                            "text": " "
+                        },
+                        {
+                            "text": "(",
+                            "type": "text"
+                        },
+                        {
+                            "type": "codeVoice",
+                            "code": "[]"
+                        },
+                        {
+                            "text": "), and a set of parentheses (",
+                            "type": "text"
+                        },
+                        {
+                            "code": "()",
+                            "type": "codeVoice"
+                        },
+                        {
+                            "text": ").",
+                            "type": "text"
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "inlineContent": [
+                        {
+                            "type": "text",
+                            "text": "Within the brackets, add a description of the image. This text, otherwise known as "
+                        },
+                        {
+                            "type": "emphasis",
+                            "inlineContent": [
+                                {
+                                    "text": "alternative text",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "text": ", is used by screen readers for people who have vision difficulties. Provide enough detail to describe the image so that people can understand what the image shows."
+                        }
+                    ]
+                },
+                {
+                    "inlineContent": [
+                        {
+                            "type": "text",
+                            "text": "Within the parentheses, include only the image name. Omit the appearance,"
+                        },
+                        {
+                            "type": "text",
+                            "text": " "
+                        },
+                        {
+                            "type": "text",
+                            "text": "display scale, and file extension components. Don’t include the path to the"
+                        },
+                        {
+                            "type": "text",
+                            "text": " "
+                        },
+                        {
+                            "type": "text",
+                            "text": "image."
+                        }
+                    ],
+                    "type": "paragraph"
+                },
+                {
+                    "code": [
+                        "![A sloth hanging off a tree.](sloth)"
+                    ],
+                    "syntax": "markdown",
+                    "type": "codeListing"
+                }
+            ],
+            "kind": "content"
+        }
+    ],
+    "references": {
+        "doc://org.swift.docc/documentation/docc/adding-tables-of-data": {
+            "abstract": [
+                {
+                    "text": "Arrange information into rows and columns.",
+                    "type": "text"
+                }
+            ],
+            "type": "topic",
+            "title": "Adding Tables of Data",
+            "identifier": "doc:\/\/org.swift.docc\/documentation\/docc\/adding-tables-of-data",
+            "url": "\/documentation\/docc\/adding-tables-of-data",
+            "role": "article",
+            "kind": "article"
+        },
+        "docc-image-filename": {
+            "identifier": "docc-image-filename",
+            "variants": [
+                {
+                    "traits": [
+                        "2x",
+                        "light"
+                    ],
+                    "url": "\/images\/org.swift.docc\/docc-image-filename@2x.png"
+                },
+                {
+                    "url": "\/images\/org.swift.docc\/docc-image-filename~dark@2x.png",
+                    "traits": [
+                        "2x",
+                        "dark"
+                    ]
+                }
+            ],
+            "alt": "An image of a filename that’s split into four labeled sections to highlight the individual components. From left to right, the components are the image name, the appearance mode, the display scale, and the file extension.",
+            "type": "image"
+        },
+        "doc://org.swift.docc/documentation/docc/other-formatting-options": {
+            "type": "topic",
+            "title": "Other Formatting Options",
+            "role": "article",
+            "url": "\/documentation\/docc\/other-formatting-options",
+            "abstract": [
+                {
+                    "text": "Improve the presentation and structure of your content by incorporating special page elements.",
+                    "type": "text"
+                }
+            ],
+            "identifier": "doc:\/\/org.swift.docc\/documentation\/docc\/other-formatting-options",
+            "kind": "article"
+        },
+        "doc://org.swift.docc/documentation/docc": {
+            "kind": "symbol",
+            "url": "\/documentation\/docc",
+            "type": "topic",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "Produce rich API reference documentation and interactive tutorials for your Swift framework or package."
+                }
+            ],
+            "identifier": "doc:\/\/org.swift.docc\/documentation\/docc",
+            "title": "DocC",
+            "role": "collection"
+        },
+        "doc://org.swift.docc/documentation/docc/documenting-a-swift-framework-or-package": {
+            "type": "topic",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "Create developer documentation from in-source comments, add articles with code snippets,"
+                },
+                {
+                    "type": "text",
+                    "text": " "
+                },
+                {
+                    "text": "and add tutorials for a guided learning experience.",
+                    "type": "text"
+                }
+            ],
+            "identifier": "doc:\/\/org.swift.docc\/documentation\/docc\/documenting-a-swift-framework-or-package",
+            "url": "\/documentation\/docc\/documenting-a-swift-framework-or-package",
+            "title": "Documenting a Swift Framework or Package",
+            "role": "article",
+            "kind": "article"
+        },
+        "doc://org.swift.docc/documentation/docc/adding-structure-to-your-documentation-pages": {
+            "title": "Adding Structure to Your Documentation Pages",
+            "url": "\/documentation\/docc\/adding-structure-to-your-documentation-pages",
+            "identifier": "doc:\/\/org.swift.docc\/documentation\/docc\/adding-structure-to-your-documentation-pages",
+            "kind": "article",
+            "type": "topic",
+            "role": "article",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "Make symbols easier to find by arranging them into groups and collections."
+                }
+            ]
+        },
+        "doc://org.swift.docc/documentation/docc/customizing-the-appearance-of-your-documentation-pages": {
+            "type": "topic",
+            "title": "Customizing the Appearance of Your Documentation Pages",
+            "role": "article",
+            "url": "\/documentation\/docc\/customizing-the-appearance-of-your-documentation-pages",
+            "abstract": [
+                {
+                    "text": "Customize the look and feel of your documentation webpages.",
+                    "type": "text"
+                }
+            ],
+            "identifier": "doc:\/\/org.swift.docc\/documentation\/docc\/customizing-the-appearance-of-your-documentation-pages",
+            "kind": "article"
+        },
+        "doc://org.swift.docc/documentation/docc/formatting-your-documentation-content": {
+            "type": "topic",
+            "kind": "article",
+            "identifier": "doc:\/\/org.swift.docc\/documentation\/docc\/formatting-your-documentation-content",
+            "title": "Formatting Your Documentation Content",
+            "url": "\/documentation\/docc\/formatting-your-documentation-content",
+            "abstract": [
+                {
+                    "type": "text",
+                    "text": "Enhance your content’s presentation with special formatting and styling for text and lists."
+                }
+            ],
+            "role": "article"
+        }
+    }
+}

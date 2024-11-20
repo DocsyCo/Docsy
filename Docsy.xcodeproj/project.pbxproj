@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FDED1DC32CEDA509002F878D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = FDED1DC22CEDA509002F878D /* GRDB */; };
+		FDED1DC62CEDA57B002F878D /* SwiftDocC in Frameworks */ = {isa = PBXBuildFile; productRef = FDED1DC52CEDA57B002F878D /* SwiftDocC */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		FDED1D272CED3D85002F878D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +32,7 @@
 		FDED1D152CED3D83002F878D /* Docsy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Docsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDED1D262CED3D85002F878D /* DocsyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocsyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDED1D302CED3D85002F878D /* DocsyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocsyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDED1DDE2CEDC9C5002F878D /* Docsy.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Docsy.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDED1DC32CEDA509002F878D /* GRDB in Frameworks */,
+				FDED1DC62CEDA57B002F878D /* SwiftDocC in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +83,7 @@
 		FDED1D0C2CED3D83002F878D = {
 			isa = PBXGroup;
 			children = (
+				FDED1DDE2CEDC9C5002F878D /* Docsy.xctestplan */,
 				FDED1D172CED3D83002F878D /* Docsy */,
 				FDED1D292CED3D85002F878D /* DocsyTests */,
 				FDED1D332CED3D85002F878D /* DocsyUITests */,
@@ -112,6 +121,8 @@
 			);
 			name = Docsy;
 			packageProductDependencies = (
+				FDED1DC22CEDA509002F878D /* GRDB */,
+				FDED1DC52CEDA57B002F878D /* SwiftDocC */,
 			);
 			productName = Docsy;
 			productReference = FDED1D152CED3D83002F878D /* Docsy.app */;
@@ -195,6 +206,10 @@
 			);
 			mainGroup = FDED1D0C2CED3D83002F878D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				FDED1DC12CEDA509002F878D /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				FDED1DC42CEDA57B002F878D /* XCRemoteSwiftPackageReference "swift-docc" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FDED1D162CED3D83002F878D /* Products */;
 			projectDirPath = "";
@@ -591,6 +606,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FDED1DC12CEDA509002F878D /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = "7.0.0-beta.6";
+			};
+		};
+		FDED1DC42CEDA57B002F878D /* XCRemoteSwiftPackageReference "swift-docc" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swiftlang/swift-docc.git";
+			requirement = {
+				kind = revision;
+				revision = 30bc32eecf7196eb39ac2854f1e1dfcd6b6e5513;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FDED1DC22CEDA509002F878D /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FDED1DC12CEDA509002F878D /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		FDED1DC52CEDA57B002F878D /* SwiftDocC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FDED1DC42CEDA57B002F878D /* XCRemoteSwiftPackageReference "swift-docc" */;
+			productName = SwiftDocC;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = FDED1D0D2CED3D83002F878D /* Project object */;
 }
