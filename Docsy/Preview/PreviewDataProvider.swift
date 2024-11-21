@@ -9,9 +9,9 @@ import DocumentationKit
 import Foundation
 
 class PreviewDataProvider: BundleRepositoryProvider {
-    static var bundle: PreviewDataProvider {
+    static var bundle: PreviewDataProvider = {
         try! PreviewDataProvider(rootPath: Bundle.main.resourcePath!)
-    }
+    }()
     
     var fileSystem: FSNode
     let provider: DocumentationKit.LocalFileSystemDataProvider
@@ -300,5 +300,30 @@ fileprivate extension [FSNode] {
         compactMap({ node in
             if case .file(let file) = node { file } else { nil }
         })
+    }
+}
+
+extension FSNode {
+    /// Creates an array with the tree data formatted in a readable way.
+    public func treeLines(
+        _ nodeIndent: String = "",
+        _ childIndent: String = ""
+    ) -> [String] {
+        let initial = [ nodeIndent + name + (isDirectory ? "/" : "") ]
+        
+        if case .directory(let directory) = self {
+            let addition = directory.children.enumerated().map { ($0 < directory.children.count-1, $1) }
+                .flatMap { $0 ? $1.treeLines("┣╸","┃ ") : $1.treeLines("┗╸","  ") }
+                .map { childIndent + $0 }
+            
+            return initial + addition
+        }
+        
+        return initial
+    }
+    
+    /// Dumps the tree data into a `String` in a human readable way.
+    public func dumpTree() -> String {
+        return treeLines().joined(separator:"\n")
     }
 }

@@ -147,6 +147,33 @@ extension Navigator: DocumentationContextPlugin {
             onNodeRead: { $0.topLevelId = id }
         )
         
+        node.addTask { node in
+            try await withCheckedThrowingContinuation { continuation in
+                do {
+                    try index.readNavigatorTree(
+                        timeout: 5.0,
+                        queue: .global(qos: .userInitiated),
+                        broadcast: { (_, isCompleted, error) in
+                            if let error {
+                                print("Error occured loading index", error)
+                                continuation.resume(throwing: error)
+                                return
+                            }
+                            
+                            if isCompleted {
+                                Task { @MainActor in
+                                    node.isLoading = true
+                                }
+                                continuation.resume()
+                            }
+                        }
+                    )
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+        
         await MainActor.run {
             self.indices[id] = index
             
@@ -154,22 +181,6 @@ extension Navigator: DocumentationContextPlugin {
                 self.nodes.append(node)
             }
         }
-        
-        try index.readNavigatorTree(
-            timeout: 5.0,
-            queue: .global(qos: .userInitiated),
-            broadcast: { (_, isCompleted, error) in
-                if let error {
-                    print("Error occured loading index", error)
-                }
-                
-                if isCompleted {
-                    Task { @MainActor in
-                        node.isLoading = true
-                    }
-                }
-            }
-        )
     }
 
     func load(_ project: Project, in context: any DocumentationContext) async throws {
@@ -222,28 +233,32 @@ extension Navigator: DocumentationContextPlugin {
         for (id, index) in indices {
             let node = newNodes.first(where: { $0.id == id })!
             
-            await MainActor.run {
-                node.isLoading = true
-            }
-            
-            try index.readNavigatorTree(
-                timeout: 5.0,
-                queue: .global(qos: .userInitiated),
-                broadcast: { (_, isCompleted, error) in
-                    if let error {
-                        print("Error occured loading index", error)
+            node.addTask { node in
+                try await withCheckedThrowingContinuation { continuation in
+                    do {
+                        try index.readNavigatorTree(
+                            timeout: 5.0,
+                            queue: .global(qos: .userInitiated),
+                            broadcast: { (_, isCompleted, error) in
+                                if let error {
+                                    print("Error occured loading index", error)
+                                    continuation.resume(throwing: error)
+                                    return
+                                }
+                                
+                                if isCompleted {
+                                    Task { @MainActor in
+                                        node.isLoading = true
+                                    }
+                                    continuation.resume()
+                                }
+                            }
+                        )
+                    } catch {
+                        continuation.resume(throwing: error)
                     }
-                    
-                    if isCompleted {
-                        print("ROOT", index.navigatorTree.root.dumpTree())
-                        
-                        Task { @MainActor in
-                            node.isLoading = true
-                        }
-                    }
-                    fatalError()
                 }
-            )
+            }
         }
         
         let indices = newIndices
@@ -256,67 +271,6 @@ extension Navigator: DocumentationContextPlugin {
             self.bundleIdToTopLevelId = bundleIdToTopLevelId
         }
     }
-    
-//    func addBundle(_ bundle: DocumentationKit.DocumentationBundle, in context: any DocumentationContext) async throws {
-//        guard await bundleIdToTopLevelId[bundle.identifier] == nil else {
-//            print("Cant replace")
-//            return
-//        }
-//        
-//        var idMap      = [String: UInt32]()
-//        
-//        var newIndices = [UInt32: NavigatorIndex]()
-//        
-//        
-//        // Generate TopLevel ID and register in navigator
-//        let id = await idGenerator.next()
-//        
-//        // create index
-//        let index = try NavigatorIndex.readNavigatorIndex(
-//            url: bundle.indexURL,
-//            bundleIdentifier: bundle.identifier,
-//            readNavigatorTree: false,
-//            presentationIdentifier: nil,
-//            onNodeRead: { $0.topLevelId = id }
-//        )
-//        
-//        let newNode = TopLevelNode.bundle(
-//            id: id,
-//            bundleIdentifier: bundle.identifier,
-//            displayName: bundle.displayName
-//        )
-//        
-//        await MainActor.run {
-//            bundleIdToTopLevelId[bundle.identifier]
-//            nodes.append(newNode)
-//            indices[id] = index
-//        }
-//        
-//        await MainActor.run {
-//            newNode.isLoading = true
-//        }
-//        
-//        print(index.url)
-//        try index.readNavigatorTree(
-//            timeout: 5.0,
-//            queue: .global(qos: .userInitiated),
-//            broadcast: { (_, isCompleted, error) in
-//                if let error {
-//                    print("Error occured loading index", error)
-//                }
-//                
-//                if isCompleted {
-//                    print("ROOT", index.navigatorTree.root.dumpTree())
-//                    
-//                    Task { @MainActor in
-//                        newNode.isLoading = true
-//                    }
-//                }
-//                fatalError()
-//            }
-//        )
-//    }
-
 }
 
 
@@ -341,6 +295,41 @@ extension Navigator {
         
         @MainActor
         var isLoading: Bool = false
+        
+        @MainActor
+        var error: (any Error)? = nil
+        
+        var task: Task<Void, any Error>? = nil
+        var loadingTask: Task<Void, any Error> = Task {}
+        
+        
+        func addTask(_ task: @escaping (TopLevelNode) async throws -> Void) {
+            let oldTask = self.task
+            self.task = Task {
+                try await oldTask?.value
+                try await task(self)
+            }
+            
+            self.loadingTask = Task {
+                await MainActor.run {
+                    self.isLoading = true
+                    self.error = nil
+                }
+                
+                do {
+                    try await self.task?.value
+                } catch {
+                    print("Loading error", error)
+                    await MainActor.run {
+                        self.error = error
+                    }
+                }
+                
+                await MainActor.run {
+                    self.isLoading = false
+                }
+            }
+        }
         
         private init(
             id: UInt32?,

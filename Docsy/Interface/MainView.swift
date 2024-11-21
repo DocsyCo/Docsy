@@ -24,15 +24,18 @@ struct MainView: View {
                 }
         }
         .task {
-            try? await Task.sleep(for: .seconds(1))
             do {
                 let provider = PreviewDataProvider.bundle
-                let bundles = try provider.findBundles(where: { _ in true })
+                let bundles = try provider.findBundles(limit: 5, where: { _ in true })
                 
-                for bundle in bundles {
-                    print(bundle.baseURL)
-                    print("REGISTERING")
-                    try await workspace.addBundle(bundle, with: provider)
+                try await withThrowingTaskGroup(of: Void.self) { tasks in
+                    for (i, bundle) in bundles.enumerated() {
+                        tasks.addTask {
+                            try? await Task.sleep(for: .seconds(i))
+                            try await workspace.addBundle(bundle, with: provider)
+                        }
+                        try await tasks.waitForAll()
+                    }
                 }
             } catch {
               print("failed to add preview bundles with error: \(error)")

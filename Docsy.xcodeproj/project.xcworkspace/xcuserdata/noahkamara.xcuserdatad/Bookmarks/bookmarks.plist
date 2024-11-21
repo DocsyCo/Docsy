@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>229</string>
+					<string>261</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>228</string>
+					<string>260</string>
 					<key>Timestamp</key>
-					<string>753903174.757383</string>
+					<string>753911143.913967</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -34,16 +34,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>            try index.readNavigatorTree(
+				<string>            }
 </string>
 				<key>leading</key>
-				<string>            }
-            
+				<string>                    }
+                }
 </string>
 				<key>trailing</key>
-				<string>                timeout: 5.0,
-                queue: .global(qos: .userInitiated),
-                broadcast: { (_, isCompleted, error) in
+				<string>        }
+        
+        let indices = newIndices
 </string>
 			</dict>
 			<key>type</key>

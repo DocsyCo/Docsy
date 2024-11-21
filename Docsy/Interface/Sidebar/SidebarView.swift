@@ -15,14 +15,22 @@ struct SidebarView: View {
         List(selection: $navigator.selection) {
             if !navigator.nodes.isEmpty {
                 ForEach(navigator.nodes, id:\.displayID) { node in
-                    if let topLevelId = node.id, let index = navigator.indices[topLevelId] {
+                    if !node.isLoading, let topLevelId = node.id, let index = navigator.indices[topLevelId] {
                         NavigatorIndexView(
                             index: index,
                             topLevelId: topLevelId,
                             selection: $navigator.selection
                         )
                     } else {
-                        Text(node.displayName)
+                        Label {
+                            Text(node.displayName)
+                        } icon: {
+                            PageTypeIcon(.root)
+                        }
+                        .safeAreaInset(edge: .trailing) {
+                            ProgressView()
+                                .controlSize(.mini)
+                        }
                     }
                 }
             } else {
