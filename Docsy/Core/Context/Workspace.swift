@@ -73,25 +73,20 @@ extension Workspace {
         // Register Bundles
         await bundleRepository.unregisterAll()
         
-        for (bundleIdentifier, projectBundle) in newProject.references {
-//            addBundle(bundle, with: provider)
-//
-//            let dataProvider = ProjectSourceDataProvider(projectBundle.source)
-//            #warning("hard coded registration")
-//            let baseURL = URL(string: "/Users/noahkamara/Developer/DocSee/DocCServer/data/docsee/SlothCreator")!
-//            
-//            let bundle = DocumentationBundle(
-//                info: .init(
-//                    displayName: projectBundle.displayName,
-//                    identifier: bundleIdentifier
-//                ),
-//                baseURL: URL(string: "/")!,
-//                indexURL: baseURL.appending(component: "index"),
-//                themeSettingsUrl: nil
-//            )
-            
-//            await bundleRepository.registerBundle(bundle, withProvider: dataProvider)
+        for reference in newProject.references.values {
+            let dataProvider = ProjectSourceDataProvider(reference.source)
+            let bundle = reference.bundle()
+            await bundleRepository.registerBundle(bundle, withProvider: dataProvider)
         }
+        
+
+        self.project = newProject
+        
+        // Plugins
+        for plugin in plugins {
+            try await plugin.load(newProject, in: self)
+        }
+
         
         // Load Search Index
         let search = try loadSearchIndex(
@@ -99,13 +94,8 @@ extension Workspace {
             projectId: newProject.identifier,
             fileManager: fileManager
         )
-        self.search = search
-        self.project = newProject
         
-        // Plugins
-        for plugin in plugins {
-            try await plugin.load(project, in: self)
-        }
+        self.search = search
     }
 
     func addBundle(

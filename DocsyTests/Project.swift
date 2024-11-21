@@ -20,7 +20,7 @@ class MockProject: Project {
         identifier: String = UUID().uuidString,
         displayName: String = UUID().uuidString,
         items: [Project.Node] = [],
-        references: [BundleIdentifier : Project.Bundle] = [:]
+        references: [BundleIdentifier : Project.Reference] = [:]
     ) {
         self._isPersistent = isPersistent
         super.init(displayName: displayName, items: items, references: references)
@@ -85,16 +85,15 @@ struct WorkspaceMetadataTests {
     }
 }
 
-extension Project.Bundle {
+extension Project.Reference {
     static var testExample: Self {
         let rootURL = URL(
             filePath: "/Users/noahkamara/Developer/DocSee/DocCServer/data/docsee/SlothCreator/data/documentation/slothcreator"
         )
         
-        return Project.Bundle(
+        return Project.Reference(
             source: .localFS(.init(rootURL: rootURL)),
-            bundleIdentifier: "slothcreator",
-            displayName: "SlothCreator"
+            metadata: .init(displayName: "slothcreator", identifier: "SlothCreator")
         )
     }
 }
@@ -103,10 +102,13 @@ extension Project.Bundle {
 struct BundleRepositoryTests {
     @Test
     func loading() async throws {
-        let projectBundle = Project.Bundle.testExample
+        let projectBundle = Project.Reference.testExample
         
         let project = MockProject(
             isPersistent: true,
+            items: [
+                .bundle(.init(displayName: projectBundle.displayName, bundleIdentifier: projectBundle.bundleIdentifier))
+            ],
             references: [projectBundle.bundleIdentifier: projectBundle]
         )
         
@@ -144,7 +146,7 @@ struct BundleRepositoryTests {
         // should be empty when initialized
         #expect(await repo.isEmpty)
         
-        let addedBundle = Project.Bundle.testExample
+        let addedBundle = Project.Reference.testExample
 //        workspace.addBundle(addedBundle)
         
         
@@ -173,13 +175,17 @@ struct BundleRepositoryTests {
 struct NavigatorTests {
     @Test
     func loading() async throws {
-        let projectBundle = Project.Bundle.testExample
+        let projectBundle = Project.Reference.testExample
         
         let project = MockProject(
             isPersistent: true,
-            items: [.bundle(projectBundle.bundleIdentifier, projectBundle.displayName)],
+            items: [.bundle(.init(
+                displayName: projectBundle.displayName,
+                bundleIdentifier: projectBundle.bundleIdentifier
+            ))],
             references: [projectBundle.bundleIdentifier: projectBundle]
         )
+        try #require(try project.validate())
         
         let workspace = try Workspace(config: .test)
         try await workspace.open(project)

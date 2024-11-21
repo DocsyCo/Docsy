@@ -14,7 +14,7 @@ class Project {
     let identifier: String
     var displayName: String
     var items: [Node]
-    var references: [BundleIdentifier: Bundle]
+    var references: [BundleIdentifier: Reference]
     
     /// Creates a transient project (one that cannot be persisted)
     /// - Parameter displayName: Display Name
@@ -27,7 +27,7 @@ class Project {
         identifier: String = UUID().uuidString,
         displayName: String,
         items: [Node],
-        references: [BundleIdentifier : Bundle]
+        references: [BundleIdentifier : Reference]
     ) {
         self.identifier = identifier
         self.displayName = displayName
@@ -48,19 +48,19 @@ class Project {
         var missingReferences = [String]()
         var unusedReferences  = Set(references.keys)
         
-        
         for item in items {
-            guard case .bundle(let identifier, _) = item else {
+            guard case .bundle(let bundle) = item else {
                 continue
             }
+            let reference = bundle.bundleIdentifier
             
-            guard references.keys.contains(identifier) else {
-                missingReferences.append(identifier)
-                continue
+            if references.keys.contains(reference) {
+                unusedReferences.remove(reference)
+            } else {
+                missingReferences.append(reference)
             }
-            
-            unusedReferences.remove(identifier)
         }
+        
         guard (missingReferences.isEmpty && unusedReferences.isEmpty) else {
             throw ValidationFailure(
                 missingReferences: missingReferences,
@@ -75,17 +75,48 @@ class Project {
 extension Project {
     /// A node in a Workspace's navigator
     enum Node: Codable {
-        case bundle(_ identifier: BundleIdentifier, _ displayName: String)
+        struct Bundle: Codable {
+            let displayName: String
+            let bundleIdentifier: BundleIdentifier
+        }
+        
+        struct GroupMarker {
+            let displayName: String
+        }
+        case bundle(Bundle)
         case groupMarker(_ displayName: String)
     }
 }
 
 // MARK: Bundle
 extension Project {
-    struct Bundle: Codable {
+    struct Reference: Codable {
         let source: Source
-        let bundleIdentifier: BundleIdentifier
-        let displayName: String
+        let metadata: DocumentationBundle.Metadata
+        var bundleIdentifier: BundleIdentifier {
+            metadata.identifier
+        }
+        var displayName: String {
+            metadata.displayName
+        }
+        
+        
+        func bundle() -> DocumentationBundle {
+            switch source {
+            case .http(let httpSource):
+                DocumentationBundle(
+                    info: metadata,
+                    indexURL: httpSource.indexUrl
+                )
+            case .localFS(let localSource):
+                DocumentationBundle(
+                    info: metadata,
+                    indexURL: localSource.rootURL.appending(path: "index")
+                )
+            default: fatalError("Unavailable for kind '\(source.kind)'")
+            }
+        }
+
     }
 }
 

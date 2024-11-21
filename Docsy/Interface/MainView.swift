@@ -26,10 +26,7 @@ struct MainView: View {
         .task {
             do {
                 let provider = PreviewDataProvider.bundle
-                let bundles = try provider.findBundles(
-                    limit: 3,
-                    where: { _ in true }
-                )
+                let bundles = try provider.findBundles(where: { _ in true })
                 
                 for bundle in bundles {
                     print(bundle.baseURL)

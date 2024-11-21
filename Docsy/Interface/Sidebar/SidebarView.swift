@@ -14,7 +14,7 @@ struct SidebarView: View {
     var body: some View {
         List(selection: $navigator.selection) {
             ForEach(navigator.nodes, id:\.displayID) { node in
-                if let topLevelId = node.id?.topLevel, let index = navigator.indices[topLevelId] {
+                if let topLevelId = node.id, let index = navigator.indices[topLevelId] {
                     NavigatorIndexView(index: index, topLevelId: topLevelId)
                 } else {
                     Text(node.displayName)
@@ -38,10 +38,7 @@ struct PreviewWorkspace: PreviewModifier {
         
         do {
             let provider = PreviewDataProvider.bundle
-            let bundles = try provider.findBundles(
-                limit: 3,
-                where: { _ in true }
-            )
+            let bundles = try provider.findBundles(where: { _ in true })
             
             for bundle in bundles {
                 try await workspace.addBundle(bundle, with: provider)

@@ -29,14 +29,14 @@ class PreviewDataProvider: BundleRepositoryProvider {
     }
     
     func bundle(matching identifierOrName: String) -> DocumentationBundle? {
-        let matchString = identifierOrName.lowercased()
+        let term = identifierOrName.lowercased()
         
         return try? findBundles(
             in: fileSystem,
             limit: 1,
             where: {
-                $0.identifier.lowercased() == matchString ||
-                $0.displayName.lowercased() == matchString
+                $0.identifier.lowercased() == term ||
+                $0.displayName.lowercased() == term
             }).first
     }
 }
@@ -64,11 +64,6 @@ extension PreviewDataProvider {
         return FSNode.directory(FSNode.Directory(url: root, children: children))
     }
 
-    
-//    func bundles(
-//        in node: FSNode
-//    )
-    
     func findBundles(
         limit: Int? = nil,
         where  condition: @escaping (DocumentationBundle) -> Bool

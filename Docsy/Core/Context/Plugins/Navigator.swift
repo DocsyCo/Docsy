@@ -110,7 +110,13 @@ extension Navigator: DocumentationContextPlugin {
             switch node.kind {
             case .bundle:
                 precondition(node.id != nil, "bundle node must always have an identifier")
-                return .bundle(node.displayName, node.id!.bundle)
+                let bundleIdentifier = indices[node.id!]?.bundleIdentifier
+                precondition(node.id != nil, "bundle node must have an index")
+                
+                return .bundle(.init(
+                    displayName: node.displayName,
+                    bundleIdentifier: bundleIdentifier!
+                ))
             case .groupMarker:
                 return .groupMarker(node.displayName)
             }
@@ -131,7 +137,6 @@ extension Navigator: DocumentationContextPlugin {
         let id = await idGenerator.next()
         let node = TopLevelNode.bundle(
             id: id,
-            bundleIdentifier: bundle.identifier,
             displayName: bundle.displayName
         )
         let index = try NavigatorIndex.readNavigatorIndex(
@@ -182,8 +187,8 @@ extension Navigator: DocumentationContextPlugin {
         
         for item in project.items {
             switch item {
-            case .bundle(let identifier, _):
-                guard let bundle = await context.bundle(with: identifier) else {
+            case .bundle(let projectBundle):
+                guard let bundle = await context.bundle(with: projectBundle.bundleIdentifier) else {
                     preconditionFailure("Project contained bundle that is not in repository")
                 }
                 
@@ -202,10 +207,9 @@ extension Navigator: DocumentationContextPlugin {
                 newIndices[id] = index
                 
                 // create id
-                idMap[identifier] = id
+                idMap[bundle.identifier] = id
                 newNodes.append(.bundle(
                     id: id,
-                    bundleIdentifier: bundle.identifier,
                     displayName: bundle.displayName
                 ))
                 
@@ -216,7 +220,7 @@ extension Navigator: DocumentationContextPlugin {
         
         
         for (id, index) in indices {
-            let node = newNodes.first(where: { $0.id?.topLevel == id })!
+            let node = newNodes.first(where: { $0.id == id })!
             
             await MainActor.run {
                 node.isLoading = true
@@ -329,7 +333,7 @@ extension Navigator {
         }
 
         let displayID: UUID
-        let id: Identifier?
+        let id: UInt32?
         
         let kind: Kind
         
@@ -339,7 +343,7 @@ extension Navigator {
         var isLoading: Bool = false
         
         private init(
-            id: Identifier?,
+            id: UInt32?,
             kind: Kind,
             displayName: String
         ) {
@@ -359,11 +363,10 @@ extension Navigator {
         
         static func bundle(
             id: UInt32,
-            bundleIdentifier: String,
             displayName: String
         ) -> TopLevelNode {
             TopLevelNode(
-                id: Identifier(id, bundleIdentifier),
+                id: id,
                 kind: .bundle,
                 displayName: displayName
             )
