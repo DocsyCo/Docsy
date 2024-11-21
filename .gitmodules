@@ -1,0 +1,3 @@
+[submodule "DocCViewer"]
+	path = Modules/DocCViewer
+	url = https://github.com/NoahKamara/DocCViewer
