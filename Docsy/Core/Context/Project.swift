@@ -16,6 +16,13 @@ class Project {
     var items: [Node]
     var references: [BundleIdentifier: Bundle]
     
+    /// Creates a transient project (one that cannot be persisted)
+    /// - Parameter displayName: Display Name
+    /// - Returns: A Transient Project
+    static func transient(displayName: String = "") -> Project {
+        Project(displayName: displayName, items: [], references: [:])
+    }
+
     init(
         identifier: String = UUID().uuidString,
         displayName: String,
@@ -31,6 +38,36 @@ class Project {
     func persist() async throws {
         fatalError("if isPersistent is true, you must implement persist")
     }
+    
+    struct ValidationFailure: Error {
+        let missingReferences: [String]
+        let unusedReferences: [String]
+    }
+    
+    func validate() throws(ValidationFailure) {
+        var missingReferences = [String]()
+        var unusedReferences  = Set(references.keys)
+        
+        
+        for item in items {
+            guard case .bundle(let identifier, _) = item else {
+                continue
+            }
+            
+            guard references.keys.contains(identifier) else {
+                missingReferences.append(identifier)
+                continue
+            }
+            
+            unusedReferences.remove(identifier)
+        }
+        guard (missingReferences.isEmpty && unusedReferences.isEmpty) else {
+            throw ValidationFailure(
+                missingReferences: missingReferences,
+                unusedReferences: Array(unusedReferences)
+            )
+        }
+    }
 }
 
 
@@ -38,7 +75,7 @@ class Project {
 extension Project {
     /// A node in a Workspace's navigator
     enum Node: Codable {
-        case bundle(_ displayName: String, _ identifier: BundleIdentifier)
+        case bundle(_ identifier: BundleIdentifier, _ displayName: String)
         case groupMarker(_ displayName: String)
     }
 }

@@ -28,13 +28,12 @@ public class Workspace {
     private(set) var search: SearchIndex
     
     init(
-        project: Project,
         config: Configuration = .init(),
         fileManager: FileManager = .default
     ) throws {
         self.fileManager = fileManager
         self.config = config
-        self.project = project
+        self.project = .scratchpad()
         
         let search = try loadSearchIndex(
             config: config,
@@ -43,34 +42,55 @@ public class Workspace {
         )
         self.search = search
     }
+}
+
+// MARK: Project Management
+extension Workspace {
+    private var plugins: [DocumentationContextPlugin] {
+        [metadata, navigator]
+    }
     
     func save() async throws {
-        try await navigator.willSave(project)
         guard project.isPersistent else { return }
+        
+        for plugin in plugins {
+            try await plugin.willSave(project)
+        }
+        
+        try project.validate()
+        
         try await project.persist()
     }
     
-    func load(_ newProject: Project) async throws {
-        try await save()
+    
+    func open(_ newProject: Project, saveCurrent: Bool = true) async throws {
+        try newProject.validate()
+        
+        if saveCurrent {
+            try await save()
+        }
         
         // Register Bundles
         await bundleRepository.unregisterAll()
         
-        for (bundleIdentifier, projectBundle) in project.references {
-            let dataProvider = ProjectSourceDataProvider(projectBundle.source)
-            let baseURL = URL(string: "http://localhost:8080/docsee/slothcreator")!
+        for (bundleIdentifier, projectBundle) in newProject.references {
+//            addBundle(bundle, with: provider)
+//
+//            let dataProvider = ProjectSourceDataProvider(projectBundle.source)
+//            #warning("hard coded registration")
+//            let baseURL = URL(string: "/Users/noahkamara/Developer/DocSee/DocCServer/data/docsee/SlothCreator")!
+//            
+//            let bundle = DocumentationBundle(
+//                info: .init(
+//                    displayName: projectBundle.displayName,
+//                    identifier: bundleIdentifier
+//                ),
+//                baseURL: URL(string: "/")!,
+//                indexURL: baseURL.appending(component: "index"),
+//                themeSettingsUrl: nil
+//            )
             
-            let bundle = DocumentationBundle(
-                info: .init(
-                    displayName: projectBundle.displayName,
-                    identifier: bundleIdentifier
-                ),
-                baseURL: baseURL,
-                indexURL: baseURL.appending(component: "index"),
-                themeSettingsUrl: nil
-            )
-            
-            await bundleRepository.registerBundle(bundle, withProvider: dataProvider)
+//            await bundleRepository.registerBundle(bundle, withProvider: dataProvider)
         }
         
         // Load Search Index
@@ -82,11 +102,21 @@ public class Workspace {
         self.search = search
         self.project = newProject
         
-        // Load Navigator
-        try await self.metadata.load(project, in: self)
-        try await self.navigator.load(project, in: self)
+        // Plugins
+        for plugin in plugins {
+            try await plugin.load(project, in: self)
+        }
+    }
+
+    func addBundle(
+        _ bundle: DocumentationBundle,
+        with provider: BundleRepositoryProvider
+    ) async throws {
+        await self.bundleRepository.registerBundle(bundle, withProvider: provider)
+        try await navigator.didAddBundle(with: bundle.identifier, in: self)
     }
 }
+
 
 fileprivate func loadSearchIndex(
     config: Workspace.Configuration,
@@ -118,7 +148,7 @@ extension Workspace {
 // MARK: DocumentationContext
 extension Workspace: DocumentationContext {
     func bundle(with identifier: BundleIdentifier) async -> DocumentationBundle? {
-        await bundleRepository.bundle(for: identifier)
+        await bundleRepository.bundle(with: identifier)
     }
 
     func contentsOfUrl(_ url: URL) async throws -> Data {

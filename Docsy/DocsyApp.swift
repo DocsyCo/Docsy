@@ -17,7 +17,7 @@ extension Project {
 struct DocsyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
         }
     }
 }

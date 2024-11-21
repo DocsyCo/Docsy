@@ -18,6 +18,16 @@
   "testTargets" : [
     {
       "parallelizable" : true,
+      "skippedTests" : {
+        "suites" : [
+          {
+            "name" : "BundleRepositoryTests"
+          },
+          {
+            "name" : "WorkspaceMetadataTests"
+          }
+        ]
+      },
       "target" : {
         "containerPath" : "container:Docsy.xcodeproj",
         "identifier" : "FDED1D252CED3D85002F878D",

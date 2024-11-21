@@ -7,6 +7,7 @@
 import Foundation
 import Testing
 @testable import Docsy
+import DocumentationKit
 
 class MockProject: Project {
     private let _isPersistent: Bool
@@ -35,45 +36,235 @@ extension Workspace.Configuration {
 }
 
 
-@Suite("Projects")
-struct ProjectTest {
-    @Test
-    func initWorkspace() async throws {
-        let project = MockProject(isPersistent: true)
-        let workspace = try Workspace(project: project, config: .test)
+extension Tag {
+    @Tag static var contextPlugin: Self
+}
 
-        // initial project was set
-        #expect(workspace.projectIdentifier == project.identifier)
-        #expect(workspace.projectDisplayName == project.displayName)
+@Suite("Plugin: Metadata", .tags(.contextPlugin))
+struct WorkspaceMetadataTests {
+    @Test
+    func loading() async throws {
+        let project = MockProject(isPersistent: true)
+        let workspace = try Workspace(config: .test)
+        let metadata = workspace.metadata
         
-        // projects should be persisted before being unloaded
+        try await workspace.open(project)
+
+        // metadata was set
+        await #expect(metadata.identifier == project.identifier)
+        await #expect(metadata.displayName == project.displayName)
+    }
+    
+    @Test
+    func saving() async throws {
+        let originalDisplayName = UUID().uuidString
+        let project = MockProject(isPersistent: true, displayName: originalDisplayName)
+        
+        let workspace = try Workspace(config: .test)
+        try await workspace.open(project)
+        let metadata = workspace.metadata
+        
+        let newDisplayName = UUID().uuidString
+        
+        await metadata.setDisplayName(newDisplayName)
+        
+        // Metadata was set
+        await #expect(metadata.displayName == newDisplayName)
+        
+        // project still has old displayName before save
+        #expect(project.displayName == originalDisplayName)
+        
+        // persist() is called while saving
         try await confirmation { confirm in
             project.onPersist = { confirm() }
             try await workspace.save()
         }
+        
+        // project still has new displayName after safe
+        #expect(project.displayName == newDisplayName)
+    }
+}
+
+extension Project.Bundle {
+    static var testExample: Self {
+        let rootURL = URL(
+            filePath: "/Users/noahkamara/Developer/DocSee/DocCServer/data/docsee/SlothCreator/data/documentation/slothcreator"
+        )
+        
+        return Project.Bundle(
+            source: .localFS(.init(rootURL: rootURL)),
+            bundleIdentifier: "slothcreator",
+            displayName: "SlothCreator"
+        )
+    }
+}
+
+@Suite("Plugin: BundleRepository", .tags(.contextPlugin))
+struct BundleRepositoryTests {
+    @Test
+    func loading() async throws {
+        let projectBundle = Project.Bundle.testExample
+        
+        let project = MockProject(
+            isPersistent: true,
+            references: [projectBundle.bundleIdentifier: projectBundle]
+        )
+        
+        let workspace = try Workspace(config: .test)
+        let repo = workspace.bundleRepository
+        
+        // should be empty when initialized
+        #expect(await repo.isEmpty)
+        
+        try await workspace.open(project)
+        
+        // should now contain exactly one providera
+        let repoCount = await repo.count
+        #expect(repoCount == 1)
+        
+        let repoBundle = try #require(await repo.bundle(with: projectBundle.bundleIdentifier))
+        
+        // bundle was correctly injested
+        #expect(repoBundle.displayName == projectBundle.displayName)
+        #expect(repoBundle.identifier == projectBundle.bundleIdentifier)
     }
     
     @Test
-    func loadProject() async throws {
-        let startProject = MockProject(isPersistent: true)
-        let workspace = try Workspace(project: startProject, config: .test)
+    func saving() async throws {
+        let project = MockProject(
+            isPersistent: true,
+            references: [:]
+        )
         
-        let newProject = MockProject(isPersistent: true)
+        let workspace = try Workspace(config: .test)
+        let repo = workspace.bundleRepository
         
-        // projects should be persisted before being unloaded
+        try await workspace.open(project)
+        
+        // should be empty when initialized
+        #expect(await repo.isEmpty)
+        
+        let addedBundle = Project.Bundle.testExample
+//        workspace.addBundle(addedBundle)
+        
+        
+        // saving
         try await confirmation { confirm in
-            startProject.onPersist = { confirm() }
-            try await workspace.load(newProject)
-        }
-
-        // new project was set
-        #expect(workspace.projectIdentifier == newProject.identifier)
-        #expect(workspace.projectDisplayName == newProject.displayName)
-        
-        // loaded project can be saved
-        try await confirmation { confirm in
-            newProject.onPersist = { confirm() }
+            project.onPersist = { confirm() }
             try await workspace.save()
         }
+        
+        await withKnownIssue {
+            // should now contain exactly one providera
+            let repoCount = await repo.count
+            #expect(repoCount == 1)
+            
+            let repoBundle = try #require(await repo.bundle(with: addedBundle.bundleIdentifier))
+            
+            // bundle was correctly added
+            #expect(repoBundle.displayName == addedBundle.displayName)
+            #expect(repoBundle.identifier == addedBundle.bundleIdentifier)
+        }
     }
+}
+
+
+@Suite("Plugin: Navigator", .tags(.contextPlugin))
+struct NavigatorTests {
+    @Test
+    func loading() async throws {
+        let projectBundle = Project.Bundle.testExample
+        
+        let project = MockProject(
+            isPersistent: true,
+            items: [.bundle(projectBundle.bundleIdentifier, projectBundle.displayName)],
+            references: [projectBundle.bundleIdentifier: projectBundle]
+        )
+        
+        let workspace = try Workspace(config: .test)
+        try await workspace.open(project)
+        let nav = workspace.navigator
+        
+        /// Top level nodes should be available immediately
+        #expect(await nav.nodes.count == project.references.count)
+        
+        /// Indices should be created but we dont know if we can access them yet
+        #expect(await nav.indices.count == project.references.count)
+        
+        var loadingNodes = await nav.nodes
+                
+        print("INITIAL LOADING", loadingNodes, await nav.nodes)
+        while !loadingNodes.isEmpty  {
+            print("\(loadingNodes.count) nodes loading...")
+            
+            try await Task.sleep(for: .milliseconds(300))
+            
+            let oldNodes = loadingNodes
+            loadingNodes = await MainActor.run {
+                oldNodes.filter(\.isLoading)
+            }
+        }
+        
+        print("done loading")
+
+                
+        let topLevelId = try #require(nav.indices.keys.first)
+
+        let path = await nav.path(for: .init(topLevelId: topLevelId, nodeId: 1))
+        
+        #expect(path == "")
+//
+//        // should be empty when initialized
+//        #expect(await repo.isEmpty)
+//        
+//        try await workspace.open(project)
+//        
+//        // should now contain exactly one providera
+//        let repoCount = await repo.count
+//        #expect(repoCount == 1)
+//        
+//        let repoBundle = try #require(await repo.bundle(with: projectBundle.bundleIdentifier))
+//
+//        // bundle was correctly injested
+//        #expect(repoBundle.displayName == projectBundle.displayName)
+//        #expect(repoBundle.identifier == projectBundle.bundleIdentifier)
+    }
+    
+//    @Test
+//    func saving() async throws {
+//        let project = MockProject(
+//            isPersistent: true,
+//            references: [:]
+//        )
+//        
+//        let workspace = try Workspace(config: .test)
+//        let repo = workspace.bundleRepository
+//        
+//        try await workspace.open(project)
+//        
+//        // should be empty when initialized
+//        #expect(await repo.isEmpty)
+//        
+//        let addedBundle = Project.Bundle.testExample
+////        workspace.addBundle(addedBundle)
+//        
+//        
+//        // saving
+//        try await confirmation { confirm in
+//            project.onPersist = { confirm() }
+//            try await workspace.save()
+//        }
+//        
+//        await withKnownIssue {
+//            // should now contain exactly one providera
+//            let repoCount = await repo.count
+//            #expect(repoCount == 1)
+//            
+//            let repoBundle = try #require(await repo.bundle(with: addedBundle.bundleIdentifier))
+//            
+//            // bundle was correctly added
+//            #expect(repoBundle.displayName == addedBundle.displayName)
+//            #expect(repoBundle.identifier == addedBundle.bundleIdentifier)
+//        }
+//    }
 }
