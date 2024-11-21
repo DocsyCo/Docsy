@@ -31,7 +31,7 @@ public class Navigator {
     private(set) var indices: [UInt32: NavigatorIndex] = [:]
     
     @MainActor
-    private var bundleIdToTopLevelId: [BundleIdentifier: UInt32] = [:]
+    private(set) var bundleIdToTopLevelId: [BundleIdentifier: UInt32] = [:]
     
     @MainActor
     private(set) var nodes: [TopLevelNode] = []

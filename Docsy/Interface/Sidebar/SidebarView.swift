@@ -13,12 +13,20 @@ struct SidebarView: View {
     
     var body: some View {
         List(selection: $navigator.selection) {
-            ForEach(navigator.nodes, id:\.displayID) { node in
-                if let topLevelId = node.id, let index = navigator.indices[topLevelId] {
-                    NavigatorIndexView(index: index, topLevelId: topLevelId)
-                } else {
-                    Text(node.displayName)
+            if !navigator.nodes.isEmpty {
+                ForEach(navigator.nodes, id:\.displayID) { node in
+                    if let topLevelId = node.id, let index = navigator.indices[topLevelId] {
+                        NavigatorIndexView(
+                            index: index,
+                            topLevelId: topLevelId,
+                            selection: $navigator.selection
+                        )
+                    } else {
+                        Text(node.displayName)
+                    }
                 }
+            } else {
+                Text("No Nodes yes")
             }
         }
         .listStyle(.sidebar)
