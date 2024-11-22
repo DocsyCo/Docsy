@@ -11,6 +11,67 @@ import BundleAppSourceProvider
 import DocumentationKit
 import WebKit
 
+
+extension BundleAppSourceProvider: @retroactive AsyncFileServerProvider {}
+
+public class AppResourceOverrideRouter: FileServerRouter {
+    private static let allowedBundlePathPrefixes: [String.SubSequence?] = [
+        "downloads",
+        "images",
+        "videos",
+        "index",
+        "data",
+        "theme-settings.json",
+        nil
+    ]
+    
+    private static let allowedAppSourcePathPrefixes: [String.SubSequence?] = [
+        nil,
+        "js",
+        "css",
+        "img",
+        "index.html"
+    ]
+    
+    let app: AsyncFileServerProvider
+    let bundle: AsyncFileServerProvider
+
+    public init(app: AsyncFileServerProvider, bundle: AsyncFileServerProvider) {
+        self.app = app
+        self.bundle = bundle
+    }
+
+    
+    public override func data(for path: String) async throws -> Data {
+        var components = path
+            .trimmingCharacters(in: .init(charactersIn: "/"))
+            .split(separator: "/")
+        
+        guard let firstComponent = components.first else {
+            return try await app.data(for: "index.html")
+        }
+        
+        let fromSecondPath = components.dropFirst()
+        let secondComponent = fromSecondPath.first
+        
+        print(firstComponent, secondComponent)
+        if Self.allowedAppSourcePathPrefixes.contains(firstComponent) {
+            return try await app.data(for: path)
+        } else if let secondComponent {
+            if Self.allowedBundlePathPrefixes.contains(secondComponent) {
+                return try await bundle.data(for: path)
+            } else if Self.allowedAppSourcePathPrefixes.contains(secondComponent) {
+                return try await app.data(for: fromSecondPath.joined(separator: "/"))
+            } else {
+                fatalError("Unknwon")
+            }
+        } else {
+            fatalError("OH NO \(path)")
+        }
+    }
+}
+
+
 struct DocumentView: View {
     let navigator: Navigator
 
@@ -19,8 +80,17 @@ struct DocumentView: View {
 
     init(workspace: Workspace) {
         let bundleProvider = DocsyResourceProvider(context: workspace)
-        let provider = BundleAppSourceProvider(bundleProvider: bundleProvider)
-        self.viewer = DocumentationViewer(provider: provider, globalThemeSettings: .docsee)
+        let appSourceProvider = BundleAppSourceProvider(bundleProvider: bundleProvider)
+        
+        let router = AppResourceOverrideRouter(
+            app: appSourceProvider,
+            bundle: bundleProvider
+        )
+        
+        self.viewer = DocumentationViewer(
+            provider: router,
+            globalThemeSettings: .docsee
+        )
         self.navigator = workspace.navigator
     }
 
@@ -47,7 +117,6 @@ struct DocumentView: View {
             print("INVALID")
             return
         }
-        print("URL DID CHANGE", url)
         navigator.navigate(to: url)
     }
     

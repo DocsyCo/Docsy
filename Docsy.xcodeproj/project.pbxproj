@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		FD1EDAE82CEFCEE5000AB465 /* BundleAppSourceProvider in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAE72CEFCEE5000AB465 /* BundleAppSourceProvider */; };
-		FD1EDAEA2CEFCEE5000AB465 /* DocCViewer in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAE92CEFCEE5000AB465 /* DocCViewer */; };
 		FD1EDAEC2CEFCEE5000AB465 /* DocumentationKit in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */; };
+		FD1EDAF02CF01DF1000AB465 /* DocCViewer in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAEF2CF01DF1000AB465 /* DocCViewer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,7 +61,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FD1EDAE82CEFCEE5000AB465 /* BundleAppSourceProvider in Frameworks */,
-				FD1EDAEA2CEFCEE5000AB465 /* DocCViewer in Frameworks */,
+				FD1EDAF02CF01DF1000AB465 /* DocCViewer in Frameworks */,
 				FD1EDAEC2CEFCEE5000AB465 /* DocumentationKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,8 +134,8 @@
 			name = Docsy;
 			packageProductDependencies = (
 				FD1EDAE72CEFCEE5000AB465 /* BundleAppSourceProvider */,
-				FD1EDAE92CEFCEE5000AB465 /* DocCViewer */,
 				FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */,
+				FD1EDAEF2CF01DF1000AB465 /* DocCViewer */,
 			);
 			productName = Docsy;
 			productReference = FDED1D152CED3D83002F878D /* Docsy.app */;
@@ -623,13 +623,13 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = BundleAppSourceProvider;
 		};
-		FD1EDAE92CEFCEE5000AB465 /* DocCViewer */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DocCViewer;
-		};
 		FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DocumentationKit;
+		};
+		FD1EDAEF2CF01DF1000AB465 /* DocCViewer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DocCViewer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

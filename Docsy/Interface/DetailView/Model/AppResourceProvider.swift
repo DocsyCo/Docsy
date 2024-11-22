@@ -9,13 +9,32 @@ import DocCViewer
 import Foundation
 import DocumentationKit
 
-
 enum DocsyResourceProviderError: Error {
     case invalidURL(String)
     case loadingFailed(any Error)
 }
 
-class DocsyResourceProvider: BundleResourceProvider {
+
+class DocsyResourceProvider: BundleResourceProvider, AsyncFileServerProvider {
+    func data(for path: String) async throws -> Data  {
+        var components = path
+            .trimmingCharacters(in: .init(charactersIn: "/"))
+            .split(separator: "/")
+        
+        guard !components.isEmpty else {
+            print("empty path")
+            throw FileServerProviderError.notFound
+        }
+        
+        let bundleIdentifier = components.removeFirst()
+        let topicUrl = TopicURL(
+            bundleIdentifier: String(bundleIdentifier),
+            path: components.joined(separator: "/")
+        )
+
+        return try await context.contentsOfUrl(topicUrl.url)
+    }
+
     let context: DocumentationContext
 
     init(context: DocumentationContext) {
