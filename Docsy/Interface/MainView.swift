@@ -17,11 +17,7 @@ struct MainView: View {
         NavigationSplitView {
             SidebarView(navigator: workspace.navigator)
         } detail: {
-//            DetailView()
-            Text("HELLO WORLDaaaaaaaaa")
-                .navigationDestination(for: Int.self) {
-                    Text("Hi \($0)")
-                }
+            DocumentView(workspace: workspace)
         }
         .task {
             do {

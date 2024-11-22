@@ -138,8 +138,13 @@ extension PreviewDataProvider {
             throw BundleCreationError.missingIndex(directory.url)
         }
         
+        let baseURL = URL(
+            string: String(directory.url.path().trimmingPrefix(self.fileSystem.url.path()))
+        )!
+        
         return DocumentationBundle(
             info: metadata,
+            baseURL: baseURL,
             indexURL: indexDir.url,
             themeSettingsUrl: themeSettings?.url
         )

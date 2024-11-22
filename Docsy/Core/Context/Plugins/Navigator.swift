@@ -27,7 +27,7 @@ actor IDGenerator {
 public class Navigator {
     private var idGenerator: IDGenerator
     
-    @ObservationIgnored
+    @MainActor
     private(set) var indices: [UInt32: NavigatorIndex] = [:]
     
     @MainActor
@@ -43,7 +43,10 @@ public class Navigator {
         self.idGenerator = idGenerator
     }
     
-    public struct NavigatorID: RawRepresentable, Hashable {
+    public struct NavigatorID: RawRepresentable, Hashable, CustomStringConvertible {
+        public var description: String {
+            "\(topLevelId).\(nodeId)"
+        }
         public let rawValue: UInt64
         
         public init(rawValue: UInt64) {
@@ -77,13 +80,30 @@ public class Navigator {
     
     /// If available, returns the path from the numeric compound ID inside the navigator tree.
     @MainActor
+    func topicUrl(for id: NavigatorID) -> DocumentationURI? {
+        guard let navigator = indices[id.topLevelId] else {
+            print("navigator not found")
+            return nil
+        }
+        
+        let path = navigator.path(for: id.nodeId)
+                
+        let topicUrl = path.flatMap({
+            DocumentationURI(bundleIdentifier: navigator.bundleIdentifier, path: $0)
+        })
+        
+        return topicUrl
+    }
+    
+    /// If available, returns the path from the numeric compound ID inside the navigator tree.
+    @MainActor
     func id(
         for path: String,
         with language: InterfaceLanguage,
         bundleIdentifier: String
     ) -> NavigatorID? {
         guard let topLevelId = bundleIdToTopLevelId[bundleIdentifier] else {
-            print("Unknown bundle")
+            print("Unknown bundle", bundleIdentifier)
             return nil
         }
 
@@ -93,6 +113,7 @@ public class Navigator {
         }
         
         guard let nodeId = navigator.id(for: path, with: language) else {
+            print("did not find node for path", path)
             return nil
         }
         
@@ -106,19 +127,21 @@ extension Navigator: DocumentationContextPlugin {
     func willSave(_ project: Project) async throws {
         let nodes = await self.nodes
         
-        let projectItems: [Project.Node] = nodes.map { node in
+        var projectItems: [Project.Node] = []
+        
+        for node in nodes {
             switch node.kind {
             case .bundle:
                 precondition(node.id != nil, "bundle node must always have an identifier")
-                let bundleIdentifier = indices[node.id!]?.bundleIdentifier
+                let bundleIdentifier = await indices[node.id!]?.bundleIdentifier
                 precondition(node.id != nil, "bundle node must have an index")
                 
-                return .bundle(.init(
+                projectItems.append(.bundle(.init(
                     displayName: node.displayName,
                     bundleIdentifier: bundleIdentifier!
-                ))
+                )))
             case .groupMarker:
-                return .groupMarker(node.displayName)
+                projectItems.append(.groupMarker(node.displayName))
             }
         }
         
@@ -176,7 +199,7 @@ extension Navigator: DocumentationContextPlugin {
         
         await MainActor.run {
             self.indices[id] = index
-            
+            self.bundleIdToTopLevelId[identifier] = id
             withMutation(keyPath: \.nodes) {
                 self.nodes.append(node)
             }
@@ -230,7 +253,7 @@ extension Navigator: DocumentationContextPlugin {
         }
         
         
-        for (id, index) in indices {
+        for (id, index) in await indices {
             let node = newNodes.first(where: { $0.id == id })!
             
             node.addTask { node in
@@ -274,6 +297,25 @@ extension Navigator: DocumentationContextPlugin {
 }
 
 
+extension Navigator {
+    @MainActor
+    func navigate(to uri: DocumentationURI) {
+        guard let id = self.id(for: uri.path, with: .swift, bundleIdentifier: uri.bundleIdentifier) else {
+            print("Not found in navigator \(uri)")
+            return
+        }
+        
+        if let selection, path(for: id) == path(for: selection) {
+            return
+        }
+        
+        guard id != self.selection else {
+            return
+        }
+        
+        self.selection = id
+    }
+}
 
 // MARK: TopLevelNode
 extension Navigator {

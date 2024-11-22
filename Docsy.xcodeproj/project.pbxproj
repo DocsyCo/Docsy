@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FDED1DFD2CEE5997002F878D /* DocumentationKit in Frameworks */ = {isa = PBXBuildFile; productRef = FDED1DFC2CEE5997002F878D /* DocumentationKit */; };
+		FD1EDAE82CEFCEE5000AB465 /* BundleAppSourceProvider in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAE72CEFCEE5000AB465 /* BundleAppSourceProvider */; };
+		FD1EDAEA2CEFCEE5000AB465 /* DocCViewer in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAE92CEFCEE5000AB465 /* DocCViewer */; };
+		FD1EDAEC2CEFCEE5000AB465 /* DocumentationKit in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FD1EDAE52CEFCEE0000AB465 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.1.sdk/System/Library/Frameworks/EventKit.framework; sourceTree = DEVELOPER_DIR; };
 		FDED1D152CED3D83002F878D /* Docsy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Docsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDED1D262CED3D85002F878D /* DocsyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocsyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDED1D302CED3D85002F878D /* DocsyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocsyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -57,7 +60,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FDED1DFD2CEE5997002F878D /* DocumentationKit in Frameworks */,
+				FD1EDAE82CEFCEE5000AB465 /* BundleAppSourceProvider in Frameworks */,
+				FD1EDAEA2CEFCEE5000AB465 /* DocCViewer in Frameworks */,
+				FD1EDAEC2CEFCEE5000AB465 /* DocumentationKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +90,7 @@
 				FDED1D172CED3D83002F878D /* Docsy */,
 				FDED1D292CED3D85002F878D /* DocsyTests */,
 				FDED1D332CED3D85002F878D /* DocsyUITests */,
+				FDF890792CEFC8A600243F69 /* Frameworks */,
 				FDED1D162CED3D83002F878D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,6 +103,14 @@
 				FDED1D302CED3D85002F878D /* DocsyUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FDF890792CEFC8A600243F69 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FD1EDAE52CEFCEE0000AB465 /* EventKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +133,9 @@
 			);
 			name = Docsy;
 			packageProductDependencies = (
-				FDED1DFC2CEE5997002F878D /* DocumentationKit */,
+				FD1EDAE72CEFCEE5000AB465 /* BundleAppSourceProvider */,
+				FD1EDAE92CEFCEE5000AB465 /* DocCViewer */,
+				FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */,
 			);
 			productName = Docsy;
 			productReference = FDED1D152CED3D83002F878D /* Docsy.app */;
@@ -204,7 +220,6 @@
 			mainGroup = FDED1D0C2CED3D83002F878D;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				FDED1DFB2CEE5997002F878D /* XCLocalSwiftPackageReference "Modules/DocumentationKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FDED1D162CED3D83002F878D /* Products */;
@@ -603,15 +618,16 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		FDED1DFB2CEE5997002F878D /* XCLocalSwiftPackageReference "Modules/DocumentationKit" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Modules/DocumentationKit;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		FDED1DFC2CEE5997002F878D /* DocumentationKit */ = {
+		FD1EDAE72CEFCEE5000AB465 /* BundleAppSourceProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BundleAppSourceProvider;
+		};
+		FD1EDAE92CEFCEE5000AB465 /* DocCViewer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DocCViewer;
+		};
+		FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DocumentationKit;
 		};
