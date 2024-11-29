@@ -5,7 +5,7 @@
 //  Created by Noah Kamara on 21.11.24.
 //
 
-import DocCViewer
+import DocumentationRenderer
 
 extension ThemeSettings {
     static let docsee: ThemeSettings = {

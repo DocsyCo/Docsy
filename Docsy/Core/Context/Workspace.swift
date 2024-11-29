@@ -10,10 +10,18 @@ import DocumentationKit
 
 
 import DocumentationKit
+import OSLog
 
+extension Logger {
+    static func docsy(_ category: String) -> Logger {
+        Logger(subsystem: "com.noahkamara.docsy", category: category)
+    }
+}
 
 
 public class Workspace {
+    let logger: Logger = .docsy("workspace")
+    
     // MARK: Sub Models
     let bundleRepository: BundleRepository = .init()
     let metadata: WorkspaceMetadata = .init()
@@ -51,6 +59,7 @@ extension Workspace {
     }
     
     func save() async throws {
+        logger.info("[\(self.project)] saving project")
         guard project.isPersistent else { return }
         
         for plugin in plugins {
@@ -64,31 +73,45 @@ extension Workspace {
     
     
     func open(_ newProject: Project, saveCurrent: Bool = true) async throws {
-        try newProject.validate()
+        logger.info("[open] opening \(newProject)")
+        do {
+            try newProject.validate()
+        } catch {
+            logger.error("[open] '\(newProject)' failed validation: \(error)")
+            throw error
+        }
         
         if saveCurrent {
             try await save()
         }
         
         // Register Bundles
+        logger.debug("[open] unregistering bundles")
         await bundleRepository.unregisterAll()
         
+        logger.debug("[open] register bundles for \(newProject)")
         for reference in newProject.references.values {
             let dataProvider = ProjectSourceDataProvider(reference.source)
             let bundle = reference.bundle()
             await bundleRepository.registerBundle(bundle, withProvider: dataProvider)
         }
         
-
         self.project = newProject
         
         // Plugins
+        logger.debug("[open] updating plugins")
         for plugin in plugins {
-            try await plugin.load(newProject, in: self)
+            do {
+                try await plugin.load(newProject, in: self)
+            } catch {
+                logger.error("[open] failed to update plugin '\(plugin.pluginId)': \(error)")
+                throw error
+            }
         }
 
         
         // Load Search Index
+        logger.debug("[open] loading search index")
         let search = try loadSearchIndex(
             config: config,
             projectId: newProject.identifier,
@@ -97,13 +120,27 @@ extension Workspace {
         
         self.search = search
     }
-
+    
     func addBundle(
         _ bundle: DocumentationBundle,
         with provider: BundleRepositoryProvider
     ) async throws {
+        logger.info("[addBundle] adding \(bundle)")
         await self.bundleRepository.registerBundle(bundle, withProvider: provider)
-        try await navigator.didAddBundle(with: bundle.identifier, in: self)
+        
+        do {
+            for plugin in plugins {
+                do {
+                    try await plugin.didAddBundle(with: bundle.identifier, in: self)
+                } catch {
+                    logger.error("[didAddBundle] failed for plugin '\(plugin.pluginId)': \(error)")
+                    throw error
+                }
+            }
+        } catch {
+            logger.error("[addBundle] failed to add bundle to workspace \(bundle)")
+            await bundleRepository.unregisterBundle(with: bundle.identifier)
+        }
     }
 }
 

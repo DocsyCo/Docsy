@@ -6,38 +6,61 @@
 //
 
 import SwiftUI
+import SwiftDocC
 
 struct SidebarView: View {
     @Bindable
     var navigator: Navigator
+
+    func getNode(for reference: DocumentationURI) -> NavigatorTree.Node? {
+        let internalID = navigator.bundleIdToTopLevelId[reference.bundleIdentifier]!
+        let index = navigator.indices[internalID]!
+        
+        guard let nodeId = index.id(for: reference.path, with: .swift) else {
+            return nil
+        }
+        
+        return index.navigatorTree.numericIdentifierToNode[nodeId]
+    }
     
     var body: some View {
         List(selection: $navigator.selection) {
             if !navigator.nodes.isEmpty {
-                ForEach(navigator.nodes, id:\.displayID) { node in
-                    if !node.isLoading, let topLevelId = node.id, let index = navigator.indices[topLevelId] {
-                        NavigatorIndexView(
-                            index: index,
-                            topLevelId: topLevelId,
-                            selection: $navigator.selection
+                ForEach(navigator.nodes, id:\.displayID) { topLevelNode in
+                    if let reference = topLevelNode.reference,
+                        !topLevelNode.isLoading,
+                        let node = getNode(for: reference),
+                        !node.children.isEmpty
+                    {
+                        NavigatorTreeView(
+                            root: node,
+                            topLevelId: navigator.bundleIdToTopLevelId[reference.bundleIdentifier]!
                         )
                     } else {
                         Label {
-                            Text(node.displayName)
+                            Text(topLevelNode.displayName)
                         } icon: {
                             PageTypeIcon(.root)
                         }
                         .safeAreaInset(edge: .trailing) {
-                            ProgressView()
-                                .controlSize(.mini)
+                            if topLevelNode.isLoading {
+                                ProgressView()
+                                    .controlSize(.mini)
+                            } else if let error = topLevelNode.error {
+                                Image(systemName: "exclamationmark.octagon.fill")
+                                    .onAppear {
+                                        print(error)
+                                    }
+                            }
                         }
                     }
+                    
                 }
             } else {
                 Text("No Nodes yes")
             }
         }
-        .listStyle(.sidebar)
+//        .listStyle(.sidebar)
     }
 }
 

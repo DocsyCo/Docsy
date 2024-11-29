@@ -1,0 +1,61 @@
+//
+//  SwiftUIView.swift
+//  DocumentationKit
+//
+//  Created by Noah Kamara on 21.11.24.
+//
+
+import Foundation
+
+fileprivate let slashCharSet = CharacterSet(charactersIn: "/")
+
+public struct DocumentationURI: Sendable, Equatable, Codable {
+    public static let scheme = "doc"
+
+    public let bundleIdentifier: String
+    public let path: String
+
+    public init(bundleIdentifier: String, path: String) {
+        self.bundleIdentifier = bundleIdentifier
+        self.path = "/" + path.trimmingCharacters(in: slashCharSet)
+    }
+
+    public init?(url: URL) {
+        if let host = url.host() {
+            self.init(bundleIdentifier: host, path: url.path())
+        } else if let firstPathComponent = url.pathComponents.first {
+            let path = url.pathComponents.dropFirst().joined(separator: "/")
+            self.init(
+                bundleIdentifier: firstPathComponent,
+                path: path.trimmingCharacters(in: slashCharSet)
+            )
+        } else {
+            return nil
+        }
+    }
+
+    public var url: URL {
+        URL(string: "doc://\(bundleIdentifier)\(path)")!
+    }
+    
+    public func encode(to encoder: any Encoder) throws {
+        try url.encode(to: encoder)
+    }
+    
+    public init(from decoder: any Decoder) throws {
+        let url = try URL(from: decoder)
+        guard let parsed = Self(url: url) else {
+            throw DecodingError.dataCorrupted(.init(
+                codingPath: decoder.codingPath,
+                debugDescription: "Invalid DocumentationURI: \(url.absoluteString)"))
+        }
+        
+        self = parsed
+    }
+}
+
+extension DocumentationURI: CustomStringConvertible {
+    public var description: String {
+        "<" + url.absoluteString + ">"
+    }
+}

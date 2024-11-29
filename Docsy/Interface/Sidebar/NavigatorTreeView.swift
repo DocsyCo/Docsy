@@ -14,45 +14,36 @@ extension NavigatorTree.Node: @retroactive Identifiable {
     }
 }
                            
-struct NavigatorIndexView: View {
-    let index: NavigatorIndex
+struct NavigatorTreeView: View {
+    let root: NavigatorTree.Node
     let topLevelId: UInt32
-    @Binding var selection: Navigator.NavigatorID?
     
-    @State
-    var selectedLanguage: InterfaceLanguage? = .swift
-    
+ 
     var body: some View {
-        if let languageNode = index.navigatorTree.root.children
-            .first(where: { $0.item.languageID == selectedLanguage?.mask }) {
-            OutlineGroup(
-                languageNode.children,
-                children: \NavigatorTree.Node.nonEmptyChildren
-            ) { node in
-                if let nodeId = node.id, node.item.pageType != PageType.groupMarker.rawValue {
-                    LeafView(item: node.item)
-                        .tag(
-                            Navigator.NavigatorID(
-                                topLevelId: topLevelId,
-                                nodeId: nodeId
-                            )
+        OutlineGroup(root, children: \NavigatorTree.Node.nonEmptyChildren) { node in
+            if let nodeId = node.id, node.item.pageType != PageType.groupMarker.rawValue {
+                LeafView(item: node.item)
+                    .tag(
+                        Navigator.NavigatorID(
+                            topLevelId: topLevelId,
+                            nodeId: nodeId
                         )
+                    )
 #if os(iOS)
-                        .bold(selection?.topLevelId == topLevelId && selection?.nodeId == nodeId)
-                        .onTapGesture {
-                            selection = .init(topLevelId: topLevelId, nodeId: nodeId)
-                        }
-                        .tag(
-                            Navigator.NavigatorID(
-                                topLevelId: topLevelId,
-                                nodeId: nodeId
-                            )
+                    .bold(selection?.topLevelId == topLevelId && selection?.nodeId == nodeId)
+                    .onTapGesture {
+                        selection = .init(topLevelId: topLevelId, nodeId: nodeId)
+                    }
+                    .tag(
+                        Navigator.NavigatorID(
+                            topLevelId: topLevelId,
+                            nodeId: nodeId
                         )
+                    )
 #endif
-
-                } else {
-                    Text(node.item.title)
-                }
+                
+            } else {
+                Text(node.item.title)
             }
         }
     }
@@ -71,10 +62,9 @@ extension NavigatorTree.Node {
         @Bindable var navigator = workspace.navigator
         
         ForEach(Array(workspace.navigator.indices.keys), id:\.self) { key in
-            NavigatorIndexView(
-                index: workspace.navigator.indices[key]!,
-                topLevelId: key,
-                selection: $navigator.selection
+            NavigatorTreeView(
+                root: workspace.navigator.indices[key]!.navigatorTree.root,
+                topLevelId: key
             )
         }
     }

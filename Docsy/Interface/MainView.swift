@@ -25,9 +25,8 @@ struct MainView: View {
                 let bundles = try provider.findBundles(limit: 5, where: { _ in true })
                 
                 try await withThrowingTaskGroup(of: Void.self) { tasks in
-                    for (i, bundle) in bundles.enumerated() {
+                    for bundle in bundles {
                         tasks.addTask {
-                            try? await Task.sleep(for: .seconds(i))
                             try await workspace.addBundle(bundle, with: provider)
                         }
                         try await tasks.waitForAll()

@@ -5,7 +5,7 @@
       location = "container:Docsy.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Modules/DocCViewer">
+      location = "group:Modules/BundledDocumentationRenderer">
    </FileRef>
    <FileRef
       location = "group:Modules/DocumentationKit">

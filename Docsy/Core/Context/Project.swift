@@ -8,7 +8,9 @@
 import Foundation
 import DocumentationKit
 
-class Project {
+class Project: CustomStringConvertible {
+    var description: String { "Project(\(identifier))" }
+    
     private(set) var isPersistent: Bool = false
     
     let identifier: String
@@ -49,15 +51,14 @@ class Project {
         var unusedReferences  = Set(references.keys)
         
         for item in items {
-            guard case .bundle(let bundle) = item else {
+            guard let rootReference = item.reference?.bundleIdentifier else {
                 continue
             }
-            let reference = bundle.bundleIdentifier
             
-            if references.keys.contains(reference) {
-                unusedReferences.remove(reference)
+            if references.keys.contains(rootReference) {
+                unusedReferences.remove(rootReference)
             } else {
-                missingReferences.append(reference)
+                missingReferences.append(rootReference)
             }
         }
         
@@ -74,17 +75,9 @@ class Project {
 // MARK: Node
 extension Project {
     /// A node in a Workspace's navigator
-    enum Node: Codable {
-        struct Bundle: Codable {
-            let displayName: String
-            let bundleIdentifier: BundleIdentifier
-        }
-        
-        struct GroupMarker {
-            let displayName: String
-        }
-        case bundle(Bundle)
-        case groupMarker(_ displayName: String)
+    struct Node: Codable {
+        let displayName: String
+        let reference: DocumentationURI?
     }
 }
 

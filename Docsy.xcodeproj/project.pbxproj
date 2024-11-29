@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FD1EDAE82CEFCEE5000AB465 /* BundleAppSourceProvider in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAE72CEFCEE5000AB465 /* BundleAppSourceProvider */; };
 		FD1EDAEC2CEFCEE5000AB465 /* DocumentationKit in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */; };
-		FD1EDAF02CF01DF1000AB465 /* DocCViewer in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAEF2CF01DF1000AB465 /* DocCViewer */; };
+		FD1EDB372CF05EC6000AB465 /* DocumentationRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDB362CF05EC6000AB465 /* DocumentationRenderer */; };
+		FDE185FD2CF08D5800D7806E /* BundledDocumentationRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = FDE185FC2CF08D5800D7806E /* BundledDocumentationRenderer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,9 +60,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FD1EDAE82CEFCEE5000AB465 /* BundleAppSourceProvider in Frameworks */,
-				FD1EDAF02CF01DF1000AB465 /* DocCViewer in Frameworks */,
+				FD1EDB372CF05EC6000AB465 /* DocumentationRenderer in Frameworks */,
 				FD1EDAEC2CEFCEE5000AB465 /* DocumentationKit in Frameworks */,
+				FDE185FD2CF08D5800D7806E /* BundledDocumentationRenderer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,9 +133,9 @@
 			);
 			name = Docsy;
 			packageProductDependencies = (
-				FD1EDAE72CEFCEE5000AB465 /* BundleAppSourceProvider */,
 				FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */,
-				FD1EDAEF2CF01DF1000AB465 /* DocCViewer */,
+				FD1EDB362CF05EC6000AB465 /* DocumentationRenderer */,
+				FDE185FC2CF08D5800D7806E /* BundledDocumentationRenderer */,
 			);
 			productName = Docsy;
 			productReference = FDED1D152CED3D83002F878D /* Docsy.app */;
@@ -619,17 +619,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FD1EDAE72CEFCEE5000AB465 /* BundleAppSourceProvider */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = BundleAppSourceProvider;
-		};
 		FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DocumentationKit;
 		};
-		FD1EDAEF2CF01DF1000AB465 /* DocCViewer */ = {
+		FD1EDB362CF05EC6000AB465 /* DocumentationRenderer */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = DocCViewer;
+			productName = DocumentationRenderer;
+		};
+		FDE185FC2CF08D5800D7806E /* BundledDocumentationRenderer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BundledDocumentationRenderer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
