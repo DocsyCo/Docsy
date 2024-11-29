@@ -44,6 +44,10 @@ struct NavigatorTreeView: View {
                 
             } else {
                 Text(node.item.title)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .headerProminence(.increased)
+                    .environment(\.defaultMinListRowHeight, 0)
             }
         }
     }
