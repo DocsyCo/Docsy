@@ -149,6 +149,7 @@ struct PageTypeIcon: View {
             case .symbol(let systemImage):
                 Image(systemName: systemImage)
                     .padding(2)
+                    .foregroundStyle(isFocused ? .accentColor : Color.secondary)
 
             case .unknown(let type):
                 Text("UNKNOWN \(type.rawValue)")

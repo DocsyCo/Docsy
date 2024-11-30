@@ -65,12 +65,12 @@ public class Navigator {
     @MainActor
     func path(for id: NavigatorID) -> String? {
         guard let index = indices[id.topLevelId] else {
-            print("navigator not found")
+            print("index not found")
             return nil
         }
 
         guard let navigator = indices[id.topLevelId] else {
-            print("navigator not found")
+            print("index not found")
             return nil
         }
 
@@ -81,7 +81,7 @@ public class Navigator {
     @MainActor
     func topicUrl(for id: NavigatorID) -> DocumentationURI? {
         guard let navigator = indices[id.topLevelId] else {
-            print("navigator not found")
+            print("index not found")
             return nil
         }
 
@@ -361,7 +361,6 @@ extension Navigator {
             }
 
             loadingTask = Task {
-                print("start loading")
                 await MainActor.run {
                     self.isLoading = true
                     self.error = nil
@@ -378,7 +377,6 @@ extension Navigator {
                     return
                 }
 
-                print("did end loading")
                 await MainActor.run {
                     self.isLoading = false
                 }

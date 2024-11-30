@@ -138,7 +138,6 @@ struct DocumentView: View {
             }
             // Watch Viewer Changes
             .onChange(of: renderer.url) { oldValue, newValue in
-                print("NEWTOPIC", newValue)
                 guard let newValue, newValue != oldValue else { return }
                 viewerUrlDidChange(newValue)
             }
