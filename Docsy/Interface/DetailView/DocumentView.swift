@@ -51,15 +51,13 @@ class OverridenFileServerProvider: FileServerProvider {
         var components = path.split(separator: "/")
 
         guard !components.isEmpty else {
-            print("NOT ENOUGH COMPS", path)
-            fatalError()
+            fatalError("not enough path components: '\(path)'")
         }
 
         let bundleIdentifier = String(components.removeFirst())
         let restPath = components.joined(separator: "/")
 
         if let bundleSubPath = components.first.map(String.init) {
-            print(bundleSubPath)
             if appSourcePaths.contains(bundleSubPath) {
                 return try await appSource.data(for: restPath)
             } else if bundleSubPath.contains(bundleSubPath) {
@@ -99,8 +97,6 @@ struct DocumentView: View {
     private var openURL
 
     func navigatorDidChangeSelection(_ selection: Navigator.NavigatorID) {
-        print("Navigator did change selection: \(selection)")
-
         guard let topicURL = navigator.topicUrl(for: selection) else {
             return
         }
