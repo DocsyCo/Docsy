@@ -2,11 +2,11 @@
 //  SidebarView.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 21.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
-import SwiftUI
 import SwiftDocC
+import SwiftUI
 
 struct SidebarView: View {
     @Bindable
@@ -15,26 +15,27 @@ struct SidebarView: View {
     func getNode(for reference: DocumentationURI) -> NavigatorTree.Node? {
         let internalID = navigator.bundleIdToTopLevelId[reference.bundleIdentifier]!
         let index = navigator.indices[internalID]!
-        
+
         guard let nodeId = index.id(for: reference.path, with: .swift) else {
             return nil
         }
-        
+
         return index.navigatorTree.numericIdentifierToNode[nodeId]
     }
-    
+
     var body: some View {
         List(selection: $navigator.selection) {
             if !navigator.nodes.isEmpty {
-                ForEach(navigator.nodes, id:\.displayID) { topLevelNode in
+                ForEach(navigator.nodes, id: \.displayID) { topLevelNode in
                     if let reference = topLevelNode.reference,
-                        !topLevelNode.isLoading,
-                        let node = getNode(for: reference),
-                        !node.children.isEmpty
+                       !topLevelNode.isLoading,
+                       let node = getNode(for: reference),
+                       !node.children.isEmpty
                     {
                         NavigatorTreeView(
                             root: node,
-                            topLevelId: navigator.bundleIdToTopLevelId[reference.bundleIdentifier]!
+                            topLevelId: navigator.bundleIdToTopLevelId[reference.bundleIdentifier]!,
+                            selection: $navigator.selection
                         )
                     } else {
                         Label {
@@ -54,7 +55,6 @@ struct SidebarView: View {
                             }
                         }
                     }
-                    
                 }
             } else {
                 Text("No Nodes yes")
@@ -74,21 +74,21 @@ struct PreviewWorkspace: PreviewModifier {
             config: .init(inMemory: true),
             fileManager: .default
         )
-        
+
         do {
             let provider = PreviewDataProvider.bundle
             let bundles = try provider.findBundles(where: { _ in true })
-            
+
             for bundle in bundles {
                 try await workspace.addBundle(bundle, with: provider)
             }
         } catch {
             print("failed to add preview bundles with error: \(error)")
         }
-        
+
         return workspace
     }
-    
+
     func body(content: Content, context: Workspace) -> some View {
         content
             .environment(\.workspace, context)
@@ -98,7 +98,7 @@ struct PreviewWorkspace: PreviewModifier {
 #Preview(traits: .modifier(PreviewWorkspace())) {
     @Previewable @Environment(\.workspace)
     var workspace
-    
+
     NavigationStack {
         SidebarView(navigator: workspace.navigator)
             .navigationDestination(for: Navigator.NavigatorID.self) { id in
@@ -113,5 +113,3 @@ struct PreviewWorkspace: PreviewModifier {
 }
 
 import DocumentationKit
-
-

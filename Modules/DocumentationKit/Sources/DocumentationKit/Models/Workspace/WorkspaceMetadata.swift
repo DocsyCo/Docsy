@@ -1,3 +1,10 @@
+//
+//  WorkspaceMetadata.swift
+//  DocumentationKit
+//
+//  Copyright © 2024 Noah Kamara.
+//
+
 ////
 ////  WorkspaceMetadata.swift
 ////  Docsy
@@ -5,17 +12,17 @@
 ////  Created by Noah Kamara on 20.11.24.
 ////
 //
-//import Foundation
+// import Foundation
 //
-//@Observable
-//final class WorkspaceMetadata: WorkspaceComponent  {
+// @Observable
+// final class WorkspaceMetadata: WorkspaceComponent  {
 //    private(set) var identifier: String = ""
 //    var displayName: String = "No Project"
-//    
-//    init() {}
-//}
 //
-//extension WorkspaceMetadata {
+//    init() {}
+// }
+//
+// extension WorkspaceMetadata {
 //    func load(project: Project) async throws {
 //        withMutation(keyPath: \.identifier) {
 //            withMutation(keyPath: \.displayName) {
@@ -29,4 +36,4 @@
 //        precondition(project.identifier == identifier, "should not call willSave before load")
 //        project.displayName = displayName
 //    }
-//}
+// }

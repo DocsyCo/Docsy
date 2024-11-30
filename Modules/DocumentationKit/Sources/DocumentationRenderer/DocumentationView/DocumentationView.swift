@@ -1,34 +1,33 @@
 //
-//  File.swift
+//  DocumentationView.swift
 //  DocumentationKit
 //
-//  Created by Noah Kamara on 22.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
+import DocumentationKit
 import Foundation
 import WebKit
-import DocumentationKit
-
 
 public class WKDocumentationView: WKWebView {
     private let schemaHandler: DocumentationSchemeHandler
     private var coordinator: DocumentationView.Coordinator
-        
+
     public init(coordinator: DocumentationView.Coordinator) {
         self.coordinator = coordinator
-        
+
         let config = WKWebViewConfiguration()
-        
+
         // Handle Documentation Links
         let schemaHandler = DocumentationSchemeHandler()
         schemaHandler.fileServer.register(provider: coordinator.viewer.provider)
         config.setURLSchemeHandler(schemaHandler, forURLScheme: "doc")
         self.schemaHandler = schemaHandler
-        
+
         // Configure controller for Communication
         let contentController = WKUserContentController()
         config.userContentController = contentController
-         
+
         super.init(frame: .zero, configuration: config)
 
         // Configure Communication Bridge
@@ -43,12 +42,14 @@ public class WKDocumentationView: WKWebView {
                 default:
                     print("Unhandled Event", message.type)
                 }
-            })
-        
+            }
+        )
+
         // Register View & Bridge in Coordinator
         coordinator.register(view: self, bridge: bridge)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -56,9 +57,9 @@ public class WKDocumentationView: WKWebView {
 
 public struct DocumentationView {
     public typealias ViewType = WKDocumentationView
-    
+
     let viewer: DocumentationRenderer
-    
+
     public init(_ viewer: DocumentationRenderer) {
         self.viewer = viewer
     }
@@ -79,12 +80,13 @@ public struct DocumentationView {
     func updateView(_ nsView: ViewType, context: Context) {}
 }
 
-
 #if canImport(SwiftUI)
 import SwiftUI
 
 #if os(macOS)
+
 // MARK: View (macOS)
+
 extension DocumentationView: NSViewRepresentable {
     public func makeNSView(context: Context) -> ViewType {
         makeView(context: context)
@@ -95,7 +97,9 @@ extension DocumentationView: NSViewRepresentable {
     }
 }
 #else
+
 // MARK: View (iOS)
+
 extension DocumentationView: UIViewRepresentable {
     public func makeUIView(context: Context) -> ViewType {
         makeView(context: context)

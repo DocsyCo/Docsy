@@ -2,23 +2,24 @@
 //  NavigatorTreeView.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 21.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
-import SwiftUI
 import SwiftDocC
+import SwiftUI
 
 extension NavigatorTree.Node: @retroactive Identifiable {
     var nonEmptyChildren: [NavigatorTree.Node]? {
         children.isEmpty ? nil : children
     }
 }
-                           
+
 struct NavigatorTreeView: View {
     let root: NavigatorTree.Node
     let topLevelId: UInt32
-    
- 
+    @Binding
+    var selection: Navigator.NavigatorID?
+
     var body: some View {
         OutlineGroup(root, children: \NavigatorTree.Node.nonEmptyChildren) { node in
             if let nodeId = node.id, node.item.pageType != PageType.groupMarker.rawValue {
@@ -41,7 +42,7 @@ struct NavigatorTreeView: View {
                         )
                     )
 #endif
-                
+
             } else {
                 Text(node.item.title)
                     .fontWeight(.semibold)
@@ -64,11 +65,12 @@ extension NavigatorTree.Node {
     @Previewable @Environment(\.workspace) var workspace
     List {
         @Bindable var navigator = workspace.navigator
-        
-        ForEach(Array(workspace.navigator.indices.keys), id:\.self) { key in
+
+        ForEach(Array(workspace.navigator.indices.keys), id: \.self) { key in
             NavigatorTreeView(
                 root: workspace.navigator.indices[key]!.navigatorTree.root,
-                topLevelId: key
+                topLevelId: key,
+                selection: $navigator.selection
             )
         }
     }

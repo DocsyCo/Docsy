@@ -2,7 +2,7 @@
 //  DocsyApp.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 19.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import SwiftUI

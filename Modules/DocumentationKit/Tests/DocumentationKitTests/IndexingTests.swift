@@ -1,17 +1,16 @@
 //
-//  File.swift
+//  IndexingTests.swift
 //  DocumentationKit
 //
-//  Created by Noah Kamara on 20.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import Foundation
 
-
-//@Suite("BundleRepository")
-//public struct BundleRepositoryTests {
+// @Suite("BundleRepository")
+// public struct BundleRepositoryTests {
 //    @Test
 //    func testInMemoryProvider() async throws {
 //        <#body#>
 //    }
-//}
+// }

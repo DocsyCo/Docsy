@@ -1,6 +1,6 @@
 //
 //  ColorVars.swift
-//  DocCViewer
+//  DocumentationKit
 //
 //  Copyright © 2024 Noah Kamara.
 //

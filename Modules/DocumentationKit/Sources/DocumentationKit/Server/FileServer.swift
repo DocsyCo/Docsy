@@ -1,31 +1,30 @@
 //
-//  File.swift
+//  FileServer.swift
 //  DocumentationKit
 //
-//  Created by Noah Kamara on 22.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import Foundation
-import SymbolKit
 import SwiftDocC
- 
-fileprivate let slashCharSet = CharacterSet(charactersIn: "/")
+import SymbolKit
 
+private let slashCharSet = CharacterSet(charactersIn: "/")
 
 /// FileServer is a struct simulating a web server behavior to serve files.
 public class FileServer {
     /// The base URL of the server. Example: `http://www.example.com`.
     public let baseURL: URL
-    
+
     /// The list of providers from which files are served.
     private var providers: [String: FileServerProvider] = [:]
-    
+
     /// Initialize a FileServer instance with a base URL.
     /// - parameter baseURL: The base URL to use.
     public init(baseURL: URL) {
         self.baseURL = baseURL.absoluteURL
     }
-    
+
     /// Registers a `FileServerProvider` to a `FileServer` objects which can be used to provide content
     /// to a local web page served by local content.
     /// - Parameters:
@@ -39,49 +38,47 @@ public class FileServer {
         providers[trimmed] = provider
         return true
     }
-    
+
     public func data(for url: URL) async throws -> Data {
         let urlString = url.absoluteString
         guard urlString.hasPrefix(baseURL.absoluteString) else {
             throw FileserverProviderError.notFound
         }
-        
+
         let urlPath = urlString
             .trimmingPrefix(baseURL.absoluteString)
             .trimmingCharacters(in: slashCharSet)
-        
+
         let providerKey = providers.keys
-            .sorted { (l, r) in l.count > r.count}
-            .filter { (providerPath) in urlPath.hasPrefix(providerPath) }
-            .first ?? "" //in case missing an exact match, get the root one
-        
+            .sorted { l, r in l.count > r.count }
+            .filter { providerPath in urlPath.hasPrefix(providerPath) }
+            .first ?? "" // in case missing an exact match, get the root one
+
         guard let provider = providers[providerKey] else {
             fatalError("A provider has not been passed to a FileServer.")
         }
-        
+
         return try await provider.data(for: urlPath.removingPrefix(providerKey))
     }
 }
 
-
 /// Checks whether the given string is a known entity definition which might interfere with the rendering engine while dealing with URLs.
-fileprivate func isKnownEntityDefinition(_ identifier: String) -> Bool {
-    return SymbolGraph.Symbol.KindIdentifier.isKnownIdentifier(identifier)
+private func isKnownEntityDefinition(_ identifier: String) -> Bool {
+    SymbolGraph.Symbol.KindIdentifier.isKnownIdentifier(identifier)
 }
 
-fileprivate extension String {
+private extension String {
     /// Removes the prefix of a string.
     func removingPrefix(_ prefix: String) -> String {
         guard hasPrefix(prefix) else { return self }
         return String(dropFirst(prefix.count))
     }
 
-
     /// Check that a given string is alphanumeric.
     var isAlphanumeric: Bool {
-        return !self.isEmpty && self.rangeOfCharacter(from: CharacterSet.alphanumerics.inverted) == nil
+        !isEmpty && rangeOfCharacter(from: CharacterSet.alphanumerics.inverted) == nil
     }
-    
+
     /// Check that a given string is a Swift entity definition.
     var isSwiftEntity: Bool {
         let swiftEntityPattern = #"(?<=\-)swift\..*"#

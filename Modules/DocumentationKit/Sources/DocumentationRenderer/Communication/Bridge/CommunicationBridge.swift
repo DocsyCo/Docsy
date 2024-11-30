@@ -1,12 +1,9 @@
-/*
- This source file is part of the Swift.org open source project
-
- Copyright (c) 2021 Apple Inc. and the Swift project authors
- Licensed under Apache License v2.0 with Runtime Library Exception
-
- See https://swift.org/LICENSE.txt for license information
- See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+//
+//  CommunicationBridge.swift
+//  DocumentationKit
+//
+//  Copyright © 2024 Noah Kamara.
+//
 
 import Foundation
 @preconcurrency import SwiftDocC
@@ -17,10 +14,10 @@ import Foundation
 public protocol CommunicationBridge {
     /// Handler for sending messages.
     associatedtype SendHandler: Sendable
-    
+
     /// A closure that the communication bridge calls when it receives a message.
-    var onReceiveMessage: ((Message) -> ())? { get set }
-    
+    var onReceiveMessage: ((Message) -> Void)? { get set }
+
     /// Sends a message to the documentation renderer using the given handler.
     /// - Parameter message: The message to send to the renderer.
     /// - Parameter handler: A closure that performs the sending operation.

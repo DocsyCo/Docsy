@@ -1,37 +1,38 @@
 //
-//  DocumentationView.swift
-//  DocCViewer
+//  DocumentationRenderer.swift
+//  DocumentationKit
 //
 //  Copyright © 2024 Noah Kamara.
 //
 
+import DocumentationKit
+import Observation
 import OSLog
 import SwiftUI
 import WebKit
-import Observation
-import DocumentationKit
-
 
 @Observable
 public final class DocumentationRenderer {
     @MainActor
     public var url: DocumentationURI? = nil
-    
+
     @MainActor
     public var openUrlAction: @MainActor (URL) -> Void = { print("opened url without handler: \($0)") }
 
     let provider: FileServerProvider
-    
-    var context: DocumentationViewContext?
-    public internal(set) var canGoBack: Bool = false
-    public internal(set) var canGoForward: Bool = false
-    
 
-    
+    var context: DocumentationViewContext?
+
+    @MainActor
+    public internal(set) var canGoBack: Bool = false
+
+    @MainActor
+    public internal(set) var canGoForward: Bool = false
+
     public init(provider: FileServerProvider) {
         self.provider = provider
     }
-    
+
     @MainActor
     public func navigate(to url: DocumentationURI) {
         guard let context else {
@@ -41,16 +42,15 @@ public final class DocumentationRenderer {
     }
 }
 
-extension DocumentationRenderer {
-    @MainActor public func goBack() {
-        self.context?.goBack()
+public extension DocumentationRenderer {
+    @MainActor func goBack() {
+        context?.goBack()
     }
-    
-    @MainActor public func goForward() {
-        self.context?.goForward()
+
+    @MainActor func goForward() {
+        context?.goForward()
     }
 }
-
 
 public extension URL {
     static let doc = URL(string: "doc://")!
@@ -68,5 +68,3 @@ struct PreviewProvider: FileServerProvider {
         return try await URLSession.shared.data(from: url).0
     }
 }
-
-

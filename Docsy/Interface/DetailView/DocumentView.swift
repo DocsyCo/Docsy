@@ -2,14 +2,14 @@
 //  DocumentView.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 21.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
-import SwiftUI
-import DocumentationRenderer
 import BundledDocumentationRenderer
-import WebKit
 import DocumentationKit
+import DocumentationRenderer
+import SwiftUI
+import WebKit
 
 extension BundleRepository: @retroactive FileServerProvider {
     public func data(for path: String) async throws -> Data {
@@ -18,29 +18,27 @@ extension BundleRepository: @retroactive FileServerProvider {
     }
 }
 
-fileprivate let bundleSpecificSubpaths: [String] = [
+private let bundleSpecificSubpaths: [String] = [
     "data",
     "downloads",
     "images",
     "videos",
-    "index"
+    "index",
 ]
 
-fileprivate let appSourcePaths: [String] = [
+private let appSourcePaths: [String] = [
     "documentation",
     "tutorials",
     "js",
     "css",
     "img",
-    "index.html"
+    "index.html",
 ]
-
 
 class OverridenFileServerProvider: FileServerProvider {
     let bundleRepository: BundleRepository
     let appSource: FileServerProvider
-    
-    
+
     init(
         repository: BundleRepository,
         appSource: FileServerProvider
@@ -48,18 +46,18 @@ class OverridenFileServerProvider: FileServerProvider {
         self.bundleRepository = repository
         self.appSource = appSource
     }
-    
+
     func data(for path: String) async throws -> Data {
         var components = path.split(separator: "/")
-        
+
         guard !components.isEmpty else {
             print("NOT ENOUGH COMPS", path)
             fatalError()
         }
-        
+
         let bundleIdentifier = String(components.removeFirst())
         let restPath = components.joined(separator: "/")
-        
+
         if let bundleSubPath = components.first.map(String.init) {
             print(bundleSubPath)
             if appSourcePaths.contains(bundleSubPath) {
@@ -71,15 +69,14 @@ class OverridenFileServerProvider: FileServerProvider {
                 ))
             }
         }
-        
+
         if appSourcePaths.contains(bundleIdentifier) {
             return try await appSource.data(for: path)
         }
-        
+
         throw ProviderError.notFound
     }
 }
-    
 
 struct DocumentView: View {
     let navigator: Navigator
@@ -90,7 +87,7 @@ struct DocumentView: View {
             repository: workspace.bundleRepository,
             appSource: BundledAppSourceProvider()
         )
-        
+
         self.renderer = DocumentationRenderer(provider: provider)
         self.navigator = workspace.navigator
     }
@@ -101,23 +98,22 @@ struct DocumentView: View {
     @Environment(\.openURL)
     private var openURL
 
-    
     func navigatorDidChangeSelection(_ selection: Navigator.NavigatorID) {
         print("Navigator did change selection: \(selection)")
-        
+
         guard let topicURL = navigator.topicUrl(for: selection) else {
             return
         }
-        
+
         renderer.navigate(to: .init(bundleIdentifier: topicURL.bundleIdentifier, path: topicURL.path))
     }
-    
+
     @MainActor
     func viewerUrlDidChange(_ url: DocumentationURI) {
         let url = DocumentationURI(bundleIdentifier: url.bundleIdentifier, path: url.path)
         navigator.navigate(to: url)
     }
-    
+
     var body: some View {
         DocumentationView(renderer)
             // Open foreign urls
@@ -136,26 +132,26 @@ struct DocumentView: View {
                 }
             }
             // watch Sidebar changes
-            .onChange(of: navigator.selection, initial: true) { (oldValue, newValue) in
+            .onChange(of: navigator.selection, initial: true) { oldValue, newValue in
                 guard let newValue, newValue != oldValue else { return }
                 navigatorDidChangeSelection(newValue)
             }
             // Watch Viewer Changes
-            .onChange(of: renderer.url, { oldValue, newValue in
+            .onChange(of: renderer.url) { oldValue, newValue in
                 print("NEWTOPIC", newValue)
                 guard let newValue, newValue != oldValue else { return }
                 viewerUrlDidChange(newValue)
-            })
+            }
     }
 }
 
-//#Preview {
+// #Preview {
 //    DocumentView()
-//}
-
+// }
 
 // MARK: Navigation Buttons
-fileprivate struct NavigationButtons: View {
+
+private struct NavigationButtons: View {
     let renderer: DocumentationRenderer
 
     var body: some View {
@@ -173,4 +169,3 @@ fileprivate struct NavigationButtons: View {
         .controlGroupStyle(.navigation)
     }
 }
-

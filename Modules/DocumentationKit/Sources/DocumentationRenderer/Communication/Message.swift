@@ -1,3 +1,10 @@
+//
+//  Message.swift
+//  DocumentationKit
+//
+//  Copyright © 2024 Noah Kamara.
+//
+
 import Foundation
 @preconcurrency import SwiftDocC
 
@@ -7,13 +14,13 @@ public struct Message: Sendable {
     ///
     /// Clients can use the type of the message to determine which handler to invoke.
     public let type: MessageType
-    
+
     /// The payload of the message.
     ///
     /// The data associated with a message is encodable, so a communication bridge can encode it when a client sends a
     /// message.
     public let data: AnyCodable?
-    
+
     /// Creates a message given a type, a data payload, and an identifier.
     /// - Parameters:
     ///   - type: The type of the message.
@@ -23,15 +30,15 @@ public struct Message: Sendable {
         self.type = type
         self.data = data
     }
-    
+
     /// Creates a message that indicates a request for code-color preferences.
     ///
     /// This message is sent by renderer to request code-color preferences that renderers use when syntax highlighting code listings.
     /// The string value of this message type is `requestCodeColors`.
     public static func requestCodeColors() -> Message {
-        return .init(type: .requestCodeColors, data: nil)
+        .init(type: .requestCodeColors, data: nil)
     }
-//    
+//
 //    /// Creates a message that indicates what code colors a renderer uses to syntax highlight code listings.
 //    ///
 //    /// A "codeColors" message is sent as a response to a `requestCodeColors` message and provides code colors
@@ -45,7 +52,7 @@ public struct Message: Sendable {
 //    }
 }
 
-extension MessageType {
+public extension MessageType {
     /// A message that indicates what that a renderer wants to change the topic
-    public static let navigation = MessageType(rawValue: "navigation")
+    static let navigation = MessageType(rawValue: "navigation")
 }

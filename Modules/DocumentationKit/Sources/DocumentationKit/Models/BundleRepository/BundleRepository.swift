@@ -1,8 +1,8 @@
 //
-//  File.swift
+//  BundleRepository.swift
 //  DocumentationKit
 //
-//  Created by Noah Kamara on 20.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import Foundation
@@ -13,31 +13,31 @@ public final class BundleRepository: Sendable {
         case unknownBundle(BundleIdentifier)
         case providerError(DocumentationURI, any Error)
     }
-    
+
     private struct Source {
         let bundle: DocumentationBundle
         let provider: BundleRepositoryProvider
     }
-    
+
     private let sources = ExclusiveMutating<[BundleIdentifier: Source]>([:])
-    
+
     public var count: Int {
         get async { await sources.value.count }
     }
-    
+
     public var isEmpty: Bool {
         get async { await sources.value.isEmpty }
     }
-    
+
     /// Creates an empty BundleRepository
     public init() {}
-    
+
     /// Retrieves the matching DocumentationBundle if it is available
     /// - Parameter identifier: the identifier of the bundle
     public func bundle(with identifier: BundleIdentifier) async -> DocumentationBundle? {
-        return await sources.value[identifier]?.bundle
+        await sources.value[identifier]?.bundle
     }
-    
+
     /// Register a bundle and an associated provider in repository
     /// - Parameters:
     ///   - bundle: the bundle that should be registered
@@ -47,13 +47,12 @@ public final class BundleRepository: Sendable {
         withProvider dataProvider: BundleRepositoryProvider
     ) async {
         let source = Source(bundle: bundle, provider: dataProvider)
-        
+
         await sources.mutate { sources in
             sources[bundle.identifier] = source
         }
     }
-    
-    
+
     /// Unregisters a provider and its associated bundle from the repository
     /// - Parameter bundleIdentifier: The identifier of the bundle
     public func unregisterBundle(with identifier: BundleIdentifier) async {
@@ -61,28 +60,28 @@ public final class BundleRepository: Sendable {
             sources.removeValue(forKey: identifier)
         }
     }
-    
+
     /// Unregisters all providers from this repository
     public func unregisterAll() async {
         await sources.set(to: [:])
     }
-    
+
     public func contentsOfUrl(_ url: URL) async throws(RepositoryError) -> Data {
         guard let url = DocumentationURI(url: url) else {
             fatalError("Not a topic url")
         }
         return try await contentsOfUrl(url)
     }
-    
+
     public func contentsOfUrl(_ url: DocumentationURI) async throws(RepositoryError) -> Data {
         let source = await sources.value[url.bundleIdentifier]
-        
+
         guard let source else {
             throw .unknownBundle(url.bundleIdentifier)
         }
-        
+
         let internalURL = source.bundle.baseURL.appending(path: url.path)
-        
+
         do {
             return try await source.provider.data(for: internalURL.path())
         } catch {
@@ -107,8 +106,6 @@ public protocol BundleRepositoryProvider {
 extension BundleRepositoryProvider {
     @_disfavoredOverload
     func data(for path: String) async -> Data? {
-        try? await self.data(for: path)
+        try? await data(for: path)
     }
 }
-
-

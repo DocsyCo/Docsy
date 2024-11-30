@@ -1,14 +1,14 @@
 //
-//  File.swift
+//  DocumentationViewContext.swift
 //  DocumentationKit
 //
-//  Created by Noah Kamara on 22.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
+import DocumentationKit
 import Foundation
 import OSLog
 import WebKit
-import DocumentationKit
 
 protocol DocumentationViewContext {
     @MainActor func navigate(to url: DocumentationURI)
@@ -16,41 +16,42 @@ protocol DocumentationViewContext {
     @MainActor func goBack()
 }
 
-extension DocumentationRenderer {
+public extension DocumentationRenderer {
     @MainActor
     @Observable
-    public class Navigation {
+    class Navigation {
         private var context: DocumentationViewContext?
-        
+
         public private(set) var canGoBack: Bool = false
         public private(set) var canGoForward: Bool = false
-        
+
         public func goBack() {
             context?.goBack()
         }
-        
+
         public func goForward() {
             context?.goForward()
         }
-        
+
         func register(context: DocumentationViewContext) {
             self.context = context
         }
     }
 }
-extension DocumentationView {
-    public class Coordinator: NSObject, DocumentationViewContext {
+
+public extension DocumentationView {
+    class Coordinator: NSObject, DocumentationViewContext {
         let logger = Logger.doccviewer("Coordinator")
         private(set) var viewer: DocumentationRenderer
         private var bridge: WebKitCommunicationBridge?
         private var view: WKWebView?
-        
+
         func register(view: WKWebView, bridge: WebKitCommunicationBridge) {
             logger.debug("registering on view. using \(type(of: bridge)) as bridge")
             self.view = view
             self.bridge = bridge
         }
-        
+
         init(viewer: DocumentationRenderer) {
             self.viewer = viewer
             super.init()
@@ -63,7 +64,7 @@ extension DocumentationView {
                 logger.error("attempted navigation ")
                 return
             }
-            
+
             guard
                 let currentUrl = view.url,
                 let currentTopic = DocumentationURI(url: currentUrl),
@@ -73,7 +74,7 @@ extension DocumentationView {
                 view.load(.init(url: url.url))
                 return
             }
-            
+
             logger.debug("attempting dynamic navigation to \(url.url)")
             do {
                 try bridge
@@ -84,14 +85,20 @@ extension DocumentationView {
                 view.load(.init(url: url.url))
             }
         }
-        
+
         @MainActor
         public func didNavigate(to url: DocumentationURI) {
+            if view == nil {
+                print("OH NO")
+            } else {
+                print("DID NAVIGATE TO")
+            }
+
             viewer.url = url
             viewer.canGoBack = view?.canGoBack ?? false
-            viewer.canGoBack = view?.canGoForward ?? false
+            viewer.canGoForward = view?.canGoForward ?? false
         }
-        
+
         @MainActor
         public func goForward() {
             view?.goForward()
@@ -104,7 +111,6 @@ extension DocumentationView {
     }
 }
 
-
 extension DocumentationView.Coordinator: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
         guard let url = navigationAction.request.url else {
@@ -112,13 +118,13 @@ extension DocumentationView.Coordinator: WKNavigationDelegate {
         }
 
         guard url.scheme == "doc" else {
-            self.viewer.openUrlAction(url)
+            viewer.openUrlAction(url)
             return .cancel
         }
 
         return .allow
     }
-    
+
 //    func webView(
 //        _ webView: WKWebView,
 //        decidePolicyFor navigationAction: WKNavigationAction,

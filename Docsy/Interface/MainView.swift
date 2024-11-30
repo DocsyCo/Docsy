@@ -1,8 +1,8 @@
 //
-//  ContentView.swift
+//  MainView.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 19.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import SwiftUI
@@ -10,9 +10,9 @@ import SwiftUI
 struct MainView: View {
     @Namespace
     var namespace
-    
+
     var workspace = try! Workspace(config: .init(inMemory: true))
-    
+
     var body: some View {
         NavigationSplitView {
             SidebarView(navigator: workspace.navigator)
@@ -23,7 +23,7 @@ struct MainView: View {
             do {
                 let provider = PreviewDataProvider.bundle
                 let bundles = try provider.findBundles(limit: 5, where: { _ in true })
-                
+
                 try await withThrowingTaskGroup(of: Void.self) { tasks in
                     for bundle in bundles {
                         tasks.addTask {
@@ -33,7 +33,7 @@ struct MainView: View {
                     }
                 }
             } catch {
-              print("failed to add preview bundles with error: \(error)")
+                print("failed to add preview bundles with error: \(error)")
             }
         }
     }

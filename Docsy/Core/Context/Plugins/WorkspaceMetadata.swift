@@ -2,7 +2,7 @@
 //  WorkspaceMetadata.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 20.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import Foundation
@@ -11,12 +11,12 @@ import Foundation
 final class WorkspaceMetadata: Sendable {
     @MainActor
     private(set) var identifier: String = ""
-    
+
     @MainActor
     var displayName: String = "No Project"
-    
+
     init() {}
-    
+
     @MainActor
     func setDisplayName(_ displayName: String) {
         self.displayName = displayName
@@ -37,7 +37,7 @@ extension WorkspaceMetadata: DocumentationContextPlugin {
     func willSave(_ project: Project) async throws {
         let identifier = await identifier
         async let displayName = displayName
-        
+
         precondition(project.identifier == identifier, "should not call willSave before load")
         project.displayName = await displayName
     }

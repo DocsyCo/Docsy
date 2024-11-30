@@ -1,14 +1,13 @@
 //
 //  DocsyUITestsLaunchTests.swift
-//  DocsyUITests
+//  Docsy
 //
-//  Created by Noah Kamara on 19.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import XCTest
 
 final class DocsyUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }

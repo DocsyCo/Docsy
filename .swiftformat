@@ -1,4 +1,4 @@
---header \n {file}\n DocSee\n\n Copyright © 2024 Noah Kamara.\n
+--header \n {file}\n Docsy\n\n Copyright © 2024 Noah Kamara.\n
 
 --swiftVersion 6
 --acronyms ID,URL,UUID

@@ -2,66 +2,65 @@
 //  Navigator.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 20.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
+import DocumentationKit
 import Foundation
 import SwiftDocC
-import DocumentationKit
 
 actor IDGenerator {
     private var nextID: UInt32
-    
+
     init(startingFrom id: UInt32 = 0) {
         self.nextID = id
     }
-    
+
     func next() -> UInt32 {
         defer { nextID += 1 }
         return nextID
     }
 }
 
-
 @Observable
 public class Navigator {
     private var idGenerator: IDGenerator
-    
+
     @MainActor
     private(set) var indices: [UInt32: NavigatorIndex] = [:]
-    
+
     @MainActor
     private(set) var bundleIdToTopLevelId: [BundleIdentifier: UInt32] = [:]
-    
+
     @MainActor
     private(set) var nodes: [TopLevelNode] = []
-    
+
     @MainActor
     var selection: NavigatorID? = nil
-    
+
     init(idGenerator: IDGenerator = IDGenerator()) {
         self.idGenerator = idGenerator
     }
-    
+
     public struct NavigatorID: RawRepresentable, Hashable, CustomStringConvertible {
         public var description: String {
             "\(topLevelId).\(nodeId)"
         }
+
         public let rawValue: UInt64
-        
+
         public init(rawValue: UInt64) {
             self.rawValue = rawValue
         }
-        
+
         public init(topLevelId: UInt32, nodeId: UInt32) {
             self.init(rawValue: UInt64(nodeId) << 32 | UInt64(topLevelId))
         }
-        
+
         public var topLevelId: UInt32 { UInt32(rawValue & 0xFFFFFFFF) }
         public var nodeId: UInt32 { UInt32(rawValue >> 32) }
     }
-    
-    
+
     /// If available, returns the path from the numeric compound ID inside the navigator tree.
     @MainActor
     func path(for id: NavigatorID) -> String? {
@@ -74,10 +73,10 @@ public class Navigator {
             print("navigator not found")
             return nil
         }
-        
+
         return navigator.path(for: id.nodeId)
     }
-    
+
     /// If available, returns the path from the numeric compound ID inside the navigator tree.
     @MainActor
     func topicUrl(for id: NavigatorID) -> DocumentationURI? {
@@ -85,16 +84,16 @@ public class Navigator {
             print("navigator not found")
             return nil
         }
-        
+
         let path = navigator.path(for: id.nodeId)
-                
-        let topicUrl = path.flatMap({
+
+        let topicUrl = path.flatMap {
             DocumentationURI(bundleIdentifier: navigator.bundleIdentifier, path: $0)
-        })
-        
+        }
+
         return topicUrl
     }
-    
+
     /// If available, returns the path from the numeric compound ID inside the navigator tree.
     @MainActor
     func id(
@@ -111,24 +110,24 @@ public class Navigator {
             print("navigator not found")
             return nil
         }
-        
+
         guard let nodeId = navigator.id(for: path, with: language) else {
             print("did not find node for path", path)
             return nil
         }
-        
+
         return .init(topLevelId: topLevelId, nodeId: nodeId)
     }
 }
 
-
 // MARK: DocumentationContextPlugin
+
 extension Navigator: DocumentationContextPlugin {
     func willSave(_ project: Project) async throws {
-        let nodes = await self.nodes
-        
+        let nodes = await nodes
+
         var projectItems: [Project.Node] = []
-        
+
         for node in nodes {
             switch node.kind {
             case .bundle:
@@ -137,66 +136,64 @@ extension Navigator: DocumentationContextPlugin {
                 let topLevelId = await bundleIdToTopLevelId[reference.bundleIdentifier]!
                 let index = await indices[topLevelId]!
                 let nodeId = index.id(for: reference.path, with: .swift)!
-                
+
                 let displayName = index.navigatorTree.numericIdentifierToNode[nodeId]!.item.title
                 projectItems.append(.init(displayName: displayName, reference: reference))
-                
+
             case .groupMarker:
                 projectItems.append(.init(displayName: node.displayName, reference: nil))
             }
         }
-        
+
         project.items = projectItems
     }
 
-    
     /// called when a component should load a new project.
     /// > the component is responsible for resetting it's state
     func didAddBundle(with identifier: BundleIdentifier, in context: any DocumentationContext) async throws {
         guard let bundle = await context.bundle(with: identifier) else {
             preconditionFailure("bundle must be added to context before calling didAddBundle")
         }
-        
+
         let index = try NavigatorIndex.readNavigatorIndex(
             url: bundle.indexURL,
             bundleIdentifier: bundle.identifier,
             readNavigatorTree: true,
             presentationIdentifier: nil
         )
-        
-        
+
         let id = await idGenerator.next()
         let node = TopLevelNode.bundle(
             reference: .init(bundleIdentifier: identifier, path: ""),
             displayName: bundle.displayName
         )
         var newNodes = [TopLevelNode]()
-        
+
         let tree = index.navigatorTree
 
-        for topicId in tree.root.children.flatMap({ lang in lang.children.map({ $0.id! }) }) {
+        for topicId in tree.root.children.flatMap({ lang in lang.children.map { $0.id! } }) {
             let title = tree.numericIdentifierToNode[topicId]!.item.title
             let path = index.path(for: topicId)!
-            
+
             newNodes.append(.bundle(
                 reference: .init(bundleIdentifier: identifier, path: path),
                 displayName: title
             ))
         }
-        
+
         node.addTask { node in
             try await withCheckedThrowingContinuation { continuation in
                 do {
                     try index.readNavigatorTree(
                         timeout: 5.0,
                         queue: .global(qos: .userInitiated),
-                        broadcast: { (_, isCompleted, error) in
+                        broadcast: { _, isCompleted, error in
                             if let error {
                                 print("Error occured loading index", error)
                                 continuation.resume(throwing: error)
                                 return
                             }
-                            
+
                             if isCompleted {
                                 Task { @MainActor in
                                     node.isLoading = true
@@ -210,7 +207,7 @@ extension Navigator: DocumentationContextPlugin {
                 }
             }
         }
-        
+
         let prependNodes = newNodes
         await MainActor.run {
             self.indices[id] = index
@@ -228,26 +225,24 @@ extension Navigator: DocumentationContextPlugin {
             self.bundleIdToTopLevelId.removeAll()
             self.selection = nil
         }
-        
-        var idMap      = [String: UInt32]()
-        var newNodes   = [TopLevelNode]()
+
+        var idMap = [String: UInt32]()
+        var newNodes = [TopLevelNode]()
         var newIndices = [UInt32: NavigatorIndex]()
-        
-        
+
         for item in project.items {
             guard let reference = item.reference else {
                 newNodes.append(.groupMarker(displayName: item.displayName))
                 continue
             }
-            
+
             guard let bundle = await context.bundle(with: reference.bundleIdentifier) else {
                 preconditionFailure("Project contained bundle that is not in repository")
             }
-            
+
             // Generate TopLevel ID and register in navigator
             let id = await idGenerator.next()
-            
-            
+
             // create index
             let index = try NavigatorIndex.readNavigatorIndex(
                 url: bundle.indexURL,
@@ -257,30 +252,29 @@ extension Navigator: DocumentationContextPlugin {
                 onNodeRead: { $0.topLevelId = id }
             )
             newIndices[id] = index
-            
+
             // create id
             idMap[bundle.identifier] = id
             newNodes.append(.bundle(reference: reference, displayName: item.displayName))
         }
-        
-        
+
         for (id, index) in await indices {
             let bundleId = index.bundleIdentifier
-            let nodes = newNodes.filter({ node in node.reference?.bundleIdentifier == bundleId })
-            
+            let nodes = newNodes.filter { node in node.reference?.bundleIdentifier == bundleId }
+
             let task = Task {
                 try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
                     do {
                         try index.readNavigatorTree(
                             timeout: 5.0,
                             queue: .global(qos: .userInitiated),
-                            broadcast: { (_, isCompleted, error) in
+                            broadcast: { _, isCompleted, error in
                                 if let error {
                                     print("Error occured loading index", error)
                                     continuation.resume(throwing: error)
                                     return
                                 }
-                                
+
                                 if isCompleted {
                                     continuation.resume()
                                 }
@@ -291,18 +285,18 @@ extension Navigator: DocumentationContextPlugin {
                     }
                 }
             }
-            
+
             for node in nodes {
-                node.addTask { node in
+                node.addTask { _ in
                     try await task.value
                 }
             }
         }
-        
+
         let indices = newIndices
         let nodes = newNodes
         let bundleIdToTopLevelId = idMap
-        
+
         await MainActor.run {
             self.indices = indices
             self.nodes = nodes
@@ -311,32 +305,33 @@ extension Navigator: DocumentationContextPlugin {
     }
 }
 
-
 extension Navigator {
     @MainActor
     func navigate(to uri: DocumentationURI) {
-        guard let id = self.id(for: uri.path, with: .swift, bundleIdentifier: uri.bundleIdentifier) else {
+        guard let id = id(for: uri.path, with: .swift, bundleIdentifier: uri.bundleIdentifier) else {
             print("Not found in navigator \(uri)")
             return
         }
-        
+
         if let selection, path(for: id) == path(for: selection) {
             return
         }
-        
-        guard id != self.selection else {
+
+        guard id != selection else {
             return
         }
-        
-        self.selection = id
+
+        selection = id
     }
 }
+
 // MARK: TopLevelNode
+
 extension Navigator {
     @Observable
     final class TopLevelNode: Sendable, Identifiable {
         typealias Identifier = (topLevel: UInt32, bundle: BundleIdentifier)
-        
+
         enum Kind: Codable {
             case bundle
             case groupMarker
@@ -344,35 +339,34 @@ extension Navigator {
 
         let displayID: UUID
         let reference: DocumentationURI?
-        
+
         let kind: Kind
-        
+
         var displayName: String
-        
+
         @MainActor
         var isLoading: Bool = false
-        
+
         @MainActor
         var error: (any Error)? = nil
-        
+
         var task: Task<Void, any Error>? = nil
         var loadingTask: Task<Void, any Error> = Task {}
-        
-        
+
         func addTask(_ task: @escaping (TopLevelNode) async throws -> Void) {
             let oldTask = self.task
             self.task = Task {
                 try await oldTask?.value
                 try await task(self)
             }
-            
-            self.loadingTask = Task {
+
+            loadingTask = Task {
                 print("start loading")
                 await MainActor.run {
                     self.isLoading = true
                     self.error = nil
                 }
-                
+
                 do {
                     try await self.task?.value
                 } catch {
@@ -383,14 +377,14 @@ extension Navigator {
                     }
                     return
                 }
-                
+
                 print("did end loading")
                 await MainActor.run {
                     self.isLoading = false
                 }
             }
         }
-        
+
         private init(
             kind: Kind,
             reference: DocumentationURI?,
@@ -401,7 +395,7 @@ extension Navigator {
             self.kind = kind
             self.displayName = displayName
         }
-        
+
         static func groupMarker(displayName: String) -> TopLevelNode {
             TopLevelNode(
                 kind: .groupMarker,
@@ -409,7 +403,7 @@ extension Navigator {
                 displayName: displayName
             )
         }
-        
+
         static func bundle(
             reference: DocumentationURI,
             displayName: String

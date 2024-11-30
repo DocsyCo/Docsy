@@ -1,8 +1,8 @@
 //
-//  DocumentationBundle 2.swift
-//  Docsy
+//  DocumentationBundle.swift
+//  DocumentationKit
 //
-//  Created by Noah Kamara on 20.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import Foundation
@@ -13,7 +13,7 @@ public struct DocumentationBundle: Identifiable, CustomStringConvertible, Sendab
     public var description: String {
         "Documenatation(identifier: '\(identifier)', displayName: '\(displayName)')"
     }
-    
+
     public var id: String { identifier }
 
     /// Information about this documentation bundle that's unrelated to its documentation content.
@@ -42,7 +42,7 @@ public struct DocumentationBundle: Identifiable, CustomStringConvertible, Sendab
 
     /// The url to the index directory
     public let indexURL: URL
-    
+
     /// An URL to a custom JSON settings file used to theme renderer output.
     public let themeSettingsUrl: URL?
 
@@ -83,14 +83,11 @@ public struct DocumentationBundle: Identifiable, CustomStringConvertible, Sendab
 //            path: "/tutorials",
 //            sourceLanguage: .swift
 //        )
-        
     }
 }
 
-
-
-extension DocumentationBundle {
-    public struct Metadata: Codable, Equatable, Sendable {
+public extension DocumentationBundle {
+    struct Metadata: Codable, Equatable, Sendable {
         /// The display name of the bundle.
         public let displayName: String
 

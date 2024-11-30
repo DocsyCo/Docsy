@@ -1,24 +1,24 @@
 //
-//  NavigatorViw.swift
+//  NavigatorView.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 20.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
-import SwiftUI
 import SwiftDocC
+import SwiftUI
 
-//struct NavigatorView: View {
+// struct NavigatorView: View {
 //    let navigator: Navigator
-//    
+//
 //    var body: some View {
 //        ForEach(navigator.nodes) { node in
 //            Text(node.displayName)
 //        }
 //    }
-//}
+// }
 //
-//#Preview {
+// #Preview {
 //    let navigator: Navigator = {
 //        let nav = Navigator()
 //        let index = NavigatorIndex.readNavigatorIndex(
@@ -26,6 +26,6 @@ import SwiftDocC
 //        )
 //        nav.load(project: project)
 //    }()
-//    
+//
 //    NavigatorView(navigator: navigator)
-//}
+// }

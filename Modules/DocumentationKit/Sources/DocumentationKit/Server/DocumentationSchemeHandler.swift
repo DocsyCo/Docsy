@@ -1,21 +1,28 @@
+//
+//  DocumentationSchemeHandler.swift
+//  DocumentationKit
+//
+//  Copyright © 2024 Noah Kamara.
+//
+
 import Foundation
 import SymbolKit
 import UniformTypeIdentifiers
 
-fileprivate let bundleSpecificSubpaths: [String] = [
+private let bundleSpecificSubpaths: [String] = [
     "data",
     "downloads",
     "images",
     "videos",
-    "index"
+    "index",
 ]
 
-fileprivate let rendererSpecificSubpaths: [String] = [
+private let rendererSpecificSubpaths: [String] = [
     "documentation",
     "tutorials",
     "js",
     "css",
-    "img"
+    "img",
 ]
 
 #if canImport(WebKit)
@@ -23,64 +30,64 @@ import WebKit
 
 public class DocumentationSchemeHandler: NSObject {
     public typealias FallbackResponseHandler = (URLRequest) -> (URLResponse, Data)?
-    
+
     // The schema to support the documentation.
     public static let scheme = "doc"
     public static var fullScheme: String {
-        return "\(scheme)://"
+        "\(scheme)://"
     }
-    
+
     @MainActor
     private var tasks: [URLRequest: Task<Void, Never>] = [:]
-    
+
     /// Fallback handler is called if the response data is nil.
     public var fallbackHandler: FallbackResponseHandler?
-    
+
     /// The `FileServer` instance for serving content.
     public let fileServer: FileServer
-    
+
 //    /// The default file provider to serve content from memory.
 //    var memoryProvider = MemoryFileServerProvider()
-    
-    public override init() {
-        fileServer = FileServer(baseURL: URL(string: DocumentationSchemeHandler.fullScheme)!)
+
+    override public init() {
+        self.fileServer = FileServer(baseURL: URL(string: DocumentationSchemeHandler.fullScheme)!)
     }
 }
 
 // MARK: Provider Registration
-extension DocumentationSchemeHandler {
+
+public extension DocumentationSchemeHandler {
     /// Registers a data provider that handles all requests to bundle-specific files like
     /// - topic json files at `/data`
     /// - bundle resource files at `/downloads`,  `/images`,  or `/videos`
     /// - index files at `/index`
-    public func registerBundleDataProvider(_ provider: FileServerProvider) {
+    func registerBundleDataProvider(_ provider: FileServerProvider) {
         registerProvider(provider, subPaths: bundleSpecificSubpaths)
     }
-    
+
     /// Registers a data provider that handles all requests to app source files like
     /// - html template files at `/documentation`, or `/tutorials`
     /// - renderer js source at  `/js`
     /// - renderer stylesheets at  `/css`
     /// - renderer assets at `/img`
-    public func registerRendererSourceProvider(_ provider: FileServerProvider) {
+    func registerRendererSourceProvider(_ provider: FileServerProvider) {
         registerProvider(provider, subPaths: rendererSpecificSubpaths)
     }
-    
+
     /// Registers a data provider for a number of subpaths
     private func registerProvider(_ provider: FileServerProvider, subPaths: [String]) {
         for subPath in subPaths {
             fileServer.register(provider: provider, subPath: subPath)
         }
     }
-
 }
-
 
 import Foundation
 import SymbolKit
 import UniformTypeIdentifiers
 
 // MARK: URLSchemeHandler
+
 extension DocumentationSchemeHandler: WKURLSchemeHandler {
     public func webView(_ webView: WKWebView, start urlSchemeTask: any WKURLSchemeTask) {
         tasks[urlSchemeTask.request] = Task {
@@ -114,12 +121,11 @@ extension DocumentationSchemeHandler: WKURLSchemeHandler {
             )
             return (nil, response)
         }
-        
-        
+
         do {
             let data: Data
             let mimeType: String
-            
+
             guard url.absoluteString.hasPrefix(fileServer.baseURL.absoluteString) else {
                 let response = HTTPURLResponse.error(
                     url: fileServer.baseURL,
@@ -128,10 +134,10 @@ extension DocumentationSchemeHandler: WKURLSchemeHandler {
                 )
                 return (nil, response)
             }
-            
+
             // We need to make sure that the path extension is for an actual file and not a symbol name which is a false positive
             // like: "'...(_:)-6u3ic", that would be recognized as filename with the extension "(_:)-6u3ic". (rdar://71856738)
-            if url.pathExtension.isAlphanumeric && !url.lastPathComponent.isSwiftEntity {
+            if url.pathExtension.isAlphanumeric, !url.lastPathComponent.isSwiftEntity {
                 data = try await fileServer.data(for: url)
                 mimeType = Self.mimeType(for: url.pathExtension)
             } else { // request is for a path, we need to fake a redirect here
@@ -141,28 +147,27 @@ extension DocumentationSchemeHandler: WKURLSchemeHandler {
                 mimeType = "text/html"
                 data = try await fileServer.data(for: fileServer.baseURL.appendingPathComponent("/index.html"))
             }
-            
+
             let response = HTTPURLResponse.response(
                 url: url,
                 mimeType: mimeType,
                 contentLength: data.count
             )
-                
+
             return (data, response)
         } catch {
             let response = HTTPURLResponse.error(url: url, statusCode: 404, error: error)
             return (nil, response)
         }
     }
-    
+
     /// Returns the MIME type based on file extension, best guess.
-    internal static func mimeType(for ext: String) -> String {
+    static func mimeType(for ext: String) -> String {
         let defaultMimeType = "application/octet-stream"
         let mimeType = UTType(filenameExtension: ext)?.preferredMIMEType
         return mimeType ?? defaultMimeType
     }
 }
-
 
 private extension HTTPURLResponse {
     static func error(url: URL, statusCode: Int, error: (any Error)? = nil) -> HTTPURLResponse {
@@ -186,13 +191,12 @@ private extension HTTPURLResponse {
     }
 }
 
-
 fileprivate extension String {
     /// Check that a given string is alphanumeric.
     var isAlphanumeric: Bool {
-        return !self.isEmpty && self.rangeOfCharacter(from: CharacterSet.alphanumerics.inverted) == nil
+        !isEmpty && rangeOfCharacter(from: CharacterSet.alphanumerics.inverted) == nil
     }
-    
+
     /// Check that a given string is a Swift entity definition.
     var isSwiftEntity: Bool {
         let swiftEntityPattern = #"(?<=\-)swift\..*"#
@@ -206,8 +210,7 @@ fileprivate extension String {
 
 /// Checks whether the given string is a known entity definition which might interfere with the rendering engine while dealing with URLs.
 fileprivate func isKnownEntityDefinition(_ identifier: String) -> Bool {
-    return SymbolGraph.Symbol.KindIdentifier.isKnownIdentifier(identifier)
+    SymbolGraph.Symbol.KindIdentifier.isKnownIdentifier(identifier)
 }
-
 
 #endif

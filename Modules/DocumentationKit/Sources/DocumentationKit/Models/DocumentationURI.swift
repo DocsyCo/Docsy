@@ -1,13 +1,13 @@
 //
-//  SwiftUIView.swift
+//  DocumentationURI.swift
 //  DocumentationKit
 //
-//  Created by Noah Kamara on 21.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import Foundation
 
-fileprivate let slashCharSet = CharacterSet(charactersIn: "/")
+private let slashCharSet = CharacterSet(charactersIn: "/")
 
 public struct DocumentationURI: Sendable, Equatable, Codable {
     public static let scheme = "doc"
@@ -37,19 +37,20 @@ public struct DocumentationURI: Sendable, Equatable, Codable {
     public var url: URL {
         URL(string: "doc://\(bundleIdentifier)\(path)")!
     }
-    
+
     public func encode(to encoder: any Encoder) throws {
         try url.encode(to: encoder)
     }
-    
+
     public init(from decoder: any Decoder) throws {
         let url = try URL(from: decoder)
         guard let parsed = Self(url: url) else {
             throw DecodingError.dataCorrupted(.init(
                 codingPath: decoder.codingPath,
-                debugDescription: "Invalid DocumentationURI: \(url.absoluteString)"))
+                debugDescription: "Invalid DocumentationURI: \(url.absoluteString)"
+            ))
         }
-        
+
         self = parsed
     }
 }

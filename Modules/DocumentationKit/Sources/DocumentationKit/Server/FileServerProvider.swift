@@ -1,8 +1,8 @@
 //
-//  File.swift
+//  FileServerProvider.swift
 //  DocumentationKit
 //
-//  Created by Noah Kamara on 22.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import Foundation
@@ -15,7 +15,7 @@ public enum FileserverProviderError: Error {
 /// > This abstraction lets a `FileServer` provide content from multiple types of sources at the same time.
 public protocol FileServerProvider {
     typealias ProviderError = FileserverProviderError
-    
+
     /// Retrieve the data linked to a given path based on the `baseURL`.
     ///
     /// - parameter path: The path.

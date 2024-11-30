@@ -2,7 +2,7 @@
 //  ThemeSettings.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 21.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
 import DocumentationRenderer

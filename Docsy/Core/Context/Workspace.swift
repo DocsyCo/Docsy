@@ -2,12 +2,11 @@
 //  Workspace.swift
 //  Docsy
 //
-//  Created by Noah Kamara on 20.11.24.
+//  Copyright © 2024 Noah Kamara.
 //
 
-import Foundation
 import DocumentationKit
-
+import Foundation
 
 import DocumentationKit
 import OSLog
@@ -18,23 +17,25 @@ extension Logger {
     }
 }
 
-
 public class Workspace {
     let logger: Logger = .docsy("workspace")
-    
+
     // MARK: Sub Models
+
     let bundleRepository: BundleRepository = .init()
     let metadata: WorkspaceMetadata = .init()
     let navigator: Navigator = .init()
-    
+
     // MARK: Options
+
     private let config: Configuration
     private let fileManager: FileManager
-    
+
     // MARK: Project
+
     private var project: Project
     private(set) var search: SearchIndex
-    
+
     init(
         config: Configuration = .init(),
         fileManager: FileManager = .default
@@ -42,7 +43,7 @@ public class Workspace {
         self.fileManager = fileManager
         self.config = config
         self.project = .scratchpad()
-        
+
         let search = try loadSearchIndex(
             config: config,
             projectId: project.identifier,
@@ -53,25 +54,25 @@ public class Workspace {
 }
 
 // MARK: Project Management
+
 extension Workspace {
     private var plugins: [DocumentationContextPlugin] {
         [metadata, navigator]
     }
-    
+
     func save() async throws {
-        logger.info("[\(self.project)] saving project")
+        logger.info("[\(project)] saving project")
         guard project.isPersistent else { return }
-        
+
         for plugin in plugins {
             try await plugin.willSave(project)
         }
-        
+
         try project.validate()
-        
+
         try await project.persist()
     }
-    
-    
+
     func open(_ newProject: Project, saveCurrent: Bool = true) async throws {
         logger.info("[open] opening \(newProject)")
         do {
@@ -80,24 +81,24 @@ extension Workspace {
             logger.error("[open] '\(newProject)' failed validation: \(error)")
             throw error
         }
-        
+
         if saveCurrent {
             try await save()
         }
-        
+
         // Register Bundles
         logger.debug("[open] unregistering bundles")
         await bundleRepository.unregisterAll()
-        
+
         logger.debug("[open] register bundles for \(newProject)")
         for reference in newProject.references.values {
             let dataProvider = ProjectSourceDataProvider(reference.source)
             let bundle = reference.bundle()
             await bundleRepository.registerBundle(bundle, withProvider: dataProvider)
         }
-        
-        self.project = newProject
-        
+
+        project = newProject
+
         // Plugins
         logger.debug("[open] updating plugins")
         for plugin in plugins {
@@ -109,7 +110,6 @@ extension Workspace {
             }
         }
 
-        
         // Load Search Index
         logger.debug("[open] loading search index")
         let search = try loadSearchIndex(
@@ -117,17 +117,17 @@ extension Workspace {
             projectId: newProject.identifier,
             fileManager: fileManager
         )
-        
+
         self.search = search
     }
-    
+
     func addBundle(
         _ bundle: DocumentationBundle,
         with provider: BundleRepositoryProvider
     ) async throws {
         logger.info("[addBundle] adding \(bundle)")
-        await self.bundleRepository.registerBundle(bundle, withProvider: provider)
-        
+        await bundleRepository.registerBundle(bundle, withProvider: provider)
+
         do {
             for plugin in plugins {
                 do {
@@ -144,8 +144,7 @@ extension Workspace {
     }
 }
 
-
-fileprivate func loadSearchIndex(
+private func loadSearchIndex(
     config: Workspace.Configuration,
     projectId: String,
     fileManager: FileManager
@@ -153,19 +152,20 @@ fileprivate func loadSearchIndex(
     guard !config.inMemory else {
         return try SearchIndex()
     }
-    
+
     let searchIndexUrl = URL
         .cachesDirectory
         .appending(components: projectId, "search")
-    
+
     if !fileManager.fileExists(atPath: searchIndexUrl.path()) {
         try fileManager.createDirectory(at: searchIndexUrl, withIntermediateDirectories: true)
     }
-    
+
     return try SearchIndex.openSearchIndex(at: searchIndexUrl, createIfNeeded: true)
 }
 
 // MARK: Configuration
+
 extension Workspace {
     struct Configuration {
         var inMemory: Bool = false
@@ -173,6 +173,7 @@ extension Workspace {
 }
 
 // MARK: DocumentationContext
+
 extension Workspace: DocumentationContext {
     func bundle(with identifier: BundleIdentifier) async -> DocumentationBundle? {
         await bundleRepository.bundle(with: identifier)
@@ -182,4 +183,3 @@ extension Workspace: DocumentationContext {
         try await bundleRepository.contentsOfUrl(url)
     }
 }
-

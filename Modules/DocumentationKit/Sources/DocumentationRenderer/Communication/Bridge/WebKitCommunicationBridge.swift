@@ -1,14 +1,19 @@
+//
+//  WebKitCommunicationBridge.swift
+//  DocumentationKit
+//
+//  Copyright © 2024 Noah Kamara.
+//
 
 // The WebKitCommunicationBridge is only available on platforms that support WebKit.
 import Foundation
-import WebKit
 @preconcurrency import SwiftDocC
+import WebKit
 
 /// Provides bi-directional communication with a documentation renderer via JavaScript calls in a web view.
 public struct WebKitCommunicationBridge: CommunicationBridge {
-    public var onReceiveMessage: ((Message) -> ())? = nil
-    
-    
+    public var onReceiveMessage: ((Message) -> Void)? = nil
+
     /// Creates a communication bridge configured with the given controller to receive messages.
     /// - Parameter contentController: The controller that receives messages. Set to `nil` if  you need the communication bridge
     /// to ignore received messages.
@@ -17,20 +22,20 @@ public struct WebKitCommunicationBridge: CommunicationBridge {
     @MainActor
     public init(
         contentController: WKUserContentController?,
-        onReceiveMessage: ((Message) -> ())? = nil
+        onReceiveMessage: ((Message) -> Void)? = nil
     ) {
         guard let onReceiveMessage else {
             return
         }
-        
+
         self.onReceiveMessage = onReceiveMessage
-        
+
         contentController?.add(
             ScriptMessageHandler(onReceiveMessageData: onReceiveMessageData),
             name: "bridge"
         )
     }
-    
+
     /// Sends a message using the given handler using the JSON format.
     /// - Parameter message: The message to send.
     /// - Parameter evaluateJavaScript: A handler that the communication bridge uses to send the given message, encoded in JSON.
@@ -47,39 +52,39 @@ public struct WebKitCommunicationBridge: CommunicationBridge {
             let script = "window.bridge.receive(\(messageJSON))"
             print("sending script", script)
             webView.evaluateJavaScript(script)
-        } catch let error {
+        } catch {
             throw CommunicationBridgeError.unableToEncodeMessage(message, underlyingError: error)
         }
     }
-    
+
     /// Called by the communication bridge when a message is received by a script message handler.
     ///
     /// Decodes the given WebKit script message as a ``Message``, and calls the ``onReceiveMessage`` handler.
     /// The communication bridge ignores unrecognized messages.
     /// - Parameter messageBody: The body of a `WKScriptMessage` provided by a `WKScriptMessageHandler`.
     func onReceiveMessageData(messageBody: Any) {
-        
         // `WKScriptMessageHandler` transforms JavaScript objects to dictionaries.
         // Serialize the given dictionary to JSON data if possible, and decode the JSON data to a
         // message. If either of these steps fail, the communication-bridge ignores the message.
         guard let messageData = try? JSONSerialization.data(withJSONObject: messageBody),
-            let message = try? JSONDecoder().decode(Message.self, from: messageData) else {
-                return
+              let message = try? JSONDecoder().decode(Message.self, from: messageData)
+        else {
+            return
         }
-        
+
         onReceiveMessage?(message)
     }
-    
+
     /// A WebKit script message handler for communication bridge messages.
     ///
     /// When receiving a message, the handler calls the given `onReceiveMessageData` handler with the message's body.
     private class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
-        var onReceiveMessageData: (Any) -> ()
-        
-        init(onReceiveMessageData: @escaping (Any) -> ()) {
+        var onReceiveMessageData: (Any) -> Void
+
+        init(onReceiveMessageData: @escaping (Any) -> Void) {
             self.onReceiveMessageData = onReceiveMessageData
         }
-        
+
         func userContentController(
             _ userContentController: WKUserContentController,
             didReceive message: WKScriptMessage
