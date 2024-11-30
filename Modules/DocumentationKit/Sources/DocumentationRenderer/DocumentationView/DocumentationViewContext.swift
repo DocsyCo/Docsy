@@ -88,12 +88,6 @@ public extension DocumentationView {
 
         @MainActor
         public func didNavigate(to url: DocumentationURI) {
-            if view == nil {
-                print("OH NO")
-            } else {
-                print("DID NAVIGATE TO")
-            }
-
             viewer.url = url
             viewer.canGoBack = view?.canGoBack ?? false
             viewer.canGoForward = view?.canGoForward ?? false

@@ -61,6 +61,8 @@ extension Workspace {
     }
 
     func save() async throws {
+        let project = project
+
         logger.info("[\(project)] saving project")
         guard project.isPersistent else { return }
 

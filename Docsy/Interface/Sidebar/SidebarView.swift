@@ -60,7 +60,7 @@ struct SidebarView: View {
                 Text("No Nodes yes")
             }
         }
-//        .listStyle(.sidebar)
+        .listStyle(.sidebar)
     }
 }
 

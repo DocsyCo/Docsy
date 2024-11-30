@@ -50,7 +50,6 @@ public struct WebKitCommunicationBridge: CommunicationBridge {
             let encodedMessage = try encoder.encode(message)
             let messageJSON = String(data: encodedMessage, encoding: .utf8)!
             let script = "window.bridge.receive(\(messageJSON))"
-            print("sending script", script)
             webView.evaluateJavaScript(script)
         } catch {
             throw CommunicationBridgeError.unableToEncodeMessage(message, underlyingError: error)

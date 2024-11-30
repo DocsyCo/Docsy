@@ -185,7 +185,7 @@ private extension PageType {
         case .function, .instanceMethod, .initializer: .abbr("M", .purple)
         case .extension: .abbr("Ex", .orange)
         case .typeAlias: .abbr("T", .yellow)
-        //        case .associatedType:
+        case .associatedType: .abbr("As", .orange)
         case .operator: .abbr("Op", .green)
         //        case .macro:
         //        case .union:
