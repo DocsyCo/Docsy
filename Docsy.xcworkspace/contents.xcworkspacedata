@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:Docsy.xcodeproj">
+      location = "container:DocSee.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Modules/BundledDocumentationRenderer">

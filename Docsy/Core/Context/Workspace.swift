@@ -12,13 +12,13 @@ import DocumentationKit
 import OSLog
 
 extension Logger {
-    static func docsy(_ category: String) -> Logger {
-        Logger(subsystem: "com.noahkamara.docsy", category: category)
+    static func docsee(_ category: String) -> Logger {
+        Logger(subsystem: "com.noahkamara.docsee", category: category)
     }
 }
 
 public class Workspace {
-    let logger: Logger = .docsy("workspace")
+    let logger: Logger = .docsee("workspace")
 
     // MARK: Sub Models
 
