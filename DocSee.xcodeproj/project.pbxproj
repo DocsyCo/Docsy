@@ -35,7 +35,6 @@
 		FDED1D152CED3D83002F878D /* DocSee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocSee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDED1D262CED3D85002F878D /* DocSeeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocSeeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDED1D302CED3D85002F878D /* DocSeeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocSeeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FDED1DDE2CEDC9C5002F878D /* Docsy.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Docsy.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -88,7 +87,6 @@
 			isa = PBXGroup;
 			children = (
 				FD288AE32CFBDD8D0085D357 /* DocSee-Info.plist */,
-				FDED1DDE2CEDC9C5002F878D /* Docsy.xctestplan */,
 				FDED1D172CED3D83002F878D /* Docsy */,
 				FDED1D292CED3D85002F878D /* DocsyTests */,
 				FDED1D332CED3D85002F878D /* DocsyUITests */,

@@ -6,22 +6,6 @@
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
       buildArchitectures = "Automatic">
-      <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DocumentationRenderer"
-               BuildableName = "DocumentationRenderer"
-               BlueprintName = "DocumentationRenderer"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-      </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
@@ -29,6 +13,36 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FDED1D252CED3D85002F878D"
+               BuildableName = "DocSeeTests.xctest"
+               BlueprintName = "DocSeeTests"
+               ReferencedContainer = "container:DocSee.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "DocumentationRepositoryTests/addRevision()">
+               </Test>
+               <Test
+                  Identifier = "DocumentationRepositoryTests/createBundle()">
+               </Test>
+               <Test
+                  Identifier = "DocumentationRepositoryTests/listBundles()">
+               </Test>
+               <Test
+                  Identifier = "DocumentationRepositoryTests/removeBundle()">
+               </Test>
+               <Test
+                  Identifier = "DocumentationRepositoryTests/removeRevision()">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -47,15 +61,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DocumentationRenderer"
-            BuildableName = "DocumentationRenderer"
-            BlueprintName = "DocumentationRenderer"
-            ReferencedContainer = "container:">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
