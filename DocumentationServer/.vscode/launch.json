@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:DocumentationServer}",
+            "name": "Debug App",
+            "program": "${workspaceFolder:DocumentationServer}/.build/debug/App",
+            "preLaunchTask": "swift: Build Debug App"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:DocumentationServer}",
+            "name": "Release App",
+            "program": "${workspaceFolder:DocumentationServer}/.build/release/App",
+            "preLaunchTask": "swift: Build Release App"
+        }
+    ]
+}

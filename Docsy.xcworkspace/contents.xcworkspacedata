@@ -10,4 +10,7 @@
    <FileRef
       location = "group:Modules/DocumentationKit">
    </FileRef>
+   <FileRef
+      location = "group:DocumentationServer">
+   </FileRef>
 </Workspace>

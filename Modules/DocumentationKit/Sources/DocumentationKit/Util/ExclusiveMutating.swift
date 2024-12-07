@@ -111,3 +111,15 @@ public final class ExclusiveMutating<Value>: @unchecked Sendable {
     ///
     public init(_ value: Value) { self._value = value }
 }
+
+extension ExclusiveMutating {
+    subscript<Key, T>(
+        _ key: Key
+    ) -> T? where Value == [Key: T] {
+        get async {
+            await beginReading()
+            defer { doneReading() }
+            return _value[key]
+        }
+    }
+}

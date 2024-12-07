@@ -7,8 +7,6 @@
 
 import Foundation
 
-private let slashCharSet = CharacterSet(charactersIn: "/")
-
 public struct DocumentationURI: Sendable, Equatable, Codable {
     public static let scheme = "doc"
 
