@@ -1,6 +1,24 @@
 {
-  "originHash" : "993dca9a67c17613a52bccf77caf6451b9cca93b48cf609b341775e1bd56d41b",
+  "originHash" : "adbf70611bf54e50b2ad89207c4a69e2905712d152337a4680aa6490447be501",
   "pins" : [
+    {
+      "identity" : "async-http-client",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-server/async-http-client.git",
+      "state" : {
+        "revision" : "2119f0d9cc1b334e25447fe43d3693c0e60e6234",
+        "version" : "1.24.0"
+      }
+    },
+    {
+      "identity" : "async-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/async-kit.git",
+      "state" : {
+        "revision" : "e048c8ee94967e8d8a1c2ec0e1156d6f7fa34d31",
+        "version" : "1.20.0"
+      }
+    },
     {
       "identity" : "grdb.swift",
       "kind" : "remoteSourceControl",
@@ -8,6 +26,51 @@
       "state" : {
         "revision" : "84d25dfc9dc1766feb8c80fb04b9f7e2337fb83e",
         "version" : "7.0.0-beta.6"
+      }
+    },
+    {
+      "identity" : "hummingbird",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hummingbird-project/hummingbird.git",
+      "state" : {
+        "revision" : "70b0714b4c4a192a51a9ddcc691fcf2ab3bc9141",
+        "version" : "2.5.0"
+      }
+    },
+    {
+      "identity" : "postgres-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/postgres-kit.git",
+      "state" : {
+        "revision" : "0b72fa83b1023c4b82072e4049a3db6c29781fff",
+        "version" : "2.13.5"
+      }
+    },
+    {
+      "identity" : "postgres-nio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/postgres-nio.git",
+      "state" : {
+        "revision" : "cd5318a01a1efcb1e0b3c82a0ce5c9fefaf1cb2d",
+        "version" : "1.22.1"
+      }
+    },
+    {
+      "identity" : "sql-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/sql-kit.git",
+      "state" : {
+        "revision" : "e0b35ff07601465dd9f3af19a1c23083acaae3bd",
+        "version" : "3.32.0"
+      }
+    },
+    {
+      "identity" : "swift-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-algorithms.git",
+      "state" : {
+        "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
+        "version" : "1.2.0"
       }
     },
     {
@@ -26,6 +89,15 @@
       "state" : {
         "revision" : "7faebca1ea4f9aaf0cda1cef7c43aecd2311ddf6",
         "version" : "1.3.0"
+      }
+    },
+    {
+      "identity" : "swift-async-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-async-algorithms.git",
+      "state" : {
+        "revision" : "5c8bd186f48c16af0775972700626f0b74588278",
+        "version" : "1.0.2"
       }
     },
     {
@@ -65,6 +137,15 @@
       }
     },
     {
+      "identity" : "swift-distributed-tracing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-distributed-tracing.git",
+      "state" : {
+        "revision" : "6483d340853a944c96dbcc28b27dd10b6c581703",
+        "version" : "1.1.2"
+      }
+    },
+    {
       "identity" : "swift-docc",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-docc.git",
@@ -82,12 +163,30 @@
       }
     },
     {
+      "identity" : "swift-http-types",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-http-types.git",
+      "state" : {
+        "revision" : "ef18d829e8b92d731ad27bb81583edd2094d1ce3",
+        "version" : "1.3.1"
+      }
+    },
+    {
       "identity" : "swift-lmdb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-lmdb.git",
       "state" : {
         "branch" : "main",
         "revision" : "c42582487fe84f72a4d417dd2d8493757bd4d072"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "96a2f8a0fa41e9e09af4585e2724c4e825410b91",
+        "version" : "1.6.2"
       }
     },
     {
@@ -100,12 +199,84 @@
       }
     },
     {
+      "identity" : "swift-metrics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-metrics.git",
+      "state" : {
+        "revision" : "e0165b53d49b413dd987526b641e05e246782685",
+        "version" : "2.5.0"
+      }
+    },
+    {
       "identity" : "swift-nio",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
         "revision" : "914081701062b11e3bb9e21accc379822621995e",
         "version" : "2.76.1"
+      }
+    },
+    {
+      "identity" : "swift-nio-extras",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-extras.git",
+      "state" : {
+        "revision" : "2e9746cfc57554f70b650b021b6ae4738abef3e6",
+        "version" : "1.24.1"
+      }
+    },
+    {
+      "identity" : "swift-nio-http2",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-http2.git",
+      "state" : {
+        "revision" : "eaa71bb6ae082eee5a07407b1ad0cbd8f48f9dca",
+        "version" : "1.34.1"
+      }
+    },
+    {
+      "identity" : "swift-nio-ssl",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-ssl.git",
+      "state" : {
+        "revision" : "c7e95421334b1068490b5d41314a50e70bab23d1",
+        "version" : "2.29.0"
+      }
+    },
+    {
+      "identity" : "swift-nio-transport-services",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-transport-services.git",
+      "state" : {
+        "revision" : "bbd5e63cf949b7db0c9edaf7a21e141c52afe214",
+        "version" : "1.23.0"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics.git",
+      "state" : {
+        "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swift-service-context",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-service-context.git",
+      "state" : {
+        "revision" : "0c62c5b4601d6c125050b5c3a97f20cce881d32b",
+        "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "swift-service-lifecycle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-server/swift-service-lifecycle.git",
+      "state" : {
+        "revision" : "f70b838872863396a25694d8b19fe58bcd0b7903",
+        "version" : "2.6.2"
       }
     },
     {

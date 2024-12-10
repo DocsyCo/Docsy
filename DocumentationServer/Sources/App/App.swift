@@ -1,6 +1,9 @@
 import ArgumentParser
 import Hummingbird
 import Logging
+import DocumentationKit
+import DocumentationServer
+
 
 @main
 struct AppCommand: AsyncParsableCommand, AppArguments {
@@ -15,20 +18,26 @@ struct AppCommand: AsyncParsableCommand, AppArguments {
 
     @Option(name: .shortAndLong)
     var logLevel: Logger.Level?
+    
+    @Option(name: .shortAndLong, completion: .file())
+    var envFile: String = ".env"
 
     func run() async throws {
         var env = Environment()
-        
-        if env.get("POSTGRES_HOST") == nil {
-            print("Attempting to load from .env")
-            let dotenv = try await Environment.dotEnv()
-            env = env.merging(with: dotenv)
+        if let dotEnv = try? await Environment.dotEnv() {
+            env = env.merging(with: dotEnv)
         }
-        
 
-        let app = try await buildApplication(self)
+//        let app = try await buildApplication(self)
+//        
+//        try await app.runService()
+//        let server = DocumentationServer.
+//
+//        let documentationRepository = InMemoryDocumentationRepository()
+//        let repository = RepositoryService(repository: documentationRepository)
+//        await server.registerService(repository)
         
-        try await app.runService()
+//        server.run()
     }
 }
 

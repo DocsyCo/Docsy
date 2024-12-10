@@ -13,6 +13,32 @@ public protocol AppArguments {
     var logLevel: Logger.Level? { get }
 }
 
+public enum DocumentationServiceFeature {
+    case endpoint
+}
+
+public protocol DocumentationService {
+    typealias Endpoint = RouteCollection<BasicRequestContext>
+    
+    static var id: DocumentationServiceID { get }
+    
+    func endpoint() -> Endpoint
+}
+
+public struct DocumentationServiceID: RawRepresentable, Hashable, Sendable {
+    public let rawValue: String
+    
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+    
+    public static let repository = DocumentationServiceID(rawValue: "repository")
+    public static let storage = DocumentationServiceID(rawValue: "storage")
+}
+
+
+
+
 extension PostgresClient.Configuration {
     init(from environment: Environment) throws {
         let host = environment.get("POSTGRES_HOST") ?? "localhost"
@@ -35,48 +61,50 @@ extension PostgresClient.Configuration {
 typealias AppRequestContext = BasicRequestContext
 
 
+
 ///  Build application
-/// - Parameter arguments: application arguments
-public func buildApplication(
-    _ arguments: some AppArguments,
-    environment: Environment = .init()
-) async throws -> some ApplicationProtocol {
-    let logger = {
-        var logger = Logger(label: "DoccServeAPI")
-        logger.logLevel = arguments.logLevel ?? .info
-        return logger
-    }()
-    
-    let repositories = Repositories(
-        documentation: InMemoryDocumentationRepository()
-    )
-    
-    let router = buildRouter(repositories: repositories)
-    
-
-    
-    let postgresClient: PostgresClient? = if !arguments.inMemory {
-        PostgresClient(
-            configuration: try .init(from: environment),
-            backgroundLogger: logger
-        )
-    } else { nil }
-
-    var app = Application(
-        router: router,
-        configuration: .init(
-            address: .hostname(arguments.hostname, port: arguments.port),
-            serverName: "DoccServeAPI"
-        ),
-        logger: logger
-    )
-    
-    if let postgresClient {
-        app.addServices(postgresClient)
-    }
-    
-    return app
-}
+///// - Parameter arguments: application arguments
+//public func buildApplication(
+//    _ arguments: some AppArguments,
+//    environment: Environment = .init()
+//) async throws -> some ApplicationProtocol {
+//    let logger = {
+//        var logger = Logger(label: "DoccServeAPI")
+//        logger.logLevel = arguments.logLevel ?? .info
+//        return logger
+//    }()
+//    
+//    
+//    let repositories = Repositories(
+//        documentation: InMemoryDocumentationRepository()
+//    )
+//    
+////    let router = buildRoRepositoryServiceuter(repositories: repositories)
+//    
+////    let postgresClient: PostgresClient? = if !arguments.inMemory {
+////        PostgresClient(
+////            configuration: try .init,
+////            backgroundLogger: logger
+////        )
+////    } else { nil }
+//    
+//    let storage = try await S3Storage().create()
+//
+//    var app = Application(
+//        router: router,
+//        configuration: .init(
+//            address: .hostname(arguments.hostname, port: arguments.port),
+//            serverName: "DoccServeAPI"
+//        ),
+//        logger: logger
+//    )
+//    
+////    if let postgresClient {
+////        app.addServices(postgresClient)
+////    }
+//    
+//    return app
+//}
 
 enum RequirementError: Error {
     case missing(_ key: String)
@@ -210,48 +238,41 @@ import Foundation
 
 struct Repositories {
     let documentation: DocumentationRepository
-    
     init(documentation: DocumentationRepository) {
         self.documentation = documentation
     }
-    
-    static func mock() -> Repositories {
-        Repositories(
-            documentation: InMemoryDocumentationRepository()
-        )
-    }
 }
 
-/// Build router
-func buildRouter(repositories: Repositories) -> Router<AppRequestContext> {
-    let router = Router(context: AppRequestContext.self)
-    
-    // Add middleware
-    router.addMiddleware {
-        // logging middleware
-        LogRequestsMiddleware(.debug)
-    }
-    
-    // Add health endpoint
-    router.get("/health") { _, _ -> HTTPResponse.Status in
-        return .ok
-    }
-    
-    let api = router.group("api")
-        
-    
-    // Bundles
-    let bundleRepository = InMemoryDocumentationRepository()
-    let bundles = BundleController(repository: bundleRepository)
-    api.addRoutes(bundles.endpoints, atPath: "/bundles")
-    
-    // Files
-    // let search = SearchController(repository: repositories.search)
-    // api.addRoutes(search.endpoints, atPath: "/search")
-
-    // Search
-    // let search = SearchController(repository: repositories.search)
-    // api.addRoutes(search.endpoints, atPath: "/search")
-    
-    return router
-}
+///// Build router
+//func buildRouter(repositories: Repositories) -> Router<AppRequestContext> {
+//    let router = Router(context: AppRequestContext.self)
+//    
+//    // Add middleware
+//    router.addMiddleware {
+//        // logging middleware
+//        LogRequestsMiddleware(.debug)
+//    }
+//    
+//    // Add health endpoint
+//    router.get("/health") { _, _ -> HTTPResponse.Status in
+//        return .ok
+//    }
+//    
+//    let api = router.group("api")
+//        
+//    
+//    // Bundles
+//    let bundleRepository = InMemoryDocumentationRepository()
+//    let bundles = BundleController(repository: bundleRepository)
+//    api.addRoutes(bundles.endpoints, atPath: "/bundles")
+//    
+//    // Files
+//    // let search = SearchController(repository: repositories.search)
+//    // api.addRoutes(search.endpoints, atPath: "/search")
+//
+//    // Search
+//    // let search = SearchController(repository: repositories.search)
+//    // api.addRoutes(search.endpoints, atPath: "/search")
+//    
+//    return router
+//}
