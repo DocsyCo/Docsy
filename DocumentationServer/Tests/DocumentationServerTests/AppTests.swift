@@ -17,16 +17,14 @@ extension DocumentationServer.Configuration {
 @Suite
 struct AppTests {
     @Test
-    func health() async throws {
+    func status() async throws {
         let server = DocumentationServer(configuration: .test)
         let app = try await server.application()
         
         try await app.test(.router) { client in
-            try await client.execute(uri: "/health", method: .get) { response in
+            try await client.execute(uri: "/status", method: .get) { response in
                 #expect(response.status == .ok)
             }
         }
     }
 }
-
-

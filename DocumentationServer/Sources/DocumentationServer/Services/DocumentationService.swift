@@ -8,7 +8,7 @@
 import Foundation
 import Hummingbird
 
-public struct DocumentationServiceID: RawRepresentable, Hashable, Sendable {
+public struct DocumentationServiceID: RawRepresentable, Hashable, Sendable, Codable {
     public let rawValue: String
     
     public init(rawValue: String) {

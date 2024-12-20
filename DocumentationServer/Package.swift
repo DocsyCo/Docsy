@@ -7,7 +7,7 @@ let package = Package(
     name: "DocumentationServer",
     platforms: [.macOS(.v15)],
     products: [
-        .executable(name: "App", targets: ["App"]),
+        .executable(name: "CLI", targets: ["CLI"]),
         .library(name: "DocumentationServer", targets: ["DocumentationServer"]),
         .library(name: "DocumentationServerClient", targets: ["DocumentationServerClient"])
     ],
@@ -25,16 +25,14 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "App",
+            name: "CLI",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Hummingbird", package: "hummingbird"),
-//                .product(name: "PostgresKit", package: "postgres-kit"),
                 .product(name: "DocumentationKit", package: "DocumentationKit"),
-//                .product(name: "AWSS3", package: "aws-sdk-swift"),
-                "DocumentationServer"
+                .byName(name: "DocumentationServer"),
+                .byName(name: "DocumentationServerClient"),
             ],
-            path: "Sources/App",
             swiftSettings: [
                 .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release))
             ]
@@ -45,7 +43,6 @@ let package = Package(
                 .product(name: "Hummingbird", package: "hummingbird"),
                 .product(name: "DocumentationKit", package: "DocumentationKit"),
 //                .product(name: "PostgresKit", package: "postgres-kit"),
-//                .product(name: "DocumentationKit", package: "DocumentationKit"),
 //                .product(name: "AWSS3", package: "aws-sdk-swift")
             ],
             swiftSettings: [

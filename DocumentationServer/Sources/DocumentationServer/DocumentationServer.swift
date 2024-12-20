@@ -82,10 +82,6 @@ public actor DocumentationServer {
             LogRequestsMiddleware(.debug)
         }
         
-        // Add health endpoint
-        router.get("/health") { _, _ -> HTTPResponse.Status in
-            return .ok
-        }
                 
         let api = router.group("/api")
         
@@ -100,6 +96,10 @@ public actor DocumentationServer {
         // Search
         // let search = SearchController(repository: repositories.search)
         // api.addRoutes(search.endpoints, atPath: "/search")
+        
+        // Add status endpoint
+        let statusCheck = StatusCheckController(services: Set(services.keys))
+        router.addRoutes(statusCheck.endpoints, atPath: "/status")
         
         return router
     }

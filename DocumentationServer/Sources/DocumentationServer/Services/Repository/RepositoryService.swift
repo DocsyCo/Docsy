@@ -21,5 +21,5 @@ public struct RepositoryService<Repository: DocumentationRepository>: Documentat
     public func endpoints() -> Endpoints {
         let controller = BundleController(repository: repository)
         return controller.endpoints
-    }
+    }    
 }
