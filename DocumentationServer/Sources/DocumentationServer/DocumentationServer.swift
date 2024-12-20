@@ -48,11 +48,11 @@ public actor DocumentationServer {
     }
     
     public func run() async throws {
-        let app = application()
+        let app = try application()
         try await app.runService()
     }
     
-    public func application() -> some ApplicationProtocol {
+    public func application() throws -> some ApplicationProtocol {
         let logger = {
             var logger = Logger(label: "DocumentationServer")
             logger.logLevel = configuration.logLevel
@@ -87,15 +87,12 @@ public actor DocumentationServer {
             return .ok
         }
                 
-        for (key, service) in services {
-            service.endpoints()
-            router.addRoutes(service.endpoint(), atPath: .init(key.rawValue))
-        }
-        // Bundles
-//        let bundleRepository = InMemoryDocumentationRepository()
-//        let bundles = BundleController(repository: bundleRepository)
-//        api.addRoutes(bundles.endpoints, atPath: "/bundles")
+        let api = router.group("/api")
         
+        for (key, service) in services {
+            api.addRoutes(service.endpoints(), atPath: "/\(key.rawValue)")
+        }
+                
         // Files
         // let search = SearchController(repository: repositories.search)
         // api.addRoutes(search.endpoints, atPath: "/search")

@@ -32,8 +32,7 @@ struct RevisionController<Repository: DocumentationRepository> {
     
     @Sendable
     func create(_ request: Request, context: BasicRequestContext) async throws -> BundleRevision {
-
-        let bundleId = try context.parameters.require("bundleId", as: UUID.self)
+        let bundleId = try context.parameters.require("id", as: UUID.self)
         
         let request = try await request.decode(as: CreateRequest.self, context: context)
         
@@ -46,13 +45,13 @@ struct RevisionController<Repository: DocumentationRepository> {
     
     @Sendable
     func detail(_ request: Request, context: BasicRequestContext) async throws -> BundleRevision {
-        let bundleId = try context.parameters.require("bundleId", as: UUID.self)
+        let bundleId = try context.parameters.require("id", as: UUID.self)
         let tag = try context.parameters.require("tag")
         
         guard let revision = try await repository.revision(tag, forBundle: bundleId) else {
             throw ErrorResponse(
                 status: .notFound,
-                detail: "no revision with bundleId='\(bundleId)' tag='\(tag)'"
+                detail: "no revision with id='\(bundleId)' tag='\(tag)'"
             )
         }
         
@@ -66,7 +65,7 @@ struct RevisionController<Repository: DocumentationRepository> {
     
     @Sendable
     func delete(_ request: Request, context: BasicRequestContext) async throws -> some ResponseGenerator {
-        let bundleId = try context.parameters.require("bundleId", as: UUID.self)
+        let bundleId = try context.parameters.require("id", as: UUID.self)
         let tag = try context.parameters.require("tag")
         try await repository.removeRevision(tag, forBundle: bundleId)
         return Response(status: .accepted)

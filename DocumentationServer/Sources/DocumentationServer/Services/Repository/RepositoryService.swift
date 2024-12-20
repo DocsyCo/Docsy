@@ -14,7 +14,7 @@ public struct RepositoryService<Repository: DocumentationRepository>: Documentat
 
     let repository: Repository
     
-    init(repository: Repository) {
+    public init(repository: Repository) {
         self.repository = repository
     }
     

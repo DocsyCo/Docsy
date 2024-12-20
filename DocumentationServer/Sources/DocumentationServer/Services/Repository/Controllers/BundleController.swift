@@ -27,7 +27,7 @@ struct BundleController<Repository: DocumentationRepository> {
             .get("/:id", use: detail)
             .patch("/:id", use: update)
             .delete("/:id", use: delete)
-            .addRoutes(revisionController.endpoints, atPath: "/:bundleId/revisions")
+            .addRoutes(revisionController.endpoints, atPath: "/:id")
     }
     
     func index(_ request: Request, context: BasicRequestContext) async throws -> [BundleDetail] {
@@ -59,9 +59,19 @@ struct BundleController<Repository: DocumentationRepository> {
         return bundle
     }
     
+    struct UpdateRequest: Decodable {
+        var displayName: String?
+    }
+    
     @Sendable
     func update(_ request: Request, context: BasicRequestContext) async throws -> BundleDetail {
-        throw ErrorResponse(status: .notFound, detail: nil)
+        throw ErrorResponse(status: .serviceUnavailable, detail: "Not Implemented")
+        
+//        let request = try await request.decode(as: UpdateRequest.self, context: context)
+//        
+//        let id = try context.parameters.require("id", as: UUID.self)
+//        
+//        try await repository.updateBundle(id: id, displayName: request.displayName)
     }
     
     @Sendable

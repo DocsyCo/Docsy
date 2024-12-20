@@ -12,6 +12,7 @@ public protocol DescribedError: Error, LocalizedError, CustomStringConvertible {
     var errorDescription: String { get }
 }
 
+
 extension DescribedError {
     public var localizedDescription: String { errorDescription }
     public var description: String { errorDescription }

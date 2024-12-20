@@ -6,7 +6,7 @@ import DocumentationServer
 
 
 @main
-struct AppCommand: AsyncParsableCommand, AppArguments {
+struct AppCommand: AsyncParsableCommand {
     @Flag(name: .long)
     var inMemory: Bool = false
 
@@ -28,16 +28,20 @@ struct AppCommand: AsyncParsableCommand, AppArguments {
             env = env.merging(with: dotEnv)
         }
 
-//        let app = try await buildApplication(self)
-//        
-//        try await app.runService()
-//        let server = DocumentationServer.
-//
-//        let documentationRepository = InMemoryDocumentationRepository()
-//        let repository = RepositoryService(repository: documentationRepository)
-//        await server.registerService(repository)
+        let configuration = DocumentationServer.Configuration(
+            hostname: hostname,
+            port: port,
+            logLevel: logLevel ?? .info
+        )
         
-//        server.run()
+        let server = DocumentationServer(configuration: configuration)
+        
+        // Repository
+        let documentationRepository = InMemoryDocumentationRepository()
+        let repository = RepositoryService(repository: documentationRepository)
+        await server.registerService(repository)
+        
+        try await server.run()
     }
 }
 
