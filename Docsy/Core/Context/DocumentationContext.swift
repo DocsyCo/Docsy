@@ -10,7 +10,7 @@ import Foundation
 
 protocol DocumentationContext {
     func bundle(with identifier: BundleIdentifier) async -> DocumentationBundle?
-    func contentsOfUrl(_ url: URL) async throws -> Data
+    func contentsOfUrl(_ url: DocumentationURI) async throws -> Data
 }
 
 protocol DocumentationContextPlugin {

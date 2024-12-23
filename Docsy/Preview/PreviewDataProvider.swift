@@ -142,7 +142,7 @@ extension PreviewDataProvider {
         return DocumentationBundle(
             info: metadata,
             baseURL: baseURL,
-            indexURL: indexDir.url,
+            indexPath: indexDir.baseName,
             themeSettingsUrl: themeSettings?.url
         )
     }

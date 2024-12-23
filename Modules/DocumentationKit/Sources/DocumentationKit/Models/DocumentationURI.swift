@@ -19,6 +19,8 @@ public struct DocumentationURI: Sendable, Equatable, Codable {
     }
 
     public init?(url: URL) {
+        guard url.scheme == "doc" else { return nil }
+        
         if let host = url.host() {
             self.init(bundleIdentifier: host, path: url.path())
         } else if let firstPathComponent = url.pathComponents.first {

@@ -120,6 +120,36 @@ public class Navigator {
     }
 }
 
+final class CachedResource: @unchecked Sendable {
+    private let fileManager: FileManager
+    let id: String
+    let url: URL
+    
+    init(fileManager: FileManager = .default) throws {
+        let id = "cached-"+UUID().uuidString
+        let tempDir = fileManager.temporaryDirectory
+        
+        self.fileManager = fileManager
+        self.id = id
+        self.url = tempDir.appending(component: id, directoryHint: .isDirectory)
+        try fileManager.createDirectory(at: url, withIntermediateDirectories: false)
+    }
+    
+    func put(_ data: Data, at path: String) throws {
+        let fileURL = url.appending(path: path)
+        try data.write(to: fileURL)
+    }
+    
+    func getData(at path: String) throws -> Data {
+        let fileURL = url.appending(path: path)
+        return try fileManager.contents(of: fileURL)
+    }
+    
+    deinit {
+        try! fileManager.removeItem(at: url)
+    }
+}
+
 // MARK: DocumentationContextPlugin
 
 extension Navigator: DocumentationContextPlugin {
@@ -155,8 +185,32 @@ extension Navigator: DocumentationContextPlugin {
             preconditionFailure("bundle must be added to context before calling didAddBundle")
         }
 
+        let paths = ["availability.index", "data.mdb", "navigator.index"]
+        
+        let cachedIndex = try CachedResource()
+        
+        try await withThrowingTaskGroup(of: (String, Data).self) { group in
+            for path in paths {
+                group.addTask {
+                    print("INDEX", bundle.indexPath)
+                    let data = try await context.contentsOfUrl(
+                        DocumentationURI(
+                            bundleIdentifier: bundle.identifier,
+                            path: bundle.indexURL.appending(path: path).path()
+                        )
+                    )
+                    
+                    return (path, data)
+                }
+            }
+            
+            for try await (path, data) in group {
+                try cachedIndex.put(data, at: path)
+            }
+        }
+        
         let index = try NavigatorIndex.readNavigatorIndex(
-            url: bundle.indexURL,
+            url: cachedIndex.url,
             bundleIdentifier: bundle.identifier,
             readNavigatorTree: true,
             presentationIdentifier: nil

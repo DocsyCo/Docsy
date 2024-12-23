@@ -17,11 +17,29 @@ extension Logger {
     }
 }
 
+public class DocumentationWorkspace: DocumentationContext2 {
+    private let logger: Logger = .docsee("workspace")
+    private let bundles = BundleRepository()
+    
+    
+    func addDocumentation(_ bundle: DocumentationBundle, with provider: BundleRepositoryProvider) async {
+        await bundles.registerBundle(bundle, withProvider: provider)
+    }
+    
+    func removeDocumentation(_ bundleId: DocumentationBundle.ID) async {
+        await bundles.unregisterBundle(with: bundleId)
+    }
+}
+
+public protocol DocumentationContext2 {
+//    func contentsOfPath(_ path: String, in bundle: DocumentationBundle) throws -> Data
+}
+
 public class Workspace {
     let logger: Logger = .docsee("workspace")
 
+    
     // MARK: Sub Models
-
     let bundleRepository: BundleRepository = .init()
     let metadata: WorkspaceMetadata = .init()
     let navigator: Navigator = .init()
@@ -182,6 +200,10 @@ extension Workspace: DocumentationContext {
     }
 
     func contentsOfUrl(_ url: URL) async throws -> Data {
+        try await bundleRepository.contentsOfUrl(url)
+    }
+    
+    func contentsOfUrl(_ url: DocumentationURI) async throws -> Data {
         try await bundleRepository.contentsOfUrl(url)
     }
 }

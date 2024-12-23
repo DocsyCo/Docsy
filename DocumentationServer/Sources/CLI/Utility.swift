@@ -48,6 +48,7 @@ extension DocumentationRepository {
         at path: String?,
         displayName: consuming String?,
         identifier: consuming String?,
+        source: URL? = nil,
         tag: String
     ) async throws -> BundleDetail {
         
@@ -74,12 +75,19 @@ extension DocumentationRepository {
         
         
         guard let identifier, let displayName else {
-            throw ConsoleError("Provider at least --archive , or --displayName AND --identifier")
+            throw ConsoleError("Provide at least --archive , or --displayName AND --identifier")
         }
         
-        let bundle = try await addBundle(displayName: displayName, identifier: identifier)
+        let bundleId = try await addBundle(displayName: displayName, identifier: identifier).id
         
+        if let path {
+            _ = try await addRevision(tag, source: source ?? URL(filePath: path), toBundle: bundleId)
+        }
         print("warn: not uploading bundle data")
+        
+        guard let bundle = try await self.bundle(bundleId) else {
+            throw ConsoleError("Failed to find bundle on server")
+        }
         
         return bundle
     }

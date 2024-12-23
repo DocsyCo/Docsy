@@ -65,7 +65,9 @@ public final class BundleRepository: Sendable {
     public func unregisterAll() async {
         await sources.set(to: [:])
     }
-
+    
+//    @available(swift, obsoleted: 5.0, message: "This method is no longer supported")
+#warning("should be deprecated")
     public func contentsOfUrl(_ url: URL) async throws(RepositoryError) -> Data {
         guard let url = DocumentationURI(url: url) else {
             fatalError("Not a topic url")
@@ -73,6 +75,8 @@ public final class BundleRepository: Sendable {
         return try await contentsOfUrl(url)
     }
 
+    
+    
     public func contentsOfUrl(_ url: DocumentationURI) async throws(RepositoryError) -> Data {
         let source = await sources.value[url.bundleIdentifier]
 
@@ -80,8 +84,10 @@ public final class BundleRepository: Sendable {
             throw .unknownBundle(url.bundleIdentifier)
         }
 
-        let internalURL = source.bundle.baseURL.appending(path: url.path)
-
+        let internalURL = source.bundle.baseURL.appending(
+            path: url.path.trimmingCharacters(in: slashCharSet)
+        )
+        
         do {
             return try await source.provider.data(for: internalURL.path())
         } catch {

@@ -9,23 +9,56 @@ import Combine
 import DocumentationKit
 import SwiftUI
 
-struct DocumentationBrowserView: View {
-    @Bindable
-    var browser: DocumentationBrowser
 
-    init(repository: DocumentationRepository) {
-        self.browser = DocumentationBrowser(repository: repository)
-    }
-
+struct DocumentationBrowserView<Content: View, Detail: View>: View {
+    typealias Item = BundleDetail
+    
     @State
     var selection: BundleDetail.ID? = nil
-
+    var content: (Item) -> Content
+    var detail: (Item) -> Detail
+    
+    @Bindable
+    var browser: DocumentationBrowser
+    
+    
+    init(
+        _ repositories: DocumentationRepositories,
+        @ViewBuilder content: @escaping (Item) -> Content,
+        @ViewBuilder detail: @escaping (Item) -> Detail
+    ) {
+        self.browser = DocumentationBrowser(repositories: repositories)
+        self.content = content
+        self.detail = detail
+    }
+    
+    init(
+        _ repositories: DocumentationRepositories
+    ) where Content == DocumentationBrowserItemView, Detail == ItemDetailView {
+        self.init(
+            repositories,
+            content: { DocumentationBrowserItemView(item: $0) },
+            detail: { ItemDetailView(bundle: $0) }
+        )
+    }
+    
+    init(
+        _ repositories: DocumentationRepositories,
+        @ViewBuilder detail: @escaping (Item) -> Detail
+    ) where Content == DocumentationBrowserItemView {
+        self.init(
+            repositories,
+            content: { DocumentationBrowserItemView(item: $0) },
+            detail: detail
+        )
+    }
+    
     var body: some View {
         NavigationSplitView {
             ScrollViewReader { scrollProxy in
                 List(selection: $selection) {
                     ForEach(browser.items) { item in
-                        ItemView(item: item)
+                        content(item)
                             .tag(item.id)
                     }
                     .listRowInsets(.init(top: 5, leading: 0, bottom: 5, trailing: 0))
@@ -40,14 +73,24 @@ struct DocumentationBrowserView: View {
             .navigationSplitViewColumnWidth(min: 150, ideal: 250)
             .navigationTitle("Documentation")
             .searchable(text: $browser.searchTerm)
+            .searchScopes($browser.scope, activation: .onSearchPresentation, {
+                Text("Local").tag(DocumentationBrowser.Scope.local)
+                Text("Cloud").tag(DocumentationBrowser.Scope.cloud)
+            })
+            .toolbar(removing: .sidebarToggle)
+//            .searchSuggestions({
+//                ForEach(browser.suggestions) { suggestion in
+//                    Text(suggestion)
+//                }
+//            })
+//            .searchSuggestions(browser.suggestions.isEmpty ? .hidden : .visible, for: .content)
         } detail: {
             if let id = selection, let bundle = browser.items.first(where: { $0.id == id }) {
-                ItemDetailView(bundle: bundle)
+                detail(bundle)
             } else {
                 Text("Select a bundle")
             }
         }
-
         .task(id: browser.id) {
             do {
                 try await browser.bootstrap()
@@ -65,13 +108,13 @@ struct DocumentationBrowserView: View {
             displayName: "DocumentationKit",
             bundleIdentifier: "app.getdocsy.documentationkit"
         )
-
+        
         let documentationServer = BundleMetadata(
             id: UUID(),
             displayName: "DocumentationServer",
             bundleIdentifier: "app.getdocsy.documentationServer"
         )
-
+        
         return InMemoryDocumentationRepository(
             bundles: [documentationKit, documentationServer],
             revisions: [
@@ -87,41 +130,46 @@ struct DocumentationBrowserView: View {
             ]
         )
     }()
-
-    DocumentationBrowserView(repository: repository)
-        .frame(width: 500, height: 300)
+    
+    DocumentationBrowserView(.init(repos: [
+        .local: repository,
+        .cloud: repository
+    ]))
+    .frame(width: 500, height: 300)
 }
 
 // MARK: Item View
 
-private extension DocumentationBrowserView {
-    struct ItemView: View {
-        let item: DocumentationBrowser.Item
 
-        var body: some View {
-            VStack(alignment: .leading) {
-                HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading) {
-                        Text(item.metadata.displayName)
-                            .fontWeight(.medium)
+// MARK: DocumentationBrowserItemView
+struct DocumentationBrowserItemView: View {
+    let item: DocumentationBrowser.Item
 
-                        Text(item.metadata.bundleIdentifier)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .minimumScaleFactor(0.8)
-                    }
-                    .lineLimit(1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+    var body: some View {
+        VStack(alignment: .leading) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading) {
+                    Text(item.metadata.displayName)
+                        .fontWeight(.medium)
+
+                    Text(item.metadata.bundleIdentifier)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .minimumScaleFactor(0.8)
                 }
-
-                RevisionsScrollView(revisions: item.revisions)
-                    .scrollIndicators(.hidden)
-                    .ignoresSafeArea(.container, edges: .horizontal)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
 
+            RevisionsScrollView(revisions: item.revisions)
+                .scrollIndicators(.hidden)
+                .ignoresSafeArea(.container, edges: .horizontal)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+extension DocumentationBrowserItemView {
     struct RevisionsScrollView: View {
         let revisions: [BundleDetail.Revision]
 
@@ -145,52 +193,42 @@ private extension DocumentationBrowserView {
     }
 }
 
-public enum BundleRevisionKind: CaseIterable {
-    case release
-    case preRelease
-}
+// MARK: Item Detail
+struct ItemDetailView: View {
+    let bundle: BundleDetail
 
-extension Set<BundleRevisionKind> {
-    static let all: Set<BundleRevisionKind> = [.release, .preRelease]
-}
+    @State
+    var showPrereleases = false
 
-private extension DocumentationBrowserView {
-    struct ItemDetailView: View {
-        let bundle: BundleDetail
+    @State
+    var sortOrder = [
+        SortDescriptor(\BundleDetail.Revision.tag, order: .reverse),
+    ]
 
-        @State
-        var showPrereleases = false
+    @State
+    var versionTerm: String = ""
 
-        @State
-        var sortOrder = [
-            SortDescriptor(\BundleDetail.Revision.tag, order: .reverse),
-        ]
-
-        @State
-        var versionTerm: String = ""
-
-        func filteredVersions(term: String) -> [BundleDetail.Revision] {
-            if term.isEmpty {
-                bundle.revisions
-            } else {
-                bundle.revisions.filter { $0.tag.contains(versionTerm) }
-            }
+    func filteredVersions(term: String) -> [BundleDetail.Revision] {
+        if term.isEmpty {
+            bundle.revisions
+        } else {
+            bundle.revisions.filter { $0.tag.contains(versionTerm) }
         }
+    }
 
-        var body: some View {
-            Table(filteredVersions(term: versionTerm), sortOrder: $sortOrder) {
-                TableColumn("Tag", value: \.tag)
-            }
-            .safeAreaInset(edge: .top, spacing: 0) {
-                VStack(alignment: .leading) {
-                    Text(bundle.metadata.displayName)
-                        .font(.title)
+    var body: some View {
+        Table(filteredVersions(term: versionTerm), sortOrder: $sortOrder) {
+            TableColumn("Tag", value: \.tag)
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            VStack(alignment: .leading) {
+                Text(bundle.metadata.displayName)
+                    .font(.title)
 
-                    TextField("", text: $versionTerm, prompt: Text("Search versions"))
-                        .textFieldStyle(.roundedBorder)
-                }
-                .padding(10)
+                TextField("", text: $versionTerm, prompt: Text("Search versions"))
+                    .textFieldStyle(.roundedBorder)
             }
+            .padding(10)
         }
     }
 }

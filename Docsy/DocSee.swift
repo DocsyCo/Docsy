@@ -9,6 +9,43 @@ import DocumentationKit
 import GRDB
 import SwiftUI
 
+import DocumentationServerClient
+
+@main
+struct DocSeeApp: App {
+    let repositories: DocumentationRepositories = DocumentationRepositories(repos: [
+        .cloud: HTTPDocumentationRepository(baseURI: URL(string: "http://127.0.0.1:1234")!)
+    ])
+    
+    // MARK: Multiwindow
+#if os(macOS)
+    let supportsWindows: Bool = true
+#else
+    @Environment(\.supportsMultipleWindows)
+    private var supportsMultipleWindows
+    
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass
+    
+    @Environment(\.verticalSizeClass)
+    private var verticalSizeClass
+    
+    var supportsWindows: Bool {
+        #error("Not implemented")
+    }
+#endif
+    
+    let workspace = try! Workspace(config: .init(inMemory: true))
+    
+    var body: some Scene {
+        MainWindow(workspace: workspace, repositories: repositories)
+        BundleBrowserWindow(workspace: workspace, repositories: repositories)
+    }
+}
+
+
+
+
 extension Project {
     static func scratchpad() -> Project {
         Project(displayName: "Scratchpad", items: [], references: [:])
@@ -50,38 +87,4 @@ struct ApplicationDB {
     }
 }
 
-@main
-struct DocsyApp: App {
-    @State
-    var db: ApplicationDB? = nil
 
-    @State
-    var isLoaded: Bool = false
-
-    var body: some Scene {
-        WindowGroup {
-            Group {
-                if let db {
-                    DocumentationBrowserView(repository: db.documentation)
-                } else {
-                    ProgressView()
-                }
-            }
-            .task {
-                guard db == nil else { return }
-                do {
-                    let databaseURL = URL.temporaryDirectory.appending(component: "testdb")
-                    print("DATABASEURL", databaseURL.path())
-                    let db = try ApplicationDB()
-
-                    print(URL.temporaryDirectory.appending(component: "testdb"))
-                    try? await PreviewDocumentationRepository.createPreviewBundles(db.documentation)
-
-                    self.db = db
-                } catch {
-                    print("HO", error)
-                }
-            }
-        }
-    }
-}

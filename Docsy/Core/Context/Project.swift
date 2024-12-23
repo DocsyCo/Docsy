@@ -100,12 +100,13 @@ extension Project {
             case .http(let httpSource):
                 DocumentationBundle(
                     info: metadata,
-                    indexURL: httpSource.indexUrl
+                    indexPath: String(httpSource.indexUrl.absoluteString
+                        .trimmingPrefix(httpSource.baseURL.absoluteString))
                 )
             case .localFS(let localSource):
                 DocumentationBundle(
                     info: metadata,
-                    indexURL: localSource.rootURL.appending(path: "index")
+                    indexPath: "/index"
                 )
             default: fatalError("Unavailable for kind '\(source.kind)'")
             }

@@ -232,29 +232,41 @@ struct EnvironmentValueView<Content: View, Value>: View {
 
 #Preview(traits: .modifier(PreviewDocumentationRepository())) {
     EnvironmentValueView(\.documentationRepo) { repository in
-        DocumentationBrowserView(repository: repository)
-            .frame(width: 400, height: 300)
+        DocumentationBrowserView(.init(repos: [
+            .local: repository,
+            .cloud: repository
+        ]))
+        .frame(width: 400, height: 300)
     }
 }
 
 // MARK: Model Extension
 
-extension BundleMetadata: FetchableRecord, PersistableRecord {
+extension BundleMetadata: @retroactive MutablePersistableRecord {}
+extension BundleMetadata: @retroactive TableRecord {}
+extension BundleMetadata: @retroactive EncodableRecord {}
+extension BundleMetadata: @retroactive FetchableRecord, @retroactive PersistableRecord {
     public static let databaseTableName: String = "bundles"
     static let revisions = hasMany(BundleRevision.self)
 }
 
-extension BundleRevision: FetchableRecord, PersistableRecord {
+extension BundleRevision: @retroactive MutablePersistableRecord {}
+extension BundleRevision: @retroactive TableRecord {}
+extension BundleRevision: @retroactive EncodableRecord {}
+extension BundleRevision: @retroactive FetchableRecord, @retroactive PersistableRecord {
     public static let databaseTableName: String = "revisions"
     static let bundle = belongsTo(BundleMetadata.self)
 }
 
-extension BundleDetail.Revision: FetchableRecord, PersistableRecord {
+extension BundleDetail.Revision: @retroactive MutablePersistableRecord {}
+extension BundleDetail.Revision: @retroactive TableRecord {}
+extension BundleDetail.Revision: @retroactive EncodableRecord {}
+extension BundleDetail.Revision: @retroactive FetchableRecord, @retroactive PersistableRecord {
     public static let databaseTableName: String = BundleRevision.databaseTableName
     static let bundle = belongsTo(BundleMetadata.self)
 }
 
-extension BundleDetail: FetchableRecord {}
+extension BundleDetail: @retroactive FetchableRecord {}
 
 extension QueryInterfaceRequest<BundleMetadata> {
     func detail() -> QueryInterfaceRequest<BundleDetail> {

@@ -1,2 +1,16 @@
-include:
-  - path: docker/local-development.yaml
+# include:
+#   - path: docker/local-development.yaml
+
+services:
+  storage:
+    extends:
+      file: common/compose.yaml
+      service: storage
+
+volumes:
+  storage_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/noahkamara/Developer/DocSee/NEW/Docsy/Documentation

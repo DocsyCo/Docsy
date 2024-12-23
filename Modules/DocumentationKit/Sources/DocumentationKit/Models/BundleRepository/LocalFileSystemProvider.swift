@@ -46,7 +46,7 @@ public struct LocalFileSystemDataProvider: BundleRepositoryProvider {
 
     /// - Parameter path: the path to the content
     /// - Returns: The contents of the file at path
-    public func data(for path: String) async throws -> Data {
+    public func data(for path: String) throws -> Data {
         let url = rootURL.appending(path: path)
         return try Data(contentsOf: url)
     }
@@ -95,7 +95,7 @@ public struct LocalFileSystemDataProvider: BundleRepositoryProvider {
         return DocumentationBundle(
             info: metadata,
             baseURL: url,
-            indexURL: url.appending(components: "index", "index.json")
+            indexPath: "/index"
         )
     }
 }

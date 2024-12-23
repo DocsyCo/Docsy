@@ -41,7 +41,9 @@ public struct DocumentationBundle: Identifiable, CustomStringConvertible, Sendab
 //    }
 
     /// The url to the index directory
-    public let indexURL: URL
+    public var indexURL: URL { baseURL.appending(path: indexPath) }
+    
+    public let indexPath: String
 
     /// An URL to a custom JSON settings file used to theme renderer output.
     public let themeSettingsUrl: URL?
@@ -60,12 +62,12 @@ public struct DocumentationBundle: Identifiable, CustomStringConvertible, Sendab
     public init(
         info: Metadata,
         baseURL: URL = URL(string: "/")!,
-        indexURL: URL,
+        indexPath: String,
         themeSettingsUrl: URL? = nil
     ) {
         self.metadata = info
         self.baseURL = baseURL
-        self.indexURL = indexURL
+        self.indexPath = indexPath.trimmingCharacters(in: CharacterSet(["/"]))
         self.themeSettingsUrl = themeSettingsUrl
 //        self.documentURLs = documentURLs
 //        self.miscResourceURLs = miscResourceURLs
