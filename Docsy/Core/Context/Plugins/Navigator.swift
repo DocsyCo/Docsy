@@ -192,7 +192,6 @@ extension Navigator: DocumentationContextPlugin {
         try await withThrowingTaskGroup(of: (String, Data).self) { group in
             for path in paths {
                 group.addTask {
-                    print("INDEX", bundle.indexPath)
                     let data = try await context.contentsOfUrl(
                         DocumentationURI(
                             bundleIdentifier: bundle.identifier,
@@ -235,32 +234,56 @@ extension Navigator: DocumentationContextPlugin {
             ))
         }
 
-        node.addTask { node in
-            try await withCheckedThrowingContinuation { continuation in
-                do {
-                    try index.readNavigatorTree(
-                        timeout: 5.0,
-                        queue: .global(qos: .userInitiated),
-                        broadcast: { _, isCompleted, error in
-                            if let error {
-                                print("Error occured loading index", error)
-                                continuation.resume(throwing: error)
-                                return
-                            }
-
-                            if isCompleted {
-                                Task { @MainActor in
-                                    node.isLoading = true
-                                }
-                                continuation.resume()
-                            }
+        let _: Void = try await withCheckedThrowingContinuation { continuation in
+            do {
+                try index.readNavigatorTree(
+                    timeout: 5.0,
+                    queue: .global(qos: .userInitiated),
+                    broadcast: { _, isCompleted, error in
+                        if let error {
+                            print("Error occured loading index", error)
+                            continuation.resume(throwing: error)
+                            return
                         }
-                    )
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+
+                        if isCompleted {
+                            Task { @MainActor in
+                                node.isLoading = true
+                            }
+                            continuation.resume()
+                        }
+                    }
+                )
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
+//        node.addTask { node in
+//            try await withCheckedThrowingContinuation { continuation in
+//                do {
+//                    try index.readNavigatorTree(
+//                        timeout: 5.0,
+//                        queue: .global(qos: .userInitiated),
+//                        broadcast: { _, isCompleted, error in
+//                            if let error {
+//                                print("Error occured loading index", error)
+//                                continuation.resume(throwing: error)
+//                                return
+//                            }
+//
+//                            if isCompleted {
+//                                Task { @MainActor in
+//                                    node.isLoading = true
+//                                }
+//                                continuation.resume()
+//                            }
+//                        }
+//                    )
+//                } catch {
+//                    continuation.resume(throwing: error)
+//                }
+//            }
+//        }
 
         let prependNodes = newNodes
         await MainActor.run {

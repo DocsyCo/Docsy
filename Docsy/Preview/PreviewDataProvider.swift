@@ -23,7 +23,7 @@ class PreviewDataProvider: BundleRepositoryProvider {
     }
 
     func data(for path: String) async throws -> Data {
-        try await provider.data(for: path)
+        try provider.data(for: path)
     }
 
     func bundle(matching identifierOrName: String) -> DocumentationBundle? {
@@ -164,7 +164,8 @@ public extension FSNodeProtocol {
 
     /// The base name of the node (without an extension)
     var baseName: String {
-        name.split(separator: ".").dropLast(1).joined()
+        let baseName = name.split(separator: ".").dropLast(1).joined()
+        return baseName.isEmpty ? name : baseName
     }
 
     /// The name of the node

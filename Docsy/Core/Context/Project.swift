@@ -100,8 +100,7 @@ extension Project {
             case .http(let httpSource):
                 DocumentationBundle(
                     info: metadata,
-                    indexPath: String(httpSource.indexUrl.absoluteString
-                        .trimmingPrefix(httpSource.baseURL.absoluteString))
+                    indexPath: String(httpSource.indexUrl.absoluteString.trimmingPrefix(httpSource.baseURL.absoluteString))
                 )
             case .localFS(let localSource):
                 DocumentationBundle(

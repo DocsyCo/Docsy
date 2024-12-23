@@ -146,7 +146,12 @@ extension Workspace {
         with provider: BundleRepositoryProvider
     ) async throws {
         logger.info("[addBundle] adding \(bundle)")
-        await bundleRepository.registerBundle(bundle, withProvider: provider)
+        guard await bundleRepository.bundle(with: bundle.identifier) == nil else {
+            logger.error(
+                "cannot add duplicate bundle '\(bundle)'. There exists a bundle with '\(bundle.identifier)'"
+            )
+            return
+        }
 
         do {
             for plugin in plugins {

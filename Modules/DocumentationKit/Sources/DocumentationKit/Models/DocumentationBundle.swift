@@ -41,7 +41,7 @@ public struct DocumentationBundle: Identifiable, CustomStringConvertible, Sendab
 //    }
 
     /// The url to the index directory
-    public var indexURL: URL { baseURL.appending(path: indexPath) }
+    public var indexURL: URL { URL(filePath: indexPath) }
     
     public let indexPath: String
 
@@ -85,6 +85,10 @@ public struct DocumentationBundle: Identifiable, CustomStringConvertible, Sendab
 //            path: "/tutorials",
 //            sourceLanguage: .swift
 //        )
+    }
+    
+    func url(for path: String) -> URL {
+        baseURL.appending(path: path)
     }
 }
 
