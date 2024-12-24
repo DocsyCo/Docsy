@@ -13,6 +13,12 @@ protocol DocumentationContext {
     func contentsOfUrl(_ url: DocumentationURI) async throws -> Data
 }
 
+final class Workspace2 {
+    func register() {}
+    func unregister() {}
+}
+
+
 protocol DocumentationContextPlugin {
     var pluginId: String { get }
 
@@ -21,6 +27,9 @@ protocol DocumentationContextPlugin {
     func load(_ project: Project, in context: DocumentationContext) async throws
 
     func didAddBundle(with identifier: BundleIdentifier, in context: any DocumentationContext) async throws
+
+//    func context(_ context: any DocumentationContext, didAddBundle identifier: BundleIdentifier)
+//    func context(_ context: any DocumentationContext, didRemoveBundle identifier: BundleIdentifier)
 
     /// Called before a Workspace saves a project.
     ///

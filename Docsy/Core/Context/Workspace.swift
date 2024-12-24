@@ -152,6 +152,8 @@ extension Workspace {
             )
             return
         }
+        
+        await bundleRepository.registerBundle(bundle, withProvider: provider)
 
         do {
             for plugin in plugins {
