@@ -14,6 +14,9 @@ struct DocumentationBrowserView<Content: View, Detail: View>: View {
     typealias Item = BundleDetail
     
     @State
+    var isPresentingSearch: Bool = true
+    
+    @State
     var selection: BundleDetail.ID? = nil
     var content: (Item) -> Content
     var detail: (Item) -> Detail
@@ -72,25 +75,6 @@ struct DocumentationBrowserView<Content: View, Detail: View>: View {
             .scrollContentBackground(.visible)
             .navigationSplitViewColumnWidth(min: 150, ideal: 250)
             .navigationTitle("Documentation")
-            .searchable(text: $browser.searchTerm)
-            .searchScopes($browser.scopes, activation: .onSearchPresentation, {
-                Text("All").tag(Set(browser.repositories.scopes))
-                
-                if browser.repositories.scopes.contains(.local) {
-                    Text("Local").tag(Set([DocumentationBrowser.Scope.local]))
-                }
-                
-                if browser.repositories.scopes.contains(.cloud) {
-                    Text("Cloud").tag(Set([DocumentationBrowser.Scope.cloud]))
-                }
-            })
-            .toolbar(removing: .sidebarToggle)
-//            .searchSuggestions({
-//                ForEach(browser.suggestions) { suggestion in
-//                    Text(suggestion)
-//                }
-//            })
-//            .searchSuggestions(browser.suggestions.isEmpty ? .hidden : .visible, for: .content)
         } detail: {
             if let id = selection, let bundle = browser.items.first(where: { $0.id == id }) {
                 detail(bundle)
@@ -98,6 +82,22 @@ struct DocumentationBrowserView<Content: View, Detail: View>: View {
                 Text("Select a bundle")
             }
         }
+        .searchable(
+            text: $browser.searchTerm,
+            isPresented: $isPresentingSearch
+        )
+        .searchScopes($browser.scopes, activation: .onSearchPresentation, {
+            Text("All").tag(Set(browser.repositories.scopes))
+            
+            if browser.repositories.scopes.contains(.local) {
+                Text("Local").tag(Set([DocumentationBrowser.Scope.local]))
+            }
+            
+            if browser.repositories.scopes.contains(.cloud) {
+                Text("Cloud").tag(Set([DocumentationBrowser.Scope.cloud]))
+            }
+        })
+        .toolbar(removing: .sidebarToggle)
         .task(id: browser.id) {
             do {
                 try await browser.bootstrap()

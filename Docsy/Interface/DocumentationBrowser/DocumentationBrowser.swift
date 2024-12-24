@@ -50,7 +50,7 @@ class DocumentationBrowser: Identifiable {
     private func update() {
         observationTask?.cancel()
         let term = searchTerm
-        let scopes = scopes
+        let scopes: Set<Scope> = scopes.isEmpty ? .all : scopes
         
         print("Update", scopes, term)
         
