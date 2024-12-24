@@ -117,7 +117,6 @@ final class CamelCaseTokenizer: FTS5CustomTokenizer {
             }
 
             let splitText = match.output.1.splitCamelCase()
-            print("SPLIT", input, splitText)
             output.append(contentsOf: splitText)
         }
 

@@ -11,6 +11,16 @@ import SwiftUI
 
 import DocumentationServerClient
 
+/// # Todo
+/// - [ ] persisted local repository
+///     - [ ] import local bundles
+/// - [ ] allow adding group markers (and reorder)
+/// - [ ] Workspace persistence
+///     - [ ] bundles
+///     - [ ] navigator-order
+///     - [ ] metadata (title)
+/// - [ ] custom theme settings (future idea -> customizable?)
+
 @main
 struct DocSeeApp: App {
     let repositories: DocumentationRepositories = DocumentationRepositories(repos: [

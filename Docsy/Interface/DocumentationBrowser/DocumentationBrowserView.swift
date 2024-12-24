@@ -73,9 +73,16 @@ struct DocumentationBrowserView<Content: View, Detail: View>: View {
             .navigationSplitViewColumnWidth(min: 150, ideal: 250)
             .navigationTitle("Documentation")
             .searchable(text: $browser.searchTerm)
-            .searchScopes($browser.scope, activation: .onSearchPresentation, {
-                Text("Local").tag(DocumentationBrowser.Scope.local)
-                Text("Cloud").tag(DocumentationBrowser.Scope.cloud)
+            .searchScopes($browser.scopes, activation: .onSearchPresentation, {
+                Text("All").tag(Set(browser.repositories.scopes))
+                
+                if browser.repositories.scopes.contains(.local) {
+                    Text("Local").tag(Set([DocumentationBrowser.Scope.local]))
+                }
+                
+                if browser.repositories.scopes.contains(.cloud) {
+                    Text("Cloud").tag(Set([DocumentationBrowser.Scope.cloud]))
+                }
             })
             .toolbar(removing: .sidebarToggle)
 //            .searchSuggestions({
