@@ -14,6 +14,10 @@ import DocumentationServerClient
 /// # Todo
 /// - [ ] persisted local repository
 ///     - [ ] import local bundles
+/// - [ ] Bundle Import
+///     - [ ] Import local filesystem
+///     - [ ] Import from URL
+///     - [ ] Import from server
 /// - [ ] allow adding group markers (and reorder)
 /// - [ ] Workspace persistence
 ///     - [ ] bundles
@@ -22,7 +26,7 @@ import DocumentationServerClient
 /// - [ ] custom theme settings (future idea -> customizable?)
 
 @main
-struct DocSeeApp: App {
+struct DocsyApp: App {
     let repositories: DocumentationRepositories = DocumentationRepositories(repos: [
         .cloud: HTTPDocumentationRepository(baseURI: URL(string: "http://127.0.0.1:1234")!)
     ])

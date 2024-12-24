@@ -98,6 +98,13 @@ struct DocumentationBrowserView<Content: View, Detail: View>: View {
             }
         })
         .toolbar(removing: .sidebarToggle)
+        .toolbar {
+            Button(action: {
+                
+            }) {
+                Label("Import Bundle", systemImage: "square.and.arrow.down")
+            }
+        }
         .task(id: browser.id) {
             do {
                 try await browser.bootstrap()

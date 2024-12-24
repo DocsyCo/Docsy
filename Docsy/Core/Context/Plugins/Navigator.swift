@@ -140,6 +140,16 @@ final class CachedResource: @unchecked Sendable {
         try data.write(to: fileURL)
     }
     
+    func `import`(from url: URL, to path: String) async throws {
+        let data = if url.isFileURL {
+            try fileManager.contents(of: url)
+        } else {
+            try await URLSession.shared.data(from: url).0
+        }
+        
+        try self.put(data, at: path)
+    }
+    
     func getData(at path: String) throws -> Data {
         let fileURL = url.appending(path: path)
         return try fileManager.contents(of: fileURL)

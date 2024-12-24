@@ -22,7 +22,9 @@ struct MainWindow: Scene {
     var body: some Scene {
         WindowGroup {
             if db != nil {
-                MainView(workspace: workspace)
+                BundleImportView(importer: BundleImporter(repository: repositories[.local]!))
+
+//                MainView(workspace: workspace)
                     .environment(repositories)
             } else {
                 ProgressView()
