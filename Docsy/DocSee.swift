@@ -31,7 +31,9 @@ struct DocSeeApp: App {
     private var verticalSizeClass
     
     var supportsWindows: Bool {
-        #error("Not implemented")
+        supportsMultipleWindows && (
+            horizontalSizeClass == .compact || verticalSizeClass == .compact
+        )
     }
 #endif
     

@@ -57,10 +57,12 @@ struct HTTPBundleRepositoryProvider: BundleRepositoryProvider {
 }
 
 
+
 struct BundleBrowserWindow: Scene {
     let workspace: Workspace
     let repositories: DocumentationRepositories
     
+#if os(macOS)
     var body: some Scene {
         Window("Bundle Browser", id: WindowID.bundleBrowser.identifier) {
             DocumentationBrowserView(repositories) { item in
@@ -101,4 +103,38 @@ struct BundleBrowserWindow: Scene {
         .windowToolbarStyle(.unifiedCompact)
         .defaultLaunchBehavior(.suppressed)
     }
+#else
+    var body: some Scene {
+        WindowGroup(id: WindowID.bundleBrowser.identifier) {
+            DocumentationBrowserView(repositories) { item in
+                ItemDetailView(bundle: item)
+                    .toolbar {
+                        if let firstRevision = item.revisions.first {
+                            Menu {
+                                ForEach(item.revisions) { revision in
+                                    AsyncButton("Add '\(revision.tag)'") {
+                                        let provider = HTTPBundleRepositoryProvider(
+                                            rootURL: revision.source
+                                        )
+                                        let bundle = try await provider.bundle()
+                                        try await workspace.addBundle(bundle, with: provider)
+                                    }
+                                }
+                            } label: {
+                                AsyncButton("Add '\(firstRevision.tag)' to Workspace") {
+                                    print("SOURCE", firstRevision.source)
+                                    let provider = HTTPBundleRepositoryProvider(rootURL: firstRevision.source)
+                                    let bundle = try await provider.bundle()
+                                    try await workspace.addBundle(bundle, with: provider)
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+        .defaultSize(width: 300, height: 300)
+        .windowResizability(.contentMinSize)
+    }
+#endif
 }
+

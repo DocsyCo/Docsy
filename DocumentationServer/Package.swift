@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "DocumentationServer",
-    platforms: [.macOS(.v15)],
+    platforms: [.macOS(.v15), .iOS(.v18)],
     products: [
         .executable(name: "CLI", targets: ["CLI"]),
         .library(name: "DocumentationServer", targets: ["DocumentationServer"]),

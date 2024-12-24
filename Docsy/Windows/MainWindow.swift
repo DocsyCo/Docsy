@@ -48,12 +48,14 @@ struct MainWindow: Scene {
                 Button("Settings") {}
             }
             
+#if os(macOS)
             CommandGroup(replacing: .windowList) {
                 Button("Bundle Browser") {
                     openWindow(.bundleBrowser)
                 }
                 .keyboardShortcut("b", modifiers: .command)
             }
+#endif
         }
     }
 }

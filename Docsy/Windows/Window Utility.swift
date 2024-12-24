@@ -17,7 +17,7 @@ extension OpenWindowAction {
 
 }
 
-struct WindowID<T> {
+struct WindowID<T>: Codable, Hashable, Equatable {
     let identifier: String
     
     init(_ identifier: String) {
