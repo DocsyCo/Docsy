@@ -24,6 +24,7 @@ struct NavigatorTreeView: View {
         OutlineGroup(root, children: \NavigatorTree.Node.nonEmptyChildren) { node in
             if let nodeId = node.id, node.item.pageType != PageType.groupMarker.rawValue {
                 LeafView(item: node.item)
+                    .moveDisabled(node.parent?.item.pageType != PageType.languageGroup.rawValue)
                     .tag(
                         Navigator.NavigatorID(
                             topLevelId: topLevelId,

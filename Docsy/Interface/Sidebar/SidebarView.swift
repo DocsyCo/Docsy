@@ -56,6 +56,9 @@ struct SidebarView: View {
                         }
                     }
                 }
+                .onMove { indices, newOffset in
+                    navigator.move(fromOffsets: indices, toOffset: newOffset)
+                }
             } else {
                 Text("No Nodes yes")
             }

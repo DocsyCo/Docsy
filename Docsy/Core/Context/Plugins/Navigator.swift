@@ -60,6 +60,11 @@ public class Navigator {
         public var topLevelId: UInt32 { UInt32(rawValue & 0xFFFFFFFF) }
         public var nodeId: UInt32 { UInt32(rawValue >> 32) }
     }
+    
+    @MainActor
+    func move(fromOffsets originalOffsets: IndexSet, toOffset newOffset: Int) {
+        nodes.move(fromOffsets: originalOffsets, toOffset: newOffset)
+    }
 
     /// If available, returns the path from the numeric compound ID inside the navigator tree.
     @MainActor
@@ -69,12 +74,7 @@ public class Navigator {
             return nil
         }
 
-        guard let navigator = indices[id.topLevelId] else {
-            print("index not found")
-            return nil
-        }
-
-        return navigator.path(for: id.nodeId)
+        return index.path(for: id.nodeId)
     }
 
     /// If available, returns the path from the numeric compound ID inside the navigator tree.
