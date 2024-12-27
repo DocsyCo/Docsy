@@ -24,7 +24,7 @@ actor IDGenerator {
 
 @Observable
 public class Navigator {
-    private var idGenerator: IDGenerator
+    private let idGenerator: IDGenerator
 
     @MainActor
     private(set) var indices: [UInt32: NavigatorIndex] = [:]

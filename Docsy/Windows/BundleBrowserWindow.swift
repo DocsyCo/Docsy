@@ -8,11 +8,6 @@
 import SwiftUI
 import DocumentationKit
 
-extension BundleDetail.Revision {
-    func provider() {
-        HTTPBundleRepositoryProvider(rootURL: source)
-    }
-}
 
 struct HTTPBundleRepositoryProvider: BundleRepositoryProvider {
     public let identifier: String = UUID().uuidString
@@ -65,37 +60,12 @@ struct BundleBrowserWindow: Scene {
 #if os(macOS)
     var body: some Scene {
         Window("Bundle Browser", id: WindowID.bundleBrowser.identifier) {
-            DocumentationBrowserView(repositories) { item in
-                ItemDetailView(bundle: item)
-                    .toolbar {
-                        if let firstRevision = item.revisions.first {
-                            Menu {
-                                ForEach(item.revisions) { revision in
-                                    AsyncButton("Add '\(revision.tag)'") {
-                                        let provider = HTTPBundleRepositoryProvider(
-                                            rootURL: revision.source
-                                        )
-                                        let bundle = try await provider.bundle()
-                                        try await workspace.addBundle(bundle, with: provider)
-                                    }
-                                }
-                            } label: {
-                                AsyncButton("Add '\(firstRevision.tag)' to Workspace") {
-                                    print("SOURCE", firstRevision.source)
-                                    let provider = HTTPBundleRepositoryProvider(rootURL: firstRevision.source)
-                                    let bundle = try await provider.bundle()
-                                    try await workspace.addBundle(bundle, with: provider)
-                                }
-                            }
-                        }
-                    }
-            }
+            WorkspaceBundleBrowser(workspace: workspace, repositories: repositories)
         }
         .defaultSize(width: 300, height: 300)
         .windowIdealPlacement({ content, context in
             let minSize = content.sizeThatFits(.zero)
             print(minSize)
-            
             return .init(.zero, size: minSize)
         })
         .windowResizability(.contentMinSize)
@@ -106,35 +76,12 @@ struct BundleBrowserWindow: Scene {
 #else
     var body: some Scene {
         WindowGroup(id: WindowID.bundleBrowser.identifier) {
-            DocumentationBrowserView(repositories) { item in
-                ItemDetailView(bundle: item)
-                    .toolbar {
-                        if let firstRevision = item.revisions.first {
-                            Menu {
-                                ForEach(item.revisions) { revision in
-                                    AsyncButton("Add '\(revision.tag)'") {
-                                        let provider = HTTPBundleRepositoryProvider(
-                                            rootURL: revision.source
-                                        )
-                                        let bundle = try await provider.bundle()
-                                        try await workspace.addBundle(bundle, with: provider)
-                                    }
-                                }
-                            } label: {
-                                AsyncButton("Add '\(firstRevision.tag)' to Workspace") {
-                                    print("SOURCE", firstRevision.source)
-                                    let provider = HTTPBundleRepositoryProvider(rootURL: firstRevision.source)
-                                    let bundle = try await provider.bundle()
-                                    try await workspace.addBundle(bundle, with: provider)
-                                }
-                            }
-                        }
-                    }
-            }
+            WorkspaceBundleBrowser(workspace: workspace, repositories: repositories)
         }
         .defaultSize(width: 300, height: 300)
         .windowResizability(.contentMinSize)
     }
 #endif
 }
+
 

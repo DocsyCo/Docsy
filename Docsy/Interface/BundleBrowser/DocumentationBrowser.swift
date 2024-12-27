@@ -7,9 +7,11 @@
 
 import DocumentationKit
 import Foundation
+import OSLog
 
 @Observable
 class DocumentationBrowser: Identifiable {
+    let logger = Logger.docsee("DocumentationBrowser")
     typealias Item = BundleDetail
     
     let repositories: DocumentationRepositories
@@ -50,32 +52,18 @@ class DocumentationBrowser: Identifiable {
     private func update() {
         observationTask?.cancel()
         let term = searchTerm
-        let scopes: Set<Scope> = scopes.isEmpty ? .all : scopes
+        let scopes = scopes.isEmpty ? .all : scopes
         
-        print("Update", scopes, term)
-        
-        observationTask = Task {
-            let items = try await withThrowingTaskGroup(of: (Scope, [BundleDetail]).self) { tasks in
-                for scope in scopes {
-                    guard let repository = repositories[scope] else {
-                        print("could not find repository for scope '\(scope)'")
-                        continue
-                    }
-                    
-                    tasks.addTask {
-                        let results = try await repository.search(query: .init(term: term))
-                        return (scope, results)
-                    }
-                }
-                
-                var results: [Scope:[Item]] = [:]
-                
-                for try await (scope, items) in tasks {
-                    results[scope] = items
-                }
-                
-                return results.sorted(by: { $0.key < $1.key }).flatMap(\.value)
-            }
+        observationTask = Task<Void, any Error> {
+            let logger = self.logger
+            let query = DocumentationRepositoryBundleQuery(term: term)
+            
+            let items = await searchRepositories(
+                query: query,
+                scopes: scopes,
+                repositories: repositories,
+                logger: logger
+            )
 
             await MainActor.run {
                 self.items = items
@@ -84,9 +72,9 @@ class DocumentationBrowser: Identifiable {
     }
 }
 
-
 extension DocumentationBrowser {
-    struct Scope: Hashable, Comparable {
+    struct Scope: Hashable, Comparable, CustomStringConvertible {
+        var description: String { "Scope(\(identifier)" }
         let identifier: String
         
         static let local = Scope("local")
@@ -114,6 +102,60 @@ extension DocumentationBrowser {
 extension Set where Element == DocumentationBrowser.Scope {
     static let all: Self = [.local, .cloud]
 }
+
+
+typealias ScopedSearchResult = (
+    DocumentationBrowser.Scope,
+    Result<[DocumentationBrowser.Item], any Error>
+)
+
+@Sendable
+fileprivate func searchRepositories(
+    query: DocumentationRepositoryBundleQuery,
+    scopes: Set<DocumentationBrowser.Scope>,
+    repositories: DocumentationRepositories,
+    logger: Logger
+) async -> [DocumentationBrowser.Item] {
+    return await withTaskGroup(
+        of: ScopedSearchResult.self
+    ) { tasks in
+        for scope in scopes.sorted() {
+            guard let repository = await repositories[scope] else {
+                logger.error("could not find repository for scope '\(scope.identifier)'")
+                continue
+            }
+            
+            tasks.addTask {
+                do {
+                    let items = try await repository.search(query: query)
+                    return (scope, .success(items))
+                } catch {
+                    return (scope, .failure(error))
+                }
+            }
+        }
+        
+        var results: [DocumentationBrowser.Scope: [DocumentationBrowser.Item]] = [:]
+        
+        while let (scope, result) = await tasks.next() {
+            switch result {
+            case .success(let items):
+                logger.info("DocumentationBrowser(\(scope)): found \(items.count) item")
+                results[scope] = items
+            case .failure(let error):
+                if error is CancellationError {
+                    logger.info("DocumentationBrowser(\(scope)): cancelled")
+                } else {
+                    logger.error("DocumentationBrowser(\(scope)): \(error)")
+                }
+            }
+        }
+        
+        return Array(results.sorted(by: { $0.key < $1.key }).flatMap(\.value))
+    }
+}
+
+
 
 @MainActor
 @Observable

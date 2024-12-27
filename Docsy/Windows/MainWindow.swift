@@ -20,11 +20,9 @@ struct MainWindow: Scene {
     private var openWindow
     
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: WindowID.main.identifier) {
             if db != nil {
-                BundleImportView(importer: BundleImporter(repository: repositories[.local]!))
-
-//                MainView(workspace: workspace)
+                MainView(workspace: workspace)
                     .environment(repositories)
             } else {
                 ProgressView()

@@ -59,7 +59,43 @@ struct DocsyApp: App {
     }
 }
 
-
+extension DocumentationRepositories {
+    static func preview() -> DocumentationRepositories {
+        let localRepository: any DocumentationRepository = {
+            let documentationKit = BundleMetadata(
+                id: UUID(),
+                displayName: "DocumentationKit",
+                bundleIdentifier: "app.getdocsy.documentationkit"
+            )
+            
+            let documentationServer = BundleMetadata(
+                id: UUID(),
+                displayName: "DocumentationServer",
+                bundleIdentifier: "app.getdocsy.documentationServer"
+            )
+            
+            return InMemoryDocumentationRepository(
+                bundles: [documentationKit, documentationServer],
+                revisions: [
+                    documentationKit.id: [
+                        "0.1.0": URL(filePath: "/" + UUID().uuidString),
+                        "0.1.1": URL(filePath: "/" + UUID().uuidString),
+                    ],
+                    documentationServer.id: [
+                        "0.1.0": URL(filePath: "/" + UUID().uuidString),
+                        "0.1.1": URL(filePath: "/" + UUID().uuidString),
+                        "0.1.2": URL(filePath: "/" + UUID().uuidString),
+                    ],
+                ]
+            )
+        }()
+        
+        return .init(repos: [
+            .local: localRepository,
+            .cloud: HTTPDocumentationRepository(baseURI: URL(string: "http://127.0.0.1:1234")!)
+        ])
+    }
+}
 
 
 extension Project {

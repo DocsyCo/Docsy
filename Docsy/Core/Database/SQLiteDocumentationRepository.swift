@@ -230,15 +230,15 @@ struct EnvironmentValueView<Content: View, Value>: View {
     }
 }
 
-#Preview(traits: .modifier(PreviewDocumentationRepository())) {
-    EnvironmentValueView(\.documentationRepo) { repository in
-        DocumentationBrowserView(.init(repos: [
-            .local: repository,
-            .cloud: repository
-        ]))
-        .frame(width: 400, height: 300)
-    }
-}
+//#Preview(traits: .modifier(PreviewDocumentationRepository())) {
+//    EnvironmentValueView(\.documentationRepo) { repository in
+//        DocumentationBrowserView(.init(repos: [
+//            .local: repository,
+//            .cloud: repository
+//        ]))
+//        .frame(width: 400, height: 300)
+//    }
+//}
 
 // MARK: Model Extension
 

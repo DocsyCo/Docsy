@@ -10,6 +10,7 @@
 		FD1EDAEC2CEFCEE5000AB465 /* DocumentationKit in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */; };
 		FD1EDB372CF05EC6000AB465 /* DocumentationRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = FD1EDB362CF05EC6000AB465 /* DocumentationRenderer */; };
 		FDD6E9B52D15B455005FB9D4 /* DocumentationServerClient in Frameworks */ = {isa = PBXBuildFile; productRef = FDD6E9B42D15B455005FB9D4 /* DocumentationServerClient */; };
+		FDDE6E112D1E42C800502F11 /* SplitView in Frameworks */ = {isa = PBXBuildFile; productRef = FDDE6E102D1E42C800502F11 /* SplitView */; };
 		FDE185FD2CF08D5800D7806E /* BundledDocumentationRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = FDE185FC2CF08D5800D7806E /* BundledDocumentationRenderer */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,7 @@
 				FDD6E9B52D15B455005FB9D4 /* DocumentationServerClient in Frameworks */,
 				FD1EDAEC2CEFCEE5000AB465 /* DocumentationKit in Frameworks */,
 				FDE185FD2CF08D5800D7806E /* BundledDocumentationRenderer in Frameworks */,
+				FDDE6E112D1E42C800502F11 /* SplitView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +141,7 @@
 				FD1EDB362CF05EC6000AB465 /* DocumentationRenderer */,
 				FDE185FC2CF08D5800D7806E /* BundledDocumentationRenderer */,
 				FDD6E9B42D15B455005FB9D4 /* DocumentationServerClient */,
+				FDDE6E102D1E42C800502F11 /* SplitView */,
 			);
 			productName = Docsy;
 			productReference = FDED1D152CED3D83002F878D /* DocSee.app */;
@@ -223,6 +226,7 @@
 			mainGroup = FDED1D0C2CED3D83002F878D;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				FDDE6E0F2D1E42C800502F11 /* XCRemoteSwiftPackageReference "SplitView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FDED1D162CED3D83002F878D /* Products */;
@@ -625,6 +629,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		FDDE6E0F2D1E42C800502F11 /* XCRemoteSwiftPackageReference "SplitView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stevengharris/SplitView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.5.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -637,6 +652,11 @@
 		FDD6E9B42D15B455005FB9D4 /* DocumentationServerClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DocumentationServerClient;
+		};
+		FDDE6E102D1E42C800502F11 /* SplitView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FDDE6E0F2D1E42C800502F11 /* XCRemoteSwiftPackageReference "SplitView" */;
+			productName = SplitView;
 		};
 		FDE185FC2CF08D5800D7806E /* BundledDocumentationRenderer */ = {
 			isa = XCSwiftPackageProductDependency;

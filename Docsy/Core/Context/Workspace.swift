@@ -150,7 +150,7 @@ extension Workspace {
             logger.error(
                 "cannot add duplicate bundle '\(bundle)'. There exists a bundle with '\(bundle.identifier)'"
             )
-            return
+            throw WorkspaceError.duplicateBundle(id: bundle.identifier)
         }
         
         await bundleRepository.registerBundle(bundle, withProvider: provider)
@@ -169,6 +169,33 @@ extension Workspace {
             await bundleRepository.unregisterBundle(with: bundle.identifier)
         }
     }
+}
+
+extension Workspace {
+    /// An error when requesting information from a workspace.
+    public enum WorkspaceError: Error {
+        /// A bundle with the provided ID wasn't found in the workspace.
+        case duplicateBundle(id: BundleIdentifier)
+        
+        /// A bundle with the provided ID wasn't found in the workspace.
+        case unknownBundle(id: BundleIdentifier)
+        
+        /// A data provider with the provided ID wasn't found in the workspace.
+        case unknownProvider(id: String)
+        
+        /// A plain-text description of the error.
+        public var errorDescription: String {
+            switch self {
+            case .duplicateBundle(let id):
+                return "The bundle couldn't be added, because another bundle with id '\(id)' already exists in the workspace."
+            case .unknownBundle(let id):
+                return "The requested data could not be located because a containing bundle with id '\(id)' could not be found in the workspace."
+            case .unknownProvider(let id):
+                return "The requested data could not be located because a containing data provider with id '\(id)' could not be found in the workspace."
+            }
+        }
+    }
+    
 }
 
 private func loadSearchIndex(

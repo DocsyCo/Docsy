@@ -5,112 +5,134 @@
 //  Copyright © 2024 Noah Kamara.
 //
 
-import Combine
-import DocumentationKit
 import SwiftUI
+import DocumentationKit
+import DocumentationServerClient
+import SplitView
 
 
-struct DocumentationBrowserView<Content: View, Detail: View>: View {
-    typealias Item = BundleDetail
-    
+struct DocumentationBrowserView<Actions: View>: View {
     @State
-    var isPresentingSearch: Bool = true
-    
-    @State
-    var selection: BundleDetail.ID? = nil
-    var content: (Item) -> Content
-    var detail: (Item) -> Detail
-    
+    private var selection: BundleDetail? = nil
     @Bindable
-    var browser: DocumentationBrowser
-    
+    private var browser: DocumentationBrowser
+    private let bundleActions: (BundleDetail) -> Actions
     
     init(
-        _ repositories: DocumentationRepositories,
-        @ViewBuilder content: @escaping (Item) -> Content,
-        @ViewBuilder detail: @escaping (Item) -> Detail
+        browser: DocumentationBrowser,
+        @ViewBuilder bundleActions: @escaping (BundleDetail) -> Actions
     ) {
-        self.browser = DocumentationBrowser(repositories: repositories)
-        self.content = content
-        self.detail = detail
+        self.browser = browser
+        self.bundleActions = bundleActions
     }
     
     init(
-        _ repositories: DocumentationRepositories
-    ) where Content == DocumentationBrowserItemView, Detail == ItemDetailView {
-        self.init(
-            repositories,
-            content: { DocumentationBrowserItemView(item: $0) },
-            detail: { ItemDetailView(bundle: $0) }
-        )
+        browser: DocumentationBrowser
+    ) where Actions == EmptyView {
+        self.init(browser: browser, bundleActions: { _ in EmptyView() })
     }
     
-    init(
-        _ repositories: DocumentationRepositories,
-        @ViewBuilder detail: @escaping (Item) -> Detail
-    ) where Content == DocumentationBrowserItemView {
-        self.init(
-            repositories,
-            content: { DocumentationBrowserItemView(item: $0) },
-            detail: detail
-        )
-    }
+    @State
+    var isShowingSearch: Bool = true
     
+    @State
+    var isShowingImporter: Bool = false
+        
     var body: some View {
-        NavigationSplitView {
-            ScrollViewReader { scrollProxy in
-                List(selection: $selection) {
-                    ForEach(browser.items) { item in
-                        content(item)
-                            .tag(item.id)
+        content
+            .sheet(isPresented: $isShowingImporter) {
+                NavigationStack {
+                    if let localRepo = browser.repositories[.local] {
+                        BundleImportView(
+                            importer: .init(repository: localRepo)
+                        )
+                    } else {
+                        ContentUnavailableView("Local Repository is unavailable.", systemImage: "exclamationmark.octagon")
                     }
-                    .listRowInsets(.init(top: 5, leading: 0, bottom: 5, trailing: 0))
                 }
-                .onChange(of: browser.items) { _, items in
-                    guard let first = items.first else { return }
-                    scrollProxy.scrollTo(first.id, anchor: .top)
+                .padding()
+            }
+            .searchable(
+                text: $browser.searchTerm,
+                isPresented: $isShowingSearch
+            )
+            .searchScopes($browser.scopes, activation: .onSearchPresentation, {
+                Text("All").tag(Set(browser.repositories.scopes))
+                
+                if browser.repositories.scopes.contains(.local) {
+                    Text("Local").tag(Set([DocumentationBrowser.Scope.local]))
+                }
+                
+                if browser.repositories.scopes.contains(.cloud) {
+                    Text("Cloud").tag(Set([DocumentationBrowser.Scope.cloud]))
+                }
+            })
+            .task(id: browser.id) {
+                do {
+                    try await browser.bootstrap()
+                } catch {
+                    print("failed to bootstrap source browser: \(error)")
                 }
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.visible)
-            .navigationSplitViewColumnWidth(min: 150, ideal: 250)
-            .navigationTitle("Documentation")
-        } detail: {
-            if let id = selection, let bundle = browser.items.first(where: { $0.id == id }) {
-                detail(bundle)
+    }
+    
+    var bottomBar: some View {
+        HStack {
+            Button("Add Custom", action: {
+                self.isShowingImporter = true
+            })
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            
+            if let selection {
+                bundleActions(selection)
+            }
+        }
+        .padding(12)
+        .background(.background)
+    }
+    
+    var detail: some View {
+        Group {
+            if let selection {
+                BundleBrowserDetailView(bundle: selection)
+                //                .toolbar {
+                //                    ToolbarItem(placement: .bottomBar) {
+                //                        bundleActions(selection)
+                //                    }
+                //                }
             } else {
                 Text("Select a bundle")
             }
         }
-        .searchable(
-            text: $browser.searchTerm,
-            isPresented: $isPresentingSearch
-        )
-        .searchScopes($browser.scopes, activation: .onSearchPresentation, {
-            Text("All").tag(Set(browser.repositories.scopes))
+    }
+    
+    var content: some View {
+        VStack(spacing: 0) {
+            HSplit {
+                BundleBrowserResultsList(browser.items, selection: $selection)
+                    .toolbar(removing: .sidebarToggle)
+                    .frame(minWidth: 160, idealWidth: 240)
+            } right: {
+                detail
+                    .frame(
+                        minWidth: 200,
+                        idealWidth: 350,
+                        maxWidth: .infinity,
+                        maxHeight: .infinity
+                    )
+            }
+            .fraction(0.4)
+            .styling(
+                color: .secondary.opacity(0.3),
+                inset: 0,
+                visibleThickness: 1,
+                hideSplitter: true
+            )
             
-            if browser.repositories.scopes.contains(.local) {
-                Text("Local").tag(Set([DocumentationBrowser.Scope.local]))
-            }
+            Divider()
             
-            if browser.repositories.scopes.contains(.cloud) {
-                Text("Cloud").tag(Set([DocumentationBrowser.Scope.cloud]))
-            }
-        })
-        .toolbar(removing: .sidebarToggle)
-        .toolbar {
-            Button(action: {
-                
-            }) {
-                Label("Import Bundle", systemImage: "square.and.arrow.down")
-            }
-        }
-        .task(id: browser.id) {
-            do {
-                try await browser.bootstrap()
-            } catch {
-                print("failed to bootstrap source browser: \(error)")
-            }
+            bottomBar
         }
     }
 }
@@ -145,17 +167,126 @@ struct DocumentationBrowserView<Content: View, Detail: View>: View {
         )
     }()
     
-    DocumentationBrowserView(.init(repos: [
+    let browser = DocumentationBrowser(repositories: .init(repos: [
         .local: repository,
-        .cloud: repository
+        .cloud: HTTPDocumentationRepository(baseURI: URL(string: "http://localhost:1234")!)
     ]))
-    .frame(width: 500, height: 300)
+    
+    DocumentationBrowserView(browser: browser)
+        .frame(width: 600, height: 300)
 }
 
-// MARK: Item View
+
+extension BundleDetail: @retroactive Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(metadata.id)
+        hasher.combine(metadata.bundleIdentifier)
+    }
+}
 
 
-// MARK: DocumentationBrowserItemView
+// MARK: Detail
+struct BundleBrowserDetailView: View {
+    let bundle: BundleDetail
+    
+    @State
+    var showPrereleases = false
+
+    @State
+    var versionTerm: String = ""
+
+    func filteredVersions(term: String) -> [BundleDetail.Revision] {
+        if term.isEmpty {
+            bundle.revisions
+        } else {
+            bundle.revisions.filter { $0.tag.contains(versionTerm) }
+        }
+    }
+
+    
+    var body: some View {
+        Table(filteredVersions(term: versionTerm)) {
+            TableColumn("Tag", value: \.tag)
+                .width(min: 10)
+            TableColumn("Source") { rev in
+                if rev.source.isFileURL {
+                    Text(rev.source.path())
+                } else {
+                    Text(rev.source.formatted(.url.scheme(.omitIfHTTPFamily)))
+                }
+            }
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            VStack(alignment: .leading) {
+                Text(bundle.metadata.displayName)
+                    .font(.title2)
+                
+                TextField("", text: $versionTerm, prompt: Text("Filter Revisions"))
+                    .textFieldStyle(.roundedBorder)
+                    .frame(minWidth: nil)
+            }
+            .padding(10)
+        }
+    }
+}
+
+#Preview("BundleBrowser: Detail") {
+    BundleBrowserDetailView(bundle: .init(
+        metadata: .init(
+            id: .init(),
+            displayName: "DocumentationKit",
+            bundleIdentifier: "com.example.DocumentationKit"
+        ),
+        revisions: [
+            .init(tag: "latest", source: URL(string: "https://example.com/documentationkit/latest")!),
+            .init(tag: "1.0.0", source: URL(string: "https://example.com/documentationkit/1.0.0")!),
+            .init(tag: "0.1.0", source: URL(string: "https://example.com/documentationkit/0.1.0")!)
+        ]
+    ))
+}
+
+
+
+// MARK: ResultsList
+fileprivate struct BundleBrowserResultsList: View {
+    @Binding
+    var selection: BundleDetail?
+    var items: [BundleDetail]
+    
+    init(_ items: [BundleDetail], selection: Binding<BundleDetail?>) {
+        self._selection = selection
+        self.items = items
+    }
+    
+    var body: some View {
+        ScrollViewReader { scrollProxy in
+            List(selection: $selection) {
+                ForEach(items) { item in
+                    DocumentationBrowserItemView(item: item)
+                        .tag(item)
+                }
+                .listRowInsets(.init(top: 5, leading: 0, bottom: 5, trailing: 0))
+            }
+            .onChange(of: items) { _, items in
+                if let first = items.first {
+                    scrollProxy.scrollTo(first.id, anchor: .top)
+                }
+            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.visible)
+    }
+}
+
+#Preview("BundleBrowser: ResultsList") {
+    @Previewable
+    @State
+    var selection: BundleDetail? = nil
+    
+    BundleBrowserResultsList([], selection: $selection)
+}
+
+// MARK: ResultsList Item
 struct DocumentationBrowserItemView: View {
     let item: DocumentationBrowser.Item
 
@@ -203,46 +334,6 @@ extension DocumentationBrowserItemView {
             }
             .contentMargins(.horizontal, 5, for: .scrollContent)
             .scrollBounceBehavior(.basedOnSize)
-        }
-    }
-}
-
-// MARK: Item Detail
-struct ItemDetailView: View {
-    let bundle: BundleDetail
-
-    @State
-    var showPrereleases = false
-
-    @State
-    var sortOrder = [
-        SortDescriptor(\BundleDetail.Revision.tag, order: .reverse),
-    ]
-
-    @State
-    var versionTerm: String = ""
-
-    func filteredVersions(term: String) -> [BundleDetail.Revision] {
-        if term.isEmpty {
-            bundle.revisions
-        } else {
-            bundle.revisions.filter { $0.tag.contains(versionTerm) }
-        }
-    }
-
-    var body: some View {
-        Table(filteredVersions(term: versionTerm), sortOrder: $sortOrder) {
-            TableColumn("Tag", value: \.tag)
-        }
-        .safeAreaInset(edge: .top, spacing: 0) {
-            VStack(alignment: .leading) {
-                Text(bundle.metadata.displayName)
-                    .font(.title)
-
-                TextField("", text: $versionTerm, prompt: Text("Search versions"))
-                    .textFieldStyle(.roundedBorder)
-            }
-            .padding(10)
         }
     }
 }
