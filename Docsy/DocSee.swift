@@ -12,12 +12,13 @@ import SwiftUI
 import DocumentationServerClient
 
 /// # Todo
-/// - [ ] persisted local repository
-///     - [ ] import local bundles
 /// - [ ] Bundle Import
-///     - [ ] Import local filesystem
+///     - [ ] Import local filesystem (copy to internal path)
 ///     - [ ] Import from URL
 ///     - [ ] Import from server
+/// - [x] Bundle Repository server
+/// - [x] Add bundle from repo to workspace
+/// - [ ] Storage server
 /// - [ ] allow adding group markers (and reorder)
 /// - [ ] Workspace persistence
 ///     - [ ] bundles
