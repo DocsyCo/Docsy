@@ -29,7 +29,7 @@ import DocumentationServerClient
 @main
 struct DocsyApp: App {
     let repositories: DocumentationRepositories = DocumentationRepositories(repos: [
-        .cloud: HTTPDocumentationRepository(baseURI: URL(string: "http://127.0.0.1:1234")!)
+        .cloud: HTTPDocumentationRepository(baseURI: URL(string: "http://192.168.178.133:1234")!)
     ])
     
     // MARK: Multiwindow
