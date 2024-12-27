@@ -13,12 +13,17 @@ struct MainView: View {
 
     let workspace: Workspace
 
+    @State
+    private var columnVisibility: NavigationSplitViewVisibility = .all
+    
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             SidebarView(navigator: workspace.navigator)
+                .navigationSplitViewColumnWidth(min: 180, ideal: 260)
         } detail: {
             DocumentView(workspace: workspace)
         }
+        .navigationSplitViewStyle(.balanced)
         .task {
             do {
                 let provider = PreviewDataProvider.bundle

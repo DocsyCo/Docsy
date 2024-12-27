@@ -162,28 +162,55 @@ extension EnvironmentValues {
     @Entry var documentationRepo: any DocumentationRepository = InMemoryDocumentationRepository()
 }
 
+struct BundleDataProvider: BundleRepositoryProvider {
+    let identifier: String
+    private let provider: LocalFileSystemDataProvider
+    
+    init(bundle: Bundle = .main, subpath: String? = nil) throws {
+        let bundleId = bundle.bundleIdentifier ?? "unknown"
+
+        self.identifier = "com.docsee.bundle.\(bundleId)\(subpath.map({ "."+($0.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "") }) ?? "")"
+
+        guard var resourceURL = bundle.resourceURL else {
+            fatalError("Bundle has no resources")
+        }
+        
+        if let subpath {
+            resourceURL.append(path: subpath)
+        }
+
+        self.provider = try LocalFileSystemDataProvider(
+            rootURL: resourceURL,
+            allowArbitraryCatalogDirectories: true
+        )
+    }
+    
+    func data(for path: String) throws -> Data {
+        try provider.data(for: path)
+    }
+
+    func bundles() throws -> [DocumentationBundle] {
+        try provider.bundles()
+    }
+}
+
 struct PreviewDocumentationRepository: PreviewModifier {
     typealias Context = DocumentationRepository
 
     static func createPreviewBundles(_ repo: DocumentationRepository) async throws {
-        let bundleData: [String: (String, [String])] = [
-            "app.getdocsy.documentationkit": ("DocumentationKit", ["0.1.0", "0.1.1", "0.2.0"]),
-            "app.getdocsy.documentationServer": ("DocumentationServer", ["0.1.0", "0.1.1", "0.1.2", "0.2.0"]),
-        ]
+        let provider = try BundleDataProvider()
+        
+        for bundle in try provider.bundles() {
+            let bundleId = try await repo.addBundle(
+                displayName: bundle.displayName,
+                identifier: bundle.identifier
+            ).id
 
-        for (bundleIdentifier, (displayName, revisions)) in bundleData {
-            let bundle = try await repo.addBundle(
-                displayName: displayName,
-                identifier: bundleIdentifier
+            _ = try await repo.addRevision(
+                "latest",
+                source: bundle.baseURL,
+                toBundle: bundleId
             )
-
-            for revision in revisions {
-                _ = try await repo.addRevision(
-                    revision,
-                    source: URL(filePath: "/" + bundle.id.uuidString + "/" + revision),
-                    toBundle: bundle.id
-                )
-            }
         }
     }
 

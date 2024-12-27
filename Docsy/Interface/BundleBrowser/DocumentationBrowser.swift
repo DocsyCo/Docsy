@@ -140,7 +140,7 @@ fileprivate func searchRepositories(
         while let (scope, result) = await tasks.next() {
             switch result {
             case .success(let items):
-                logger.info("DocumentationBrowser(\(scope)): found \(items.count) item")
+                logger.debug("DocumentationBrowser(\(scope)): found \(items.count) item")
                 results[scope] = items
             case .failure(let error):
                 if error is CancellationError {
