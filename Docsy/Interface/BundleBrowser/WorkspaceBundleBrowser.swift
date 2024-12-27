@@ -18,29 +18,32 @@ struct WorkspaceBundleBrowser: View {
     private var dismiss
     
     var body: some View {
-        DocumentationBrowserView(browser: .init(repositories: repositories)) { item in
-            if let firstRevision = item.revisions.first {
-                Menu {
-                    ForEach(item.revisions) { revision in
-                        AsyncButton("Add '\(revision.tag)'") {
-                            let provider = HTTPBundleRepositoryProvider(
-                                rootURL: revision.source
-                            )
+        NavigationStack {
+            DocumentationBrowserView(browser: .init(repositories: repositories)) { item in
+                if let firstRevision = item.revisions.first {
+                    Menu {
+                        ForEach(item.revisions) { revision in
+                            AsyncButton("Add '\(revision.tag)'") {
+                                let provider = HTTPBundleRepositoryProvider(
+                                    rootURL: revision.source
+                                )
+                                let bundle = try await provider.bundle()
+                                try await workspace.addBundle(bundle, with: provider)
+                                dismiss()
+                            }
+                        }
+                    } label: {
+                        AsyncButton("Add '\(firstRevision.tag)' to Workspace") {
+                            print("SOURCE", firstRevision.source)
+                            let provider = HTTPBundleRepositoryProvider(rootURL: firstRevision.source)
                             let bundle = try await provider.bundle()
                             try await workspace.addBundle(bundle, with: provider)
                             dismiss()
                         }
                     }
-                } label: {
-                    AsyncButton("Add '\(firstRevision.tag)' to Workspace") {
-                        print("SOURCE", firstRevision.source)
-                        let provider = HTTPBundleRepositoryProvider(rootURL: firstRevision.source)
-                        let bundle = try await provider.bundle()
-                        try await workspace.addBundle(bundle, with: provider)
-                        dismiss()
-                    }
                 }
             }
+
         }
     }
 }

@@ -38,13 +38,16 @@ private let appSourcePaths: [String] = [
 class OverridenFileServerProvider: FileServerProvider {
     let bundleRepository: BundleRepository
     let appSource: FileServerProvider
-
+    let theme: ThemeSettings
+    
     init(
         repository: BundleRepository,
-        appSource: FileServerProvider
+        appSource: FileServerProvider,
+        theme: ThemeSettings = .docsee
     ) {
         self.bundleRepository = repository
         self.appSource = appSource
+        self.theme = theme
     }
 
     func data(for path: String) async throws -> Data {
@@ -56,15 +59,29 @@ class OverridenFileServerProvider: FileServerProvider {
 
         let bundleIdentifier = String(components.removeFirst())
         let restPath = components.joined(separator: "/")
+        
+        let documentationURI = DocumentationURI(
+            bundleIdentifier: bundleIdentifier,
+            path: restPath
+        )
+        
+        if restPath == "theme-settings.json" {
+            do {
+                return try await bundleRepository.contentsOfUrl(documentationURI)
+            } catch let originalError {
+                do {
+                    return try JSONEncoder().encode(theme)
+                } catch {
+                    throw originalError
+                }
+            }
+        }
 
         if let bundleSubPath = components.first.map(String.init) {
             if appSourcePaths.contains(bundleSubPath) {
                 return try await appSource.data(for: restPath)
             } else if bundleSubPath.contains(bundleSubPath) {
-                return try await bundleRepository.contentsOfUrl(DocumentationURI(
-                    bundleIdentifier: bundleIdentifier,
-                    path: restPath
-                ))
+                return try await bundleRepository.contentsOfUrl(documentationURI)
             }
         }
 
@@ -112,6 +129,7 @@ struct DocumentView: View {
 
     var body: some View {
         DocumentationView(renderer)
+            .ignoresSafeArea(.container, edges: .all)
             // Open foreign urls
             .onAppear(perform: {
                 renderer.openUrlAction = { url in

@@ -16,10 +16,34 @@ struct MainView: View {
     @State
     private var columnVisibility: NavigationSplitViewVisibility = .all
     
+    #if os(iOS)
+    @State
+    var showsBundleBrowser: Bool = false
+    
+    @Environment(DocumentationRepositories.self)
+    private var repositories
+    #endif
+    
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             SidebarView(navigator: workspace.navigator)
                 .navigationSplitViewColumnWidth(min: 180, ideal: 260)
+#if os(iOS)
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button("Bundle Browser") {
+                            showsBundleBrowser = true
+                        }
+                        .keyboardShortcut("b", modifiers: .command)
+                    }
+                }
+                .sheet(isPresented: $showsBundleBrowser) {
+                    WorkspaceBundleBrowser(
+                        workspace: workspace,
+                        repositories: repositories
+                    )
+                }
+#endif
         } detail: {
             DocumentView(workspace: workspace)
         }
