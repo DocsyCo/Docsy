@@ -32,3 +32,4 @@ playground.xcworkspace
 .build/
 
 Documentation
+.DS_Store

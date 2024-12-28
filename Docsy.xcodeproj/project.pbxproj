@@ -33,7 +33,6 @@
 
 /* Begin PBXFileReference section */
 		FD1EDAE52CEFCEE0000AB465 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.1.sdk/System/Library/Frameworks/EventKit.framework; sourceTree = DEVELOPER_DIR; };
-		FD288AE32CFBDD8D0085D357 /* DocSee-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "DocSee-Info.plist"; sourceTree = "<group>"; };
 		FDED1D152CED3D83002F878D /* Docsy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Docsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDED1D262CED3D85002F878D /* DocsyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocsyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDED1D302CED3D85002F878D /* DocsyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocsyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,7 +89,6 @@
 		FDED1D0C2CED3D83002F878D = {
 			isa = PBXGroup;
 			children = (
-				FD288AE32CFBDD8D0085D357 /* DocSee-Info.plist */,
 				FDED1D172CED3D83002F878D /* Docsy */,
 				FDED1D292CED3D85002F878D /* DocsyTests */,
 				FDED1D332CED3D85002F878D /* DocsyUITests */,
@@ -201,7 +199,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					FDED1D142CED3D83002F878D = {
 						CreatedOnToolsVersion = 16.1;
@@ -336,6 +334,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -397,6 +396,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -424,12 +424,13 @@
 				CODE_SIGN_ENTITLEMENTS = Docsy/Docsy.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Docsy/Preview Content\"";
 				DEVELOPMENT_TEAM = ME2UKFKL5H;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "DocSee-Info.plist";
+				INFOPLIST_FILE = "Docsy-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Docsy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -467,12 +468,13 @@
 				CODE_SIGN_ENTITLEMENTS = Docsy/Docsy.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Docsy/Preview Content\"";
 				DEVELOPMENT_TEAM = ME2UKFKL5H;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "DocSee-Info.plist";
+				INFOPLIST_FILE = "Docsy-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Docsy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -508,6 +510,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ME2UKFKL5H;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
@@ -531,6 +534,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ME2UKFKL5H;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
@@ -553,6 +557,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ME2UKFKL5H;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
@@ -575,6 +580,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ME2UKFKL5H;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
