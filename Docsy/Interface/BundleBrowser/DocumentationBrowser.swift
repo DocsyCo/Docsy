@@ -76,6 +76,13 @@ extension DocumentationBrowser {
     struct Scope: Hashable, Comparable, CustomStringConvertible {
         var description: String { "Scope(\(identifier)" }
         let identifier: String
+        var displayName: String {
+            switch self {
+            case .local: "Local"
+            case .cloud: "Cloud"
+            default: identifier.capitalized
+            }
+        }
         
         static let local = Scope("local")
         static let cloud = Scope("cloud")

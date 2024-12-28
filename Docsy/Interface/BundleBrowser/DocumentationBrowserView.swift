@@ -59,12 +59,8 @@ struct DocumentationBrowserView<Actions: View>: View {
             .searchScopes($browser.scopes, activation: .onSearchPresentation, {
                 Text("All").tag(Set(browser.repositories.scopes))
                 
-                if browser.repositories.scopes.contains(.local) {
-                    Text("Local").tag(Set([DocumentationBrowser.Scope.local]))
-                }
-                
-                if browser.repositories.scopes.contains(.cloud) {
-                    Text("Cloud").tag(Set([DocumentationBrowser.Scope.cloud]))
+                ForEach(browser.repositories.scopes.sorted(), id:\.self) { scope in
+                    Text(scope.displayName).tag(Set([scope]))
                 }
             })
             .task(id: browser.id) {
