@@ -20,9 +20,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FDED1D252CED3D85002F878D"
-               BuildableName = "DocSeeTests.xctest"
-               BlueprintName = "DocSeeTests"
-               ReferencedContainer = "container:DocSee.xcodeproj">
+               BuildableName = "DocsyTests.xctest"
+               BlueprintName = "DocsyTests"
+               ReferencedContainer = "container:Docsy.xcodeproj">
             </BuildableReference>
             <SkippedTests>
                <Test

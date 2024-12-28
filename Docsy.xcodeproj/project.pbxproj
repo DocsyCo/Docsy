@@ -34,9 +34,9 @@
 /* Begin PBXFileReference section */
 		FD1EDAE52CEFCEE0000AB465 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.1.sdk/System/Library/Frameworks/EventKit.framework; sourceTree = DEVELOPER_DIR; };
 		FD288AE32CFBDD8D0085D357 /* DocSee-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "DocSee-Info.plist"; sourceTree = "<group>"; };
-		FDED1D152CED3D83002F878D /* DocSee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocSee.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FDED1D262CED3D85002F878D /* DocSeeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocSeeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FDED1D302CED3D85002F878D /* DocSeeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocSeeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDED1D152CED3D83002F878D /* Docsy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Docsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDED1D262CED3D85002F878D /* DocsyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocsyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDED1D302CED3D85002F878D /* DocsyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocsyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -102,9 +102,9 @@
 		FDED1D162CED3D83002F878D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FDED1D152CED3D83002F878D /* DocSee.app */,
-				FDED1D262CED3D85002F878D /* DocSeeTests.xctest */,
-				FDED1D302CED3D85002F878D /* DocSeeUITests.xctest */,
+				FDED1D152CED3D83002F878D /* Docsy.app */,
+				FDED1D262CED3D85002F878D /* DocsyTests.xctest */,
+				FDED1D302CED3D85002F878D /* DocsyUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -120,9 +120,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FDED1D142CED3D83002F878D /* DocSee */ = {
+		FDED1D142CED3D83002F878D /* Docsy */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FDED1D3A2CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocSee" */;
+			buildConfigurationList = FDED1D3A2CED3D85002F878D /* Build configuration list for PBXNativeTarget "Docsy" */;
 			buildPhases = (
 				FDED1D112CED3D83002F878D /* Sources */,
 				FDED1D122CED3D83002F878D /* Frameworks */,
@@ -135,7 +135,7 @@
 			fileSystemSynchronizedGroups = (
 				FDED1D172CED3D83002F878D /* Docsy */,
 			);
-			name = DocSee;
+			name = Docsy;
 			packageProductDependencies = (
 				FD1EDAEB2CEFCEE5000AB465 /* DocumentationKit */,
 				FD1EDB362CF05EC6000AB465 /* DocumentationRenderer */,
@@ -144,12 +144,12 @@
 				FDDE6E102D1E42C800502F11 /* SplitView */,
 			);
 			productName = Docsy;
-			productReference = FDED1D152CED3D83002F878D /* DocSee.app */;
+			productReference = FDED1D152CED3D83002F878D /* Docsy.app */;
 			productType = "com.apple.product-type.application";
 		};
-		FDED1D252CED3D85002F878D /* DocSeeTests */ = {
+		FDED1D252CED3D85002F878D /* DocsyTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FDED1D3D2CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocSeeTests" */;
+			buildConfigurationList = FDED1D3D2CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocsyTests" */;
 			buildPhases = (
 				FDED1D222CED3D85002F878D /* Sources */,
 				FDED1D232CED3D85002F878D /* Frameworks */,
@@ -163,16 +163,16 @@
 			fileSystemSynchronizedGroups = (
 				FDED1D292CED3D85002F878D /* DocsyTests */,
 			);
-			name = DocSeeTests;
+			name = DocsyTests;
 			packageProductDependencies = (
 			);
 			productName = DocsyTests;
-			productReference = FDED1D262CED3D85002F878D /* DocSeeTests.xctest */;
+			productReference = FDED1D262CED3D85002F878D /* DocsyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		FDED1D2F2CED3D85002F878D /* DocSeeUITests */ = {
+		FDED1D2F2CED3D85002F878D /* DocsyUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FDED1D402CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocSeeUITests" */;
+			buildConfigurationList = FDED1D402CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocsyUITests" */;
 			buildPhases = (
 				FDED1D2C2CED3D85002F878D /* Sources */,
 				FDED1D2D2CED3D85002F878D /* Frameworks */,
@@ -186,11 +186,11 @@
 			fileSystemSynchronizedGroups = (
 				FDED1D332CED3D85002F878D /* DocsyUITests */,
 			);
-			name = DocSeeUITests;
+			name = DocsyUITests;
 			packageProductDependencies = (
 			);
 			productName = DocsyUITests;
-			productReference = FDED1D302CED3D85002F878D /* DocSeeUITests.xctest */;
+			productReference = FDED1D302CED3D85002F878D /* DocsyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -216,7 +216,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FDED1D102CED3D83002F878D /* Build configuration list for PBXProject "DocSee" */;
+			buildConfigurationList = FDED1D102CED3D83002F878D /* Build configuration list for PBXProject "Docsy" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -233,9 +233,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FDED1D142CED3D83002F878D /* DocSee */,
-				FDED1D252CED3D85002F878D /* DocSeeTests */,
-				FDED1D2F2CED3D85002F878D /* DocSeeUITests */,
+				FDED1D142CED3D83002F878D /* Docsy */,
+				FDED1D252CED3D85002F878D /* DocsyTests */,
+				FDED1D2F2CED3D85002F878D /* DocsyUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -291,12 +291,12 @@
 /* Begin PBXTargetDependency section */
 		FDED1D282CED3D85002F878D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = FDED1D142CED3D83002F878D /* DocSee */;
+			target = FDED1D142CED3D83002F878D /* Docsy */;
 			targetProxy = FDED1D272CED3D85002F878D /* PBXContainerItemProxy */;
 		};
 		FDED1D322CED3D85002F878D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = FDED1D142CED3D83002F878D /* DocSee */;
+			target = FDED1D142CED3D83002F878D /* Docsy */;
 			targetProxy = FDED1D312CED3D85002F878D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -516,7 +516,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DocSee.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DocSee";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Docsy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Docsy";
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Debug;
@@ -539,7 +539,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DocSee.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DocSee";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Docsy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Docsy";
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Release;
@@ -591,7 +591,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FDED1D102CED3D83002F878D /* Build configuration list for PBXProject "DocSee" */ = {
+		FDED1D102CED3D83002F878D /* Build configuration list for PBXProject "Docsy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FDED1D382CED3D85002F878D /* Debug */,
@@ -600,7 +600,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FDED1D3A2CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocSee" */ = {
+		FDED1D3A2CED3D85002F878D /* Build configuration list for PBXNativeTarget "Docsy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FDED1D3B2CED3D85002F878D /* Debug */,
@@ -609,7 +609,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FDED1D3D2CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocSeeTests" */ = {
+		FDED1D3D2CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocsyTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FDED1D3E2CED3D85002F878D /* Debug */,
@@ -618,7 +618,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FDED1D402CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocSeeUITests" */ = {
+		FDED1D402CED3D85002F878D /* Build configuration list for PBXNativeTarget "DocsyUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FDED1D412CED3D85002F878D /* Debug */,
