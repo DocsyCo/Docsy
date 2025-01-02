@@ -54,9 +54,16 @@ struct DocsyApp: App {
     
     let workspace = try! Workspace(config: .init(inMemory: true))
     
+    let appModel = AppModel()
+    
     var body: some Scene {
-        MainWindow(workspace: workspace, repositories: repositories)
+        MainWindow(
+            workspace: workspace,
+            repositories: repositories,
+            appModel: appModel
+        )
         BundleBrowserWindow(workspace: workspace, repositories: repositories)
+            .environment(appModel)
     }
 }
 

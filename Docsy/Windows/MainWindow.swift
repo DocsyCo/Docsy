@@ -19,7 +19,11 @@ struct MainWindow: Scene {
     @Environment(\.openWindow)
     private var openWindow
     
+    let appModel: AppModel
+    
     var body: some Scene {
+        @Bindable var appModel = appModel
+        
         WindowGroup(id: WindowID.main.identifier) {
             if db != nil {
                 MainView(workspace: workspace)
@@ -43,6 +47,14 @@ struct MainWindow: Scene {
                     }
             }
         }
+        #if os(iOS)
+        .sheet(isPresented: $appModel.showsBundleBrowser) {
+            WorkspaceBundleBrowser(
+                workspace: workspace,
+                repositories: repositories
+            )
+        }
+        #endif
         .commands {
             CommandGroup(replacing: .appSettings) {
                 Button("Settings") {}
@@ -50,12 +62,11 @@ struct MainWindow: Scene {
             
 #if os(macOS)
             CommandGroup(replacing: .windowList) {
-                Button("Bundle Browser") {
-                    openWindow(.bundleBrowser)
-                }
-                .keyboardShortcut("b", modifiers: .command)
+                OpenBundleBrowserButton()
+                    .environment(appModel)
             }
 #endif
         }
+        .environment(appModel)
     }
 }

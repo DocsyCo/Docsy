@@ -50,6 +50,8 @@ import DocumentationKit
 @Observable
 class BundleImporter {
     let repository: DocumentationRepository
+    var bundleIdentifier: String = ""
+    var bundleDisplayName: String = ""
     
     init(repository: DocumentationRepository) {
         self.repository = repository
@@ -150,66 +152,135 @@ struct BundleImportView: View {
     @Bindable
     var importer: BundleImporter
     
-    @State
-    var isPresentingFileImporter: Bool = false
+    init(importer: BundleImporter) {
+        self.importer = importer
+    }
+    
+    init(repository: DocumentationRepository) {
+        self.init(importer: .init(repository: repository))
+    }
     
     var body: some View {
         Form {
-            LabeledContent("Source") {
-                Picker("", selection: $importer.source) {
-                    ForEach(BundleImporter.Source.allCases, id:\.self) { source in
-                        Text(source.displayName)
-                            .tag(source)
+            Section {
+                LabeledContent("Source") {
+                    Picker("", selection: $importer.source) {
+                        Text("Select a source")
+                            .tag(BundleImporter.Source?.none)
+                            .disabled(true)
+                        
+                        ForEach(BundleImporter.Source.allCases, id:\.self) { source in
+                            Text(source.displayName)
+                                .tag(source)
+                        }
                     }
+                    .labelsHidden()
+                    .pickerStyle(.menu)
                 }
-                .labelsHidden()
-                .pickerStyle(.menu)
             }
             
-            switch importer.source {
+            if let source = importer.source {
+                switch source {
                 case .filesystem:
-                Section("Filesystem") {
-                    LabeledContent("Path") {
-                        Button(action: { isPresentingFileImporter = true }) {
-                            HStack {
-                                if let fileUrl = importer.filesystem.fileURL {
-                                    Text(fileUrl.path())
-                                } else {
-                                    Text("Select a file")
-                                }
-                                Image(systemName: "arrowshape.right.circle.fill")
-                            }
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
+                    FilesImportView(config: importer.filesystem)
                     
                 case .url:
                     Text("URL")
+                }
                 
-            case .none:
+                Section {
+                    TextField("Bundle Identifier", text: $importer.bundleIdentifier)
+                    TextField("Display Name", text: $importer.bundleIdentifier)
+//                    LabeledContent("Display Name") {
+//                        <#code#>
+//                    }
+                } header: {
+                    HStack {
+                        Text("Metadata")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Image(systemName: "circle.fill")
+                            .foregroundStyle(.yellow)
+                    }
+                }
+                
+                Section {
+                    LabeledContent("Index Directory") {
+                        
+                    }
+                } header: {
+                    HStack {
+                        Text("Navigator Index")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Image(systemName: "circle.fill")
+                            .foregroundStyle(.yellow)
+                    }
+                }
+            } else {
                 ContentUnavailableView("Select a source to get started", systemImage: "exclamationmark.octagon")
+                    .frame(maxWidth: .infinity, alignment: .center)
+
             }
-            
-            AsyncButton("Import") {
-                try await importer.import()
+        }
+        .formStyle(.grouped)
+        .safeAreaInset(edge: .bottom) {
+            HStack {
+                AsyncButton("Import") {
+                    try await importer.import()
+                }
+                .disabled(!importer.isValid)
             }
-            .disabled(!importer.isValid)
-            .fileImporter(
-                isPresented: $isPresentingFileImporter,
-                allowedContentTypes: [.doccarchive]
-            ) { result in
-                switch result {
-                case .success(let fileURL):
-                    print(fileURL)
-                    self.importer.filesystem.fileURL = fileURL
-                case .failure(let failure):
-                    print("failed", failure)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(10)
+            .background(.background)
+        }
+    }
+    
+    struct FilesImportView: View {
+        let config: BundleImporter.FilesystemImporter
+        
+        @State
+        private var isPresentingFileImporter: Bool = false
+
+        var body: some View {
+            Section("Filesystem") {
+                LabeledContent("Path") {
+                    Button(action: { isPresentingFileImporter = true }) {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(config.fileURL?.path() ?? "Select a documentation archive")
+                                .multilineTextAlignment(.leading)
+                                .minimumScaleFactor(0.4)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            Image(systemName: "arrowshape.right.circle.fill")
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .lineLimit(2)
+                }
+                .fileImporter(
+                    isPresented: $isPresentingFileImporter,
+                    allowedContentTypes: [.doccarchive]
+                ) { result in
+                    switch result {
+                    case .success(let fileURL):
+                        config.fileURL = fileURL
+                    case .failure(let failure):
+                        print("failed", failure)
+                    }
                 }
             }
         }
     }
 }
+
+enum ImporterStatus {
+    case success
+    case warning(_ reason: String)
+    case error(_ reason: String)
+}
+
 
 import UniformTypeIdentifiers
 
@@ -220,9 +291,26 @@ extension UTType {
 }
 
 
-//#Preview {
-//    BundleImportView()
-//}
+#Preview {
+    @Previewable var repository = InMemoryDocumentationRepository()
+    
+    let resource = try! CachedResource()
+    
+    let importer: BundleImporter = try! {
+        let importer = BundleImporter(repository: repository)
+        importer.source = .filesystem
+        let metadata = DocumentationBundle.Metadata(
+            displayName: "Example Documentation",
+            identifier: "com.example.documentation"
+        )
+        
+        try resource.put(metadata, at: "metadata.json")
+        importer.filesystem.fileURL = resource.url
+        return importer
+    }()
+    
+    BundleImportView(importer: importer)
+}
 //struct BundleBrowserView: View {
 ////    let didSubmit: (Project.Bundle) async throws -> Void
 ////    

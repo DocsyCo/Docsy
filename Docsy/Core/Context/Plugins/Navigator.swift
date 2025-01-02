@@ -140,6 +140,12 @@ final class CachedResource: @unchecked Sendable {
         try data.write(to: fileURL)
     }
     
+    func put<T: Encodable>(_ data: T, at path: String, encoder: JSONEncoder = JSONEncoder()) throws {
+        let data = try encoder.encode(data)
+        let fileURL = url.appending(path: path)
+        try data.write(to: fileURL)
+    }
+
     func `import`(from url: URL, to path: String) async throws {
         let data = if url.isFileURL {
             try fileManager.contents(of: url)

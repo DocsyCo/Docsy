@@ -40,18 +40,6 @@ struct DocumentationBrowserView<Actions: View>: View {
         
     var body: some View {
         content
-            .sheet(isPresented: $isShowingImporter) {
-                NavigationStack {
-                    if let localRepo = browser.repositories[.local] {
-                        BundleImportView(
-                            importer: .init(repository: localRepo)
-                        )
-                    } else {
-                        ContentUnavailableView("Local Repository is unavailable.", systemImage: "exclamationmark.octagon")
-                    }
-                }
-                .padding()
-            }
             .searchable(
                 text: $browser.searchTerm,
                 isPresented: $isShowingSearch
@@ -70,6 +58,17 @@ struct DocumentationBrowserView<Actions: View>: View {
                     print("failed to bootstrap source browser: \(error)")
                 }
             }
+            .sheet(isPresented: $isShowingImporter) {
+                NavigationStack {
+                    if let localRepo = browser.repositories[.local] {
+                        BundleImportView(repository: localRepo)
+                    } else {
+                        ContentUnavailableView("Local Repository is unavailable.", systemImage: "exclamationmark.octagon")
+                    }
+                }
+                .padding()
+            }
+
     }
     
     var bottomBar: some View {
